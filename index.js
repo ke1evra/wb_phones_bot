@@ -8,8 +8,10 @@ moment.locale('ru');
 
 app.get('/wbphones', function (req, res) {
     console.log('Запрос на /wbphones');
-    let q = req.query;
-    const message = `sms от ${q.src} на ${q.dst} (${moment().format('LLL')})\n---------------------\n${q.body}`;
+    const q = req.query;
+    const b = req.body;
+    console.log(JSON.stringify(b));
+    const message = `sms от ${b.src} на ${b.dst} (${moment().format('LLL')})\n---------------------\n${b.body}`;
     bot.sendMessage(chatid, message).then(() => {
         console.log(`сообщение ${message} успешно отправлено в чат ${chatid}`);
         res.status(200).end()
