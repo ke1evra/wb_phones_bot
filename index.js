@@ -3,16 +3,19 @@ const bot = require('./bot.js');
 const app = express();
 const port = 9876;
 const chatid = '-449604345';
+const moment = require('moment'); // require
+moment.locale('ru');
 
 app.get('/wbphones', function (req, res) {
     console.log('Запрос на /wbphones');
     let q = req.query;
-    bot.sendMessage(chatid, JSON.stringify(q)).then(() => {
-        console.log(`сообщение ${q} успешно отправлено в чат ${chatid}`);
+    const message = `sms от ${q.src} на ${q.dst} (${moment().format('LLL')})\n---------------------\n${q.body}`;
+    bot.sendMessage(chatid, message).then(() => {
+        console.log(`сообщение ${message} успешно отправлено в чат ${chatid}`);
         res.status(200).end()
     }).catch(e => {
         console.log(e);
-    }); 
+    });
 
 });
 
