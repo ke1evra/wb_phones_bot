@@ -13,6 +13,7 @@ app.all('/informer', function (req, res) {
         console.log(`Запрос на /informer (${moment().format('DD.MM.YYYY HH:mm:ss')})`);
         const b = req.body;
         const message = `письмо от ${b.from.value[0].name} ${b.from.value[0].address} (${moment(b.date).format('DD.MM.YYYY HH:mm:ss')})\nтема письма: ${b.subject}\n---------------------\\n${b.text}`;
+        console.log(message);
     }catch(e){
         console.log(e);
     }
