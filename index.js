@@ -7,12 +7,19 @@ const moment = require('moment'); // require
 moment.locale('ru');
 
 app.use(express.json()); // for parsing application/json
-app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+
+app.all('/informer', function (req, res) {
+    try{
+        console.log(`Запрос на /informer (${moment().format('DD.MM.YYYY HH:mm:ss')})`);
+        console.log(req.body);
+    }catch(e){
+        console.log(e);
+    }
+});
 
 app.post('/wbphones', function (req, res) {
     try{
         console.log(`Запрос на /wbphones (${moment().format('DD.MM.YYYY HH:mm:ss')})`);
-        const q = req.query;
         const b = req.body;
         console.log(JSON.stringify(b));
         const message = `sms от ${b.src} на ${b.dst} (${moment().format('DD.MM.YYYY HH:mm:ss')})\n---------------------\n${b.body}`;
@@ -25,9 +32,6 @@ app.post('/wbphones', function (req, res) {
     }catch(e){
         console.log(e);
     }
-
-
-
 });
 
 app.listen(port, function () {
