@@ -19,7 +19,7 @@ module.exports = {
         const chat = chats.manager;
         let text = b.text;
         if (typeof text === 'string' && text.indexOf('info@vkostume.ru') !== -1){
-            text = b.text.split('info@vkostume.ru')[0];
+            text = b.text.split('<info@vkostume.ru')[0];
         }
         // console.log(b);
         const message = `письмо от ${b.from.value[0].name} <${b.from.value[0].address}> (${moment(b.date).format('DD.MM.YYYY HH:mm:ss')})\nтема письма: ${b.subject}\n---------------------\n${text}`;
