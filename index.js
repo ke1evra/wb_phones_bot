@@ -9,7 +9,7 @@ moment.locale('ru');
 const informerRouter = require('./routes/informer.js');
 const wbPhonesRouter = require('./routes/wbPhones.js');
 
-app.use(express.json()); // for parsing application/json
+app.use(express.json({limit: '50mb', extended: true})); // for parsing application/json
 
 app.use('/informer', informerRouter);
 app.use('/wbphones', wbPhonesRouter);
