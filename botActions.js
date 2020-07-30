@@ -33,7 +33,7 @@ module.exports = {
     resendEmailToChat(b, chat) {
         const bot = bots.vkostume_informer;
         let text = b.text;
-        const message = b.textAsHtml;
+        const message = b;
         return bot.sendMessage(chat, message).then(()=>{
             console.log(`сообщение ${message} успешно отправлено в чат (${chat})`);
         }).catch(e => {
