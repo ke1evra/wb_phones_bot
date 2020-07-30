@@ -30,4 +30,14 @@ module.exports = {
             console.log(e);
         });
     },
+    resendEmailToChat(b, chat) {
+        const bot = bots.vkostume_informer;
+        let text = b.text;
+        const message = b.textAsHtml;
+        return bot.sendMessage(chat, message).then(()=>{
+            console.log(`сообщение ${message} успешно отправлено в чат (${chat})`);
+        }).catch(e => {
+            console.log(e);
+        });
+    }
 };
