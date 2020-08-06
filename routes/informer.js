@@ -30,8 +30,8 @@ router.all('/test', function (req, res) {
 
 router.all('/to_chat/:chat_id', function (req, res) {
     try{
-        console.log(`Запрос на /informer/to_chat/:chat_id (${moment().format('DD.MM.YYYY HH:mm:ss')})`);
         const chatId = req.params.chat_id;
+        console.log(`Запрос на /informer/to_chat/${chatId} (${moment().format('DD.MM.YYYY HH:mm:ss')})`);
         actions.resendEmailToChat(req.body, chatId)
             .then(()=>{
                 res.status(200).end()
