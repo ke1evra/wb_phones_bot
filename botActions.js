@@ -43,6 +43,6 @@ module.exports = {
         });
     },
     resendEmailToChatAsHTML(b, chat) {
-        resendEmailToChat(b, chat, b);
+        this.resendEmailToChat(b, chat, b);
     },
 };
