@@ -31,9 +31,10 @@ module.exports = {
             console.log(e);
         });
     },
-    resendEmailToChat(b, chat, message = '') {
+    resendEmailToChat(b, chat, message = null) {
         const bot = bots.vkostume_informer;
-        message = `${b.from.value[0].name} <${b.from.value[0].address}> (${moment(b.date).format('DD.MM.YYYY HH:mm:ss')})\n${b.subject}\n---------------------\n${b.text}`;
+        if(!message)
+            message = `${b.from.value[0].name} <${b.from.value[0].address}> (${moment(b.date).format('DD.MM.YYYY HH:mm:ss')})\n${b.subject}\n---------------------\n${b.text}`;
         return bot.sendMessage(chat, message).then(()=>{
             bot.sendMessage(chat, b).then();
             console.log(`сообщение ${message} успешно отправлено в чат (${chat})`);
@@ -41,7 +42,7 @@ module.exports = {
             console.log(e);
         });
     },
-    resendEmailToChatAsHTML() {
-
+    resendEmailToChatAsHTML(b, chat) {
+        resendEmailToChat(b, chat, b);
     },
 };

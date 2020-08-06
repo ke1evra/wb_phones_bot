@@ -19,7 +19,7 @@ router.all('/', function (req, res) {
 router.all('/test', function (req, res) {
     try{
         console.log(`Запрос на /informer/test (${moment().format('DD.MM.YYYY HH:mm:ss')})`);
-        actions.resendEmailToChat(req.body, chats.me)
+        actions.resendEmailToChatAsHTML(req.body, chats.me)
             .then(()=>{
                 res.status(200).end()
             });
