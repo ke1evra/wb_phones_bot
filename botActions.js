@@ -31,13 +31,17 @@ module.exports = {
             console.log(e);
         });
     },
-    resendEmailToChat(b, chat) {
+    resendEmailToChat(b, chat, message = '') {
         const bot = bots.vkostume_informer;
-        const message = `${b.from.value[0].name} <${b.from.value[0].address}> (${moment(b.date).format('DD.MM.YYYY HH:mm:ss')})\n${b.subject}\n---------------------\n${b.text}`;
+        message = `${b.from.value[0].name} <${b.from.value[0].address}> (${moment(b.date).format('DD.MM.YYYY HH:mm:ss')})\n${b.subject}\n---------------------\n${b.text}`;
         return bot.sendMessage(chat, message).then(()=>{
+            bot.sendMessage(chat, b).then();
             console.log(`сообщение ${message} успешно отправлено в чат (${chat})`);
         }).catch(e => {
             console.log(e);
         });
-    }
+    },
+    resendEmailToChatAsHTML() {
+
+    },
 };
