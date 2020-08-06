@@ -3,6 +3,7 @@ const chats = require('./chatList.js');
 const moment = require('moment');
 
 
+
 module.exports = {
     sendMessageFromZebra(b) {
         const bot = bots.wb_phones;
@@ -22,7 +23,7 @@ module.exports = {
             text = b.text.split('<info@vkostume.ru')[0];
         }
         // console.log(b);
-        const message = `письмо от ${b.from.value[0].name} <${b.from.value[0].address}> (${moment(b.date).format('DD.MM.YYYY HH:mm:ss')})\nтема письма: ${b.subject}\n---------------------\n${text}`;
+        const message = `${b.from.value[0].name} <${b.from.value[0].address}> (${moment(b.date).format('DD.MM.YYYY HH:mm:ss')})\n${b.subject}\n---------------------\n${text}`;
         // console.log(message);
         return bot.sendMessage(chat, message).then(()=>{
             console.log(`сообщение ${message} успешно отправлено в чат (${chat})`);
@@ -32,8 +33,7 @@ module.exports = {
     },
     resendEmailToChat(b, chat) {
         const bot = bots.vkostume_informer;
-        let text = b.text;
-        const message = b.attachments || 'test message';
+        const message = `${b.from.value[0].name} <${b.from.value[0].address}> (${moment(b.date).format('DD.MM.YYYY HH:mm:ss')})\n${b.subject}\n---------------------\n${b.text}`;
         return bot.sendMessage(chat, message).then(()=>{
             console.log(`сообщение ${message} успешно отправлено в чат (${chat})`);
         }).catch(e => {
