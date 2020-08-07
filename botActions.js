@@ -35,7 +35,7 @@ module.exports = {
         const bot = bots.vkostume_informer;
         if(!message)
             message = `${b.from.value[0].name} <${b.from.value[0].address}> (${moment(b.date).format('DD.MM.YYYY HH:mm:ss')})\n${b.subject}\n---------------------\n${b.text}`;
-        return bot.sendMessage(chat, message).then((sent_message)=>{
+        return bot.sendMessage(chat, message, options).then((sent_message)=>{
             console.log(`сообщение (id: ${sent_message.message_id})${message} успешно отправлено в чат (${chat})`);
         }).catch(e => {
             console.log(e);
