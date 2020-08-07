@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "dolgovapi",
+  "private_key_id": "955301a7af9e08a63b3b8903bebacd0e5f0da509",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDmac9l6UTWEUcH\n70CFuVZGjz2z5VivBsY2Wx3xyyLYtGKltF7yY5V9Hs9ziwYrSS6JiAwmpHbN7P/f\nQY13WPVYy7HPzhnnBJzWnMY0QCL0k7rwQUt7jCrbF2dLMLe3EdRDtusbNTJ9n1tM\nBftt7kURfbrPiHeVS7P8oWzvDVrRx0FoMRCu6MvANThzWJWuTdwyUmiqcl2wn7G/\nxkR2X3tsgR5wIsC173h8ZQeNsJoAPqewnU/M2SJJeAHmcYXcdJq7Ecc+23qjgyDA\n+XrQXN6intjgJX6R9EU0Zix/wpXM7BSqHYwJfdA80dmw8JBf/qXEScBXoTWJ8TVF\n7BuB/YmrAgMBAAECggEAAwqIez7d8rldp6QnxNwSYHIJjXNMfVroiNUhCwz0U8nl\nt2wvCKH52iHq+QpvtWiM3bHW/zeSfdtP8UFrPZUF//sISMbenqb37vk4wH3MOFAu\n2nbyKRpLgoLHkT1+X0Mz+wTSC5TjKrdMvC8kB2pqrPVs3spdUbIjGQWEa49QkI47\nTFEizzf9d/mq64XlYPTLTxcsUB6GOzMKwONQHPKJjkDu1g/MYQLcw6smQBIRz7XC\nO4GxzWHW0JmIZIX4TSwRA2JqAOOt3mNa2iT5CovZLZINUctWQqAdJOFeE1UJUTdQ\nNkwrkUul0IdrqKzxUlLwhIhEuyBDbREmyL6bs5TcwQKBgQD2jc+OBkxWaxKfp4Ct\nyJmQijgLZZ5xVNnaAwJo8ZziIzWhT4g81gavdv3MvEf31WrbCbfas6KvdH/8CLke\nRAxoUtE5cZWjgMIPDBxZAL8SXPJMG4A8D3SILi7J33YHcbJbxUQBvA4WH+/yZY9R\nd36EVOhmNrv7bbqr2tEShCimCwKBgQDvPbFhaCcOpZgfGlNY/s8mGspWYBqNcGih\nmTsgZhWc5k086C8/3JUYxYC0r5NJJoPosGNxOnc0QXsh9xCml2kHqA09Nm4pZBgC\nK0wPTujBfm3XGRgS31FXg4yiDJXCqlq+ClKgELPDh/K3nhGikNIoGjV5Fj4lS7DP\nS1KK2+0O4QKBgCIM5bxMnGBW+0R3YqsdiC/RFvpj92TZfhjAz6VksPD+QdrcXAli\n2ZuECHstCZdtrws/JVgb9PzcTwyku8Q1S61guqp/SFZDYwmm94dHNhw4H/Jo3eXt\nkH96OVYB+Y//oM1RyhmfOibOFFpasldi9GMcQthS+NU5i01OtA8ll2OPAoGAMwp4\nc42i948Au3IEYjJKw5hnnrH2OELJL+DfKnRdHBJOXDY1DmzjKlvIr8PdqnebIOOw\n85FDqVRnDsIFPWWENOv3lx2rtwzxylSub32oTs/IY2GpLy2RzxfzwwboVJW/slfF\ndPzbPVYdxGrm3EYFcCTXT7QdIhvZ5v/s5k8xbkECgYAbkSZ4ewhC9DurYimkPHs9\nWjm/5ks6miprzPemRB+wiifTgbEBegwwUjJdBDjve3rSrSSKYL9CGF9Xm7sVWPIg\ngbyAInKQuZ5CFPbVPEPN3nGaSUBH3ipj+2P6IrucnmTTC18MX4KgW9oRUvnYWlur\njj1uWyeEAkh+OHoECTSzqA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "dolgov-service@dolgovapi.iam.gserviceaccount.com",
+  "client_id": "100042428677077131881",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/dolgov-service%40dolgovapi.iam.gserviceaccount.com"
+}

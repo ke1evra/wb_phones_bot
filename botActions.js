@@ -31,7 +31,7 @@ module.exports = {
             console.log(e);
         });
     },
-    resendEmailToChat(b, chat, message = null) {
+    resendEmailToChat(b, chat, message = null, options = {}) {
         const bot = bots.vkostume_informer;
         if(!message)
             message = `${b.from.value[0].name} <${b.from.value[0].address}> (${moment(b.date).format('DD.MM.YYYY HH:mm:ss')})\n${b.subject}\n---------------------\n${b.text}`;
@@ -43,7 +43,18 @@ module.exports = {
         });
     },
     resendEmailToChatAsHTML(b, chat) {
-        const text = htmlToText.fromString(b.html);
-        this.resendEmailToChat(b, chat, text);
+        const text = htmlToText.fromString(b.html, {
+            wordwrap: false
+        });
+        const options = {
+            reply_markup: JSON.stringify({
+                inline_keyboard: [
+                    [{ text: 'Кнопка 1', callback_data: '1' },{ text: 'Кнопка 5', callback_data: '1' }],
+                    [{ text: 'Кнопка 2', callback_data: 'data 2' }],
+                    [{ text: 'Кнопка 3', callback_data: 'text 3' }]
+                ]
+            })
+        };
+        this.resendEmailToChat(b, chat, text, options);
     },
 };
