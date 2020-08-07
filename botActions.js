@@ -28,7 +28,7 @@ module.exports = {
     sendMessageToManagersFromEmail(b) {
         const bot = bots.vkostume_informer;
         const chat = chats.manager;
-        const message = formatEmailMessage(b);
+        const message = this.formatEmailMessage(b);
         return bot.sendMessage(chat, message).then(()=>{
             console.log(`сообщение ${message} успешно отправлено в чат (${chat})`);
         }).catch(e => {
@@ -38,7 +38,7 @@ module.exports = {
     resendEmailToChat(b, chat, message = null, options = {}) {
         const bot = bots.vkostume_informer;
         if(!message)
-            message = formatEmailMessage(b);
+            message = this.formatEmailMessage(b);
         return bot.sendMessage(chat, message, options).then((msg)=>{
             console.log(`сообщение (id: ${msg.message_id})${message} успешно отправлено в чат (${chat})`);
             return msg;
@@ -47,7 +47,7 @@ module.exports = {
         });
     },
     resendEmailToChatAsHTML(b, chat) {
-        const message = formatEmailMessage(b);
+        const message = this.formatEmailMessage(b);
         const options = {
             reply_markup: JSON.stringify({
                 inline_keyboard: [

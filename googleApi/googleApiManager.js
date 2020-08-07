@@ -40,18 +40,18 @@ const API = {
     }
 };
 
-(async function(){
-    try{
-        // await API.addRow();
-        await API.getMessages();
-        console.log('Успех!');
-
-
-    }catch (e) {
-        console.log('Ошибка при выполнении');
-        console.error(e);
-    }
-})();
+// (async function(){
+//     try{
+//         // await API.addRow();
+//         await API.getMessages();
+//         console.log('Успех!');
+//
+//
+//     }catch (e) {
+//         console.log('Ошибка при выполнении');
+//         console.error(e);
+//     }
+// })();
 
 
 module.exports = API;
