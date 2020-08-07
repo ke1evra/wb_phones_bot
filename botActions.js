@@ -52,7 +52,7 @@ module.exports = {
         const options = {
             reply_markup: JSON.stringify({
                 inline_keyboard: [
-                    [{ text: 'Тык', callback_data: '1' },{ text: 'Бум', callback_data: '1' }],
+                    [{ text: ':book: Показать целиком', callback_data: 'open' }],
                 ]
             }),
             disable_web_page_preview: true,
