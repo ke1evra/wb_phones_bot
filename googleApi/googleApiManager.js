@@ -34,7 +34,9 @@ const API = {
         rows.map(row => {
             // console.log(row._rawData);
             const d = row._rawData;
-            messages[d[0]] = d[1];
+            if(!messages[d[0]])
+                messages[d[0]] = {};
+            messages[d[0]][d[1]] = d[2];
         });
         console.log(messages);
     }

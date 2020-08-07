@@ -13,7 +13,9 @@ const shortenMessage = (str) => {
     return shortStr;
 };
 
-module.exports = {
+
+
+const methods = {
     sendMessageFromZebra(b) {
         const bot = bots.wb_phones;
         const chat = chats.wb_phones;
@@ -76,4 +78,29 @@ module.exports = {
                 console.log(e);
             });
     },
+    toggleOpenCloseMessage(bot, chat_id, message_id, action_type, original_msg){
+        let button = '';
+        action_type === 'open' ? button = { text: '📥 Скрыть', callback_data: 'close' } : button = { text: '📤 Показать целиком', callback_data: 'open' };
+        const messages = gApi.getMessages();
+        if(action_type === 'open'){
+            return bot.editMessageText(messages[chat_id][message_id] || original_msg, {
+                chat_id,
+                message_id,
+                reply_markup: JSON.stringify({
+                    inline_keyboard: [
+                        [button],
+                    ]
+                }),
+                disable_web_page_preview: true,
+            })
+        }
+    },
 };
+
+bots.vkostume_informer.on('callback_query', function (msg) {
+    console.log(msg);
+    const bot = bots.vkostume_informer;
+    methods.toggleOpenCloseMessage(bot, msg.from.id, msg.message.message_id, msg.data, msg.text);
+});
+
+module.exports = methods;
