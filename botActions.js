@@ -99,7 +99,7 @@ const methods = {
 };
 
 bots.vkostume_informer.on('callback_query', function (msg) {
-    // console.log(msg);
+    console.log(msg);
     const bot = bots.vkostume_informer;
     methods.toggleOpenCloseMessage(bot, msg.from.id, msg.message.message_id, msg.data)
         .then(()=>{
