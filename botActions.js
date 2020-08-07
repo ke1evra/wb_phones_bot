@@ -9,7 +9,7 @@ const shortenMessage = (str) => {
     if(str.indexOf('\n') !== -1){
         shortStr = str.split('\n', 10).join('\n');
     }
-    shortStr = shortStr.split('',800).join('') + '...';
+    shortStr = shortStr.split('',600).join('') + '...';
     return shortStr;
 };
 
@@ -62,7 +62,7 @@ module.exports = {
         const options = {
             reply_markup: JSON.stringify({
                 inline_keyboard: [
-                    [{ text: '📖 Показать целиком', callback_data: 'open' }],
+                    [{ text: '📤 Показать целиком', callback_data: 'open' }],
                 ]
             }),
             disable_web_page_preview: true,
