@@ -82,7 +82,7 @@ const methods = {
         const button = action_type === 'open' ? { text: '📥 Скрыть', callback_data: 'close' } : { text: '📤 Показать целиком', callback_data: 'open' };
         const messages = await gApi.getMessages();
         const message = action_type === 'open' ? messages[chat_id][message_id] : shortenMessage(messages[chat_id][message_id]);
-        console.log(message);
+        // console.log(message);
         return bot.editMessageText(message, {
             chat_id,
             message_id,
@@ -98,6 +98,7 @@ const methods = {
 
 bots.vkostume_informer.on('callback_query', function (msg) {
     const bot = bots.vkostume_informer;
+    console.log(msg);
     methods.toggleOpenCloseMessage(bot, msg.from.id, msg.message.message_id, msg.data)
         .then(()=>{
             console.log(`успех!`);
