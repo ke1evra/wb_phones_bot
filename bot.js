@@ -12,4 +12,8 @@ const botList = {
     vkostume_informer: new TelegramBot(tokens.vkostume_informer, {polling: true})
 };
 
+botList.vkostume_informer.on('callback_query', function (msg) {
+    console.log(msg);
+});
+
 module.exports = botList;
