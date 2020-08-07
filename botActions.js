@@ -79,23 +79,19 @@ const methods = {
             });
     },
     async toggleOpenCloseMessage(bot, chat_id, message_id, action_type){
-        let button = '';
-        let message = '';
-        action_type === 'open' ? button = { text: '📥 Скрыть', callback_data: 'close' } : button = { text: '📤 Показать целиком', callback_data: 'open' };
+        const button = action_type === 'open' ? { text: '📥 Скрыть', callback_data: 'close' } : { text: '📤 Показать целиком', callback_data: 'open' };
         const messages = await gApi.getMessages();
-        action_type === 'open' ? message = messages[chat_id][message_id] : message = shortenMessage(message);
-        if(action_type === 'open'){
-            return bot.editMessageText(message, {
-                chat_id,
-                message_id,
-                reply_markup: JSON.stringify({
-                    inline_keyboard: [
-                        [button],
-                    ]
-                }),
-                disable_web_page_preview: true,
-            })
-        }
+        const message = action_type === 'open' ? messages[chat_id][message_id] : shortenMessage(messages[chat_id][message_id]);
+        return bot.editMessageText(message, {
+            chat_id,
+            message_id,
+            reply_markup: JSON.stringify({
+                inline_keyboard: [
+                    [button],
+                ]
+            }),
+            disable_web_page_preview: true,
+        });
     },
 };
 
