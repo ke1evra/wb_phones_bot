@@ -31,9 +31,9 @@ const methods = {
             wordwrap: false,
             ignoreImage: true,
         });
-        if (typeof text === 'string' && text.indexOf('info@vkostume.ru') !== -1){
-            text = text.split('info@vkostume.ru')[0];
-        }
+        // if (typeof text === 'string' && text.indexOf('info@vkostume.ru') !== -1){
+        //     text = text.split('info@vkostume.ru')[0];
+        // }
         text = text.replace(/[\r\n]{3,}/g, "\n\n");
         return `${b.from.value[0].name} <${b.from.value[0].address}> (${moment(b.date).format('DD.MM.YYYY HH:mm:ss')})\n${b.subject}\n---------------------\n${text}`;
     },
@@ -96,7 +96,6 @@ const methods = {
 };
 
 bots.vkostume_informer.on('callback_query', function (msg) {
-    // console.log(msg);
     const bot = bots.vkostume_informer;
     methods.toggleOpenCloseMessage(bot, msg.from.id, msg.message.message_id, msg.data)
         .then(()=>{

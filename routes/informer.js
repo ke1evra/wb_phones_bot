@@ -16,23 +16,12 @@ router.all('/', function (req, res) {
     }
 });
 
-router.all('/test', function (req, res) {
-    try{
-        console.log(`Запрос на /informer/test (${moment().format('DD.MM.YYYY HH:mm:ss')})`);
-        actions.resendEmailToChatAsHTML(req.body, chats.me)
-            .then(()=>{
-                res.status(200).end()
-            });
-    }catch(e){
-        console.log(e);
-    }
-});
 
 router.all('/to_chat/:chat_id', function (req, res) {
     try{
         const chatId = req.params.chat_id;
         console.log(`Запрос на /informer/to_chat/${chatId} (${moment().format('DD.MM.YYYY HH:mm:ss')})`);
-        actions.resendEmailToChat(req.body, chatId)
+        actions.resendEmailToChatAsHTML(req.body, chatId)
             .then(()=>{
                 res.status(200).end()
             });
