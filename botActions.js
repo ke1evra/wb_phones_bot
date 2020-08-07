@@ -2,6 +2,7 @@ const bots = require('./bot.js');
 const chats = require('./chatList.js');
 const moment = require('moment');
 const htmlToText = require('html-to-text');
+const gApi = require('./googleApi/googleApiManager.js');
 
 
 module.exports = {
@@ -15,16 +16,19 @@ module.exports = {
           console.log(e);
         });
     },
+    formatEmailMessage(b){
+        let text = htmlToText.fromString(b.html, {
+            wordwrap: false
+        });
+        if (typeof text === 'string' && text.indexOf('info@vkostume.ru') !== -1){
+            text = text.split('info@vkostume.ru')[0];
+        }
+        return `${b.from.value[0].name} <${b.from.value[0].address}> (${moment(b.date).format('DD.MM.YYYY HH:mm:ss')})\n${b.subject}\n---------------------\n${text}`;
+    },
     sendMessageToManagersFromEmail(b) {
         const bot = bots.vkostume_informer;
         const chat = chats.manager;
-        let text = b.text;
-        if (typeof text === 'string' && text.indexOf('info@vkostume.ru') !== -1){
-            text = b.text.split('<info@vkostume.ru')[0];
-        }
-        // console.log(b);
-        const message = `${b.from.value[0].name} <${b.from.value[0].address}> (${moment(b.date).format('DD.MM.YYYY HH:mm:ss')})\n${b.subject}\n---------------------\n${text}`;
-        // console.log(message);
+        const message = formatEmailMessage(b);
         return bot.sendMessage(chat, message).then(()=>{
             console.log(`сообщение ${message} успешно отправлено в чат (${chat})`);
         }).catch(e => {
@@ -34,17 +38,16 @@ module.exports = {
     resendEmailToChat(b, chat, message = null, options = {}) {
         const bot = bots.vkostume_informer;
         if(!message)
-            message = `${b.from.value[0].name} <${b.from.value[0].address}> (${moment(b.date).format('DD.MM.YYYY HH:mm:ss')})\n${b.subject}\n---------------------\n${b.text}`;
-        return bot.sendMessage(chat, message, options).then((sent_message)=>{
-            console.log(`сообщение (id: ${sent_message.message_id})${message} успешно отправлено в чат (${chat})`);
+            message = formatEmailMessage(b);
+        return bot.sendMessage(chat, message, options).then((msg)=>{
+            console.log(`сообщение (id: ${msg.message_id})${message} успешно отправлено в чат (${chat})`);
+            return msg;
         }).catch(e => {
             console.log(e);
         });
     },
     resendEmailToChatAsHTML(b, chat) {
-        const text = htmlToText.fromString(b.html, {
-            wordwrap: false
-        });
+        const message = formatEmailMessage(b);
         const options = {
             reply_markup: JSON.stringify({
                 inline_keyboard: [
@@ -54,6 +57,13 @@ module.exports = {
                 ]
             })
         };
-        this.resendEmailToChat(b, chat, text, options);
+        this.resendEmailToChat(b, chat, message, options)
+            .then(msg => {
+                gApi.addRow(msg.chat.id, msg.message_id, msg.text)
+                    .then(() => console.log('сообщение записано в таблицу'))
+            })
+            .catch(e => {
+                console.log(e);
+            });
     },
 };

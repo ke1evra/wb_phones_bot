@@ -18,11 +18,11 @@ const API = {
     async login(){
         return await doc.useServiceAccountAuth(require('./dolgovapi-955301a7af9e.json'));
     },
-    async addRow(){
+    async addRow(chat_id, message_id, message){
         await this.login();
         await doc.loadInfo();
         const sheet = doc.sheetsByIndex[0];
-        await sheet.addRow({ id: 'Larry Page', message: 'larry@google.com' });
+        await sheet.addRow({ chat_id, message_id, message });
     },
     async getMessages(){
         await this.login();
