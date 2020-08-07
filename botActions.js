@@ -1,7 +1,7 @@
 const bots = require('./bot.js');
 const chats = require('./chatList.js');
 const moment = require('moment');
-
+const htmlToText = require('html-to-text');
 
 
 module.exports = {
@@ -43,7 +43,7 @@ module.exports = {
         });
     },
     resendEmailToChatAsHTML(b, chat) {
-        console.log(b);
-        this.resendEmailToChat(b, chat, b.text);
+        const text = htmlToText.fromString(b.html);
+        this.resendEmailToChat(b, chat, text);
     },
 };
