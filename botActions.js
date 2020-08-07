@@ -78,10 +78,13 @@ const methods = {
                 console.log(e);
             });
     },
-    toggleOpenCloseMessage(bot, chat_id, message_id, action_type, original_msg){
+    async toggleOpenCloseMessage(bot, chat_id, message_id, action_type, original_msg){
         let button = '';
         action_type === 'open' ? button = { text: '📥 Скрыть', callback_data: 'close' } : button = { text: '📤 Показать целиком', callback_data: 'open' };
-        const messages = gApi.getMessages();
+        const messages = await gApi.getMessages()
+            .then(()=> {
+
+            });
         if(action_type === 'open'){
             return bot.editMessageText(messages[chat_id][message_id] || original_msg, {
                 chat_id,
@@ -98,9 +101,14 @@ const methods = {
 };
 
 bots.vkostume_informer.on('callback_query', function (msg) {
-    console.log(msg);
+    // console.log(msg);
     const bot = bots.vkostume_informer;
-    methods.toggleOpenCloseMessage(bot, msg.from.id, msg.message.message_id, msg.data, msg.text);
+    methods.toggleOpenCloseMessage(bot, msg.from.id, msg.message.message_id, msg.data, msg.text)
+        .then(()=>{
+            console.log(`успех!`);
+        }).catch(e => {
+        console.log(e);
+    });
 });
 
 module.exports = methods;
