@@ -38,6 +38,7 @@ const API = {
                 messages[d[0]] = {};
             messages[d[0]][d[1]] = d[2];
         });
+        return messages;
         // console.log(messages);
     }
 };

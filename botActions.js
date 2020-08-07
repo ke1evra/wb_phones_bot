@@ -81,10 +81,7 @@ const methods = {
     async toggleOpenCloseMessage(bot, chat_id, message_id, action_type, original_msg){
         let button = '';
         action_type === 'open' ? button = { text: '📥 Скрыть', callback_data: 'close' } : button = { text: '📤 Показать целиком', callback_data: 'open' };
-        const messages = await gApi.getMessages()
-            .then(()=> {
-
-            });
+        const messages = await gApi.getMessages();
         if(action_type === 'open'){
             return bot.editMessageText(messages[chat_id][message_id] || original_msg, {
                 chat_id,
