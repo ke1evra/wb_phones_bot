@@ -7,7 +7,7 @@ const gApi = require('./googleApi/googleApiManager.js');
 const shortenMessage = (str) => {
     let shortStr = '';
     if(str.indexOf('\n') !== -1){
-        shortStr = str.split('\n', 5).join('\n');
+        shortStr = str.split('\n', 10).join('\n');
     }
     shortStr = shortStr.split('',200).join('') + '...';
     return shortStr;
