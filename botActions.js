@@ -9,7 +9,7 @@ const shortenMessage = (str) => {
     // if(str.indexOf('\n') !== -1){
     //     shortStr = str.split('\n', 10).join('\n');
     // }
-    shortStr = shortStr.split('',400).join('') + '...';
+    shortStr = str.split('',400).join('') + '...';
     return shortStr;
 };
 
