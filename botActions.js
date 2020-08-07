@@ -57,7 +57,7 @@ module.exports = {
             }),
             disable_web_page_preview: true,
         };
-        this.resendEmailToChat(b, chat, message, options)
+        return this.resendEmailToChat(b, chat, message, options)
             .then(msg => {
                 gApi.addRow(msg.chat.id, msg.message_id, msg.text)
                     .then(() => console.log('сообщение записано в таблицу'))
