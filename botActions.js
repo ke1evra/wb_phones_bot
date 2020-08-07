@@ -4,6 +4,14 @@ const moment = require('moment');
 const htmlToText = require('html-to-text');
 const gApi = require('./googleApi/googleApiManager.js');
 
+const shortenMessage = (str) => {
+    let shortStr = '';
+    if(str.indexOf('\n') !== -1){
+        shortStr = str.split('\n', 5).join('\n');
+    }
+    shortStr = shortStr.split('',200).join('') + '...';
+    return shortStr;
+};
 
 module.exports = {
     sendMessageFromZebra(b) {
@@ -50,6 +58,7 @@ module.exports = {
     },
     resendEmailToChatAsHTML(b, chat) {
         const message = this.formatEmailMessage(b);
+        const shortMessage = shortenMessage(message);
         const options = {
             reply_markup: JSON.stringify({
                 inline_keyboard: [
@@ -58,9 +67,9 @@ module.exports = {
             }),
             disable_web_page_preview: true,
         };
-        return this.resendEmailToChat(b, chat, message, options)
+        return this.resendEmailToChat(b, chat, shortMessage, options)
             .then(msg => {
-                gApi.addRow(msg.chat.id, msg.message_id, msg.text)
+                gApi.addRow(msg.chat.id, msg.message_id, message)
                     .then(() => console.log('сообщение записано в таблицу'))
             })
             .catch(e => {
