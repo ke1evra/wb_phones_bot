@@ -18,7 +18,8 @@ module.exports = {
     },
     formatEmailMessage(b){
         let text = htmlToText.fromString(b.html, {
-            wordwrap: false
+            wordwrap: false,
+            ignoreImage: true,
         });
         if (typeof text === 'string' && text.indexOf('info@vkostume.ru') !== -1){
             text = text.split('info@vkostume.ru')[0];
@@ -51,11 +52,10 @@ module.exports = {
         const options = {
             reply_markup: JSON.stringify({
                 inline_keyboard: [
-                    [{ text: 'Кнопка 1', callback_data: '1' },{ text: 'Кнопка 5', callback_data: '1' }],
-                    [{ text: 'Кнопка 2', callback_data: 'data 2' }],
-                    [{ text: 'Кнопка 3', callback_data: 'text 3' }]
+                    [{ text: 'Тык', callback_data: '1' },{ text: 'Бум', callback_data: '1' }],
                 ]
-            })
+            }),
+            disable_web_page_preview: true,
         };
         this.resendEmailToChat(b, chat, message, options)
             .then(msg => {
