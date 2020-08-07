@@ -99,7 +99,7 @@ const methods = {
 bots.vkostume_informer.on('callback_query', function (msg) {
     const bot = bots.vkostume_informer;
     console.log(msg);
-    methods.toggleOpenCloseMessage(bot, msg.from.id, msg.message.message_id, msg.data)
+    methods.toggleOpenCloseMessage(bot, msg.message.chat.id, msg.message.message_id, msg.data)
         .then(()=>{
             console.log(`успех!`);
         }).catch(e => {
