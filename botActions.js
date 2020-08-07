@@ -82,6 +82,7 @@ const methods = {
         const button = action_type === 'open' ? { text: '📥 Скрыть', callback_data: 'close' } : { text: '📤 Показать целиком', callback_data: 'open' };
         const messages = await gApi.getMessages();
         const message = action_type === 'open' ? messages[chat_id][message_id] : shortenMessage(messages[chat_id][message_id]);
+        console.log(message);
         return bot.editMessageText(message, {
             chat_id,
             message_id,
