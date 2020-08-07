@@ -24,7 +24,7 @@ module.exports = {
         if (typeof text === 'string' && text.indexOf('info@vkostume.ru') !== -1){
             text = text.split('info@vkostume.ru')[0];
         }
-        text = text.replace(/[\r\n]{2,}/g, "\n");
+        text = text.replace(/[\r\n]{3,}/g, "\n\n");
         return `${b.from.value[0].name} <${b.from.value[0].address}> (${moment(b.date).format('DD.MM.YYYY HH:mm:ss')})\n${b.subject}\n---------------------\n${text}`;
     },
     sendMessageToManagersFromEmail(b) {
