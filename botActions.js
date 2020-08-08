@@ -6,9 +6,6 @@ const gApi = require('./googleApi/googleApiManager.js');
 
 const shortenMessage = (str, len = 400) => {
     let shortStr = '';
-    // if(str.indexOf('\n') !== -1){
-    //     shortStr = str.split('\n', 10).join('\n');
-    // }
     shortStr = str.split('', len).join('') + '...';
     return shortStr;
 };
@@ -31,9 +28,6 @@ const methods = {
             wordwrap: false,
             ignoreImage: true,
         });
-        // if (typeof text === 'string' && text.indexOf('info@vkostume.ru') !== -1){
-        //     text = text.split('info@vkostume.ru')[0];
-        // }
         text = text.replace(/[\r\n]{3,}/g, "\n\n");
         return `${b.from.value[0].name} <${b.from.value[0].address}> (${moment(b.date).format('DD.MM.YYYY HH:mm:ss')})\n${b.subject}\n---------------------\n${text}`;
     },
@@ -82,7 +76,6 @@ const methods = {
         const button = action_type === 'open' ? { text: '📥 Скрыть', callback_data: 'close' } : { text: '📤 Показать целиком', callback_data: 'open' };
         const messages = await gApi.getMessages();
         const message = action_type === 'open' ? shortenMessage(messages[chat_id][message_id], 4000) : shortenMessage(messages[chat_id][message_id]);
-        // console.log(message);
         return bot.editMessageText(message, {
             chat_id,
             message_id,
@@ -98,10 +91,9 @@ const methods = {
 
 bots.vkostume_informer.on('callback_query', function (msg) {
     const bot = bots.vkostume_informer;
-    console.log(msg);
     methods.toggleOpenCloseMessage(bot, msg.message.chat.id, msg.message.message_id, msg.data)
         .then(()=>{
-            console.log(`успех!`);
+            console.log(`Сообщение успешно отредактировано (${msg.data})`);
         }).catch(e => {
         console.log(e);
     });
