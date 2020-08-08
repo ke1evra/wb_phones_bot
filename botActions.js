@@ -4,12 +4,12 @@ const moment = require('moment');
 const htmlToText = require('html-to-text');
 const gApi = require('./googleApi/googleApiManager.js');
 
-const shortenMessage = (str) => {
+const shortenMessage = (str, len = 400) => {
     let shortStr = '';
     // if(str.indexOf('\n') !== -1){
     //     shortStr = str.split('\n', 10).join('\n');
     // }
-    shortStr = str.split('',400).join('') + '...';
+    shortStr = str.split('', len).join('') + '...';
     return shortStr;
 };
 
@@ -81,7 +81,7 @@ const methods = {
     async toggleOpenCloseMessage(bot, chat_id, message_id, action_type){
         const button = action_type === 'open' ? { text: '📥 Скрыть', callback_data: 'close' } : { text: '📤 Показать целиком', callback_data: 'open' };
         const messages = await gApi.getMessages();
-        const message = action_type === 'open' ? messages[chat_id][message_id] : shortenMessage(messages[chat_id][message_id]);
+        const message = action_type === 'open' ? shortenMessage(messages[chat_id][message_id], 4096) : shortenMessage(messages[chat_id][message_id]);
         // console.log(message);
         return bot.editMessageText(message, {
             chat_id,

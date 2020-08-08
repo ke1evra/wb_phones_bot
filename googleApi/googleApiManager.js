@@ -1,18 +1,5 @@
 const { GoogleSpreadsheet } = require('google-spreadsheet');
-
-// spreadsheet key is the long id in the sheets URL
 const doc = new GoogleSpreadsheet('1LP653vdPicNE_UMwlYyFqY4crKZJ8qcD56bXUu8ss6U');
-
-
-// doc.useApiKey('AIzaSyBkvrBiFJ0LzZzbkVqmPvUzOqiVZmPsUws');
-
-// await doc.loadInfo(); // loads document properties and worksheets
-// console.log(doc.title);
-// await doc.updateProperties({ title: 'renamed doc' });
-//
-// const sheet = doc.sheetsByIndex[0]; // or use doc.sheetsById[id]
-// console.log(sheet.title);
-// console.log(sheet.rowCount);
 
 const API = {
     async login(){
@@ -30,31 +17,14 @@ const API = {
         const sheet = doc.sheetsByIndex[0];
         const rows = await sheet.getRows(sheet.rowCount > 50 ? {limit: 50, offset: sheet.rowCount - 50} : {});
         const messages = {};
-
         rows.map(row => {
-            // console.log(row._rawData);
             const d = row._rawData;
             if(!messages[d[0]])
                 messages[d[0]] = {};
             messages[d[0]][d[1]] = d[2];
         });
         return messages;
-        // console.log(messages);
     }
 };
-
-// (async function(){
-//     try{
-//         // await API.addRow();
-//         await API.getMessages();
-//         console.log('Успех!');
-//
-//
-//     }catch (e) {
-//         console.log('Ошибка при выполнении');
-//         console.error(e);
-//     }
-// })();
-
 
 module.exports = API;
