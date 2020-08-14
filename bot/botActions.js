@@ -3,6 +3,7 @@ const chats = require('./chatList.js');
 const moment = require('moment');
 const htmlToText = require('html-to-text');
 const gApi = require('../googleApi/googleApiManager.js');
+const menu = require('../analytics/menu.js');
 
 const shortenMessage = (str, len = 400) => {
     let shortStr = '';
@@ -95,7 +96,7 @@ bot.on('callback_query', function (msg) {
     });
 });
 
-bot.onText(/\/echo (.+)/, (msg, match) => {
+bot.onText(/\/hello/, (msg, match) => {
     // 'msg' is the received Message from Telegram
     // 'match' is the result of executing the regexp above on the text content
     // of the message
@@ -103,7 +104,7 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
     const resp = match[1]; // the captured "whatever"
 
     // send back the matched "whatever" to the chat
-    bot.sendMessage(chats.me, resp)
+    bot.sendMessage(msg.message.chat.id, menu.hello)
         .then(()=> console.log('ok'));
 });
 
