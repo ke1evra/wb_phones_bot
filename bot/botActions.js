@@ -98,7 +98,7 @@ bot.on('callback_query', function (msg) {
 
 bot.onText(/\/start/, (msg) => {
 
-    bot.sendMessage(msg.chat.id, "Welcome");
+    bot.sendMessage(msg.chat.id, menu.hello);
 
 });
 
