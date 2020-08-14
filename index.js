@@ -1,5 +1,5 @@
 const express = require('express');
-const bot = require('./bot.js');
+const bot = require('./bot/bot.js');
 const app = express();
 const port = 9876;
 const chatid = '-449604345';

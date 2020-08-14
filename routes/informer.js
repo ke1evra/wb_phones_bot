@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const actions = require('../botActions');
+const actions = require('../bot/botActions');
 const moment = require('moment');
-const chats = require('../chatList.js');
+const chats = require('../bot/chatList.js');
 
 router.all('/', function (req, res) {
     try{

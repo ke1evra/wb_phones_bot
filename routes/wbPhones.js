@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const actions = require('../botActions');
+const actions = require('../bot/botActions');
 const moment = require('moment');
 
 router.post('/', function (req, res) {

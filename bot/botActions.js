@@ -2,7 +2,7 @@ const bots = require('./bot.js');
 const chats = require('./chatList.js');
 const moment = require('moment');
 const htmlToText = require('html-to-text');
-const gApi = require('./googleApi/googleApiManager.js');
+const gApi = require('../googleApi/googleApiManager.js');
 
 const shortenMessage = (str, len = 400) => {
     let shortStr = '';
