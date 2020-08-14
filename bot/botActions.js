@@ -96,16 +96,10 @@ bot.on('callback_query', function (msg) {
     });
 });
 
-bot.onText(/\/hello/, (msg, match) => {
-    // 'msg' is the received Message from Telegram
-    // 'match' is the result of executing the regexp above on the text content
-    // of the message
+bot.onText(/\/start/, (msg) => {
 
-    const resp = match[1]; // the captured "whatever"
+    bot.sendMessage(msg.chat.id, "Welcome");
 
-    // send back the matched "whatever" to the chat
-    bot.sendMessage(msg.message.chat.id, menu.hello)
-        .then(()=> console.log('ok'));
 });
 
 module.exports = methods;
