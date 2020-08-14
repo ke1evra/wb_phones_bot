@@ -7,11 +7,9 @@ const tokens = require('./tokenList.js');
 // Create a bot that uses 'polling' to fetch new updates
 // const bot = new TelegramBot(tokens.wb_phones, {polling: true});
 
-const botList = {
-    wb_phones: new TelegramBot(tokens.wb_phones, {polling: true}),
-    vkostume_informer: new TelegramBot(tokens.vkostume_informer, {polling: true})
-};
+const bot = new TelegramBot(tokens.vkostume_informer, {polling: true})
 
 
 
-module.exports = botList;
+
+module.exports = bot;

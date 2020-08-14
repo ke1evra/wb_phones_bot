@@ -1,4 +1,4 @@
-const bots = require('./bot.js');
+const bot = require('./bot.js');
 const chats = require('./chatList.js');
 const moment = require('moment');
 const htmlToText = require('html-to-text');
@@ -14,7 +14,6 @@ const shortenMessage = (str, len = 400) => {
 
 const methods = {
     sendMessageFromZebra(b) {
-        const bot = bots.wb_phones;
         const chat = chats.wb_phones;
         const message = `sms от ${b.src} на ${b.dst} (${moment().format('DD.MM.YYYY HH:mm:ss')})\n---------------------\n${b.body}`;
         return bot.sendMessage(chat, message).then(() => {
@@ -32,7 +31,6 @@ const methods = {
         return `${b.from.value[0].name} <${b.from.value[0].address}> (${moment(b.date).format('DD.MM.YYYY HH:mm:ss')})\n${b.subject}\n---------------------\n${text}`;
     },
     sendMessageToManagersFromEmail(b) {
-        const bot = bots.vkostume_informer;
         const chat = chats.manager;
         const message = this.formatEmailMessage(b);
         return bot.sendMessage(chat, message).then(()=>{
@@ -42,7 +40,6 @@ const methods = {
         });
     },
     resendEmailToChat(b, chat, message = null, options = {}) {
-        const bot = bots.vkostume_informer;
         if(!message)
             message = this.formatEmailMessage(b);
         return bot.sendMessage(chat, message, options).then((msg)=>{
@@ -89,8 +86,7 @@ const methods = {
     },
 };
 
-bots.vkostume_informer.on('callback_query', function (msg) {
-    const bot = bots.vkostume_informer;
+bot.on('callback_query', function (msg) {
     methods.toggleOpenCloseMessage(bot, msg.message.chat.id, msg.message.message_id, msg.data)
         .then(()=>{
             console.log(`Сообщение успешно отредактировано (${msg.data})`);
@@ -99,7 +95,7 @@ bots.vkostume_informer.on('callback_query', function (msg) {
     });
 });
 
-bots.vkostume_informer.onText(/\/echo (.+)/, (msg, match) => {
+bot.onText(/\/echo (.+)/, (msg, match) => {
     // 'msg' is the received Message from Telegram
     // 'match' is the result of executing the regexp above on the text content
     // of the message
@@ -107,7 +103,7 @@ bots.vkostume_informer.onText(/\/echo (.+)/, (msg, match) => {
     const resp = match[1]; // the captured "whatever"
 
     // send back the matched "whatever" to the chat
-    bots.vkostume_informer.sendMessage(chats.me, resp)
+    bot.sendMessage(chats.me, resp)
         .then(()=> console.log('ok'));
 });
 

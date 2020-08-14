@@ -1,4 +1,4 @@
-const bot = require('../bot/bot').vkostume_informer;
+const bot = require('../bot/bot');
 const chats = require('../bot/chatList');
 
     bot.onText(/\/echo (.+)/, (msg, match) => {
