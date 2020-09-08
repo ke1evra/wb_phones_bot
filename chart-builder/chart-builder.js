@@ -1,9 +1,11 @@
+const API = require('../analytics/data-manager.js');
+
 function randomIntFromInterval(min, max) { // min and max included
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
 function randData (){
-  return randomIntFromInterval(0, 999999999)
+  return randomIntFromInterval(0, 10000)
 }
 
 function randDataSet(length) {
@@ -30,6 +32,10 @@ class ChartBuilder {
             label:{
                 maxLength: 6,
                 padding: '  '
+            },
+            argument:{
+                maxLength: 0,
+                padding: ' ',
             }
 
         }
@@ -73,8 +79,30 @@ class ChartBuilder {
         return `${this.options.label.padding}${label}`;
     }
 
-    renderBarWithLabel(value, label = value) {
-        return `${this.renderBar(value)}${this.renderLabel(label)}`;
+    renderArgument(argVal){
+        let argument = `${this.options.argument.padding}${argVal}`;
+        for(let i = 0; i < this.options.argument.maxLength; i++){
+            argument+= ' ';
+        }
+        // argument+= this.options.argument.padding;
+        return argument;
+    }
+
+    calcMaxArgumentLength(argArr){
+        argArr.map(arg => {
+            if(arg.length > this.options.argument.maxLength)
+                this.options.argument.maxLength = arg.length;
+        })
+    }
+
+    renderBarWithLabel(value, label = value, argument = '') {
+        const bar = `${argument}${this.renderBar(value)}${this.renderLabel(label)}`;
+
+    }
+
+    renderTitle(title){
+        const fullLength = this.options.maxSymbolCount + this.options.label.maxLength + this.options.argument.maxLength;
+
     }
 
     renderChart(dataSet, options = null) {
@@ -91,9 +119,20 @@ class ChartBuilder {
             }
             return barVal;
         };
-        dataSet.map((val)=>{
-            const chartVal = calcBarVal(val, this.calcMaxVal(dataSet));
-            chart += this.renderBarWithLabel(chartVal, val) + '\n';
+        const values = dataSet.reduce((accum, item)=>{
+            accum.push(item.val);
+            return accum;
+        }, []);
+        const args = dataSet.reduce((accum, item)=>{
+            accum.push(item.arg);
+            return accum;
+        }, []);
+        this.calcMaxArgumentLength(args);
+        dataSet.map((item)=>{
+            const val = item.val;
+            const arg = this.renderArgument(item.arg);
+            const chartVal = calcBarVal(val, this.calcMaxVal(values));
+            chart += this.renderBarWithLabel(chartVal, val, arg) + '\n';
         });
         return chart;
     }
@@ -116,4 +155,12 @@ class ChartBuilder {
 const Chart = new ChartBuilder();
 // const bar = Chart.renderBarWithLabel(8, 1234);
 // console.log(bar);
-console.log(Chart.renderChart(randDataSet(15)));
+(
+    async ()=>{
+        const leadsCount = await API.getOrdersDataByDay('01.08.2020','31.08.2020');
+        console.log(leadsCount);
+        const chart = Chart.renderChart(leadsCount);
+        console.log(chart);
+    }
+)();
+

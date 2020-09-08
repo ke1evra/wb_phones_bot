@@ -1,3 +1,5 @@
+const moment = require('moment');
+
 const messages ={
     hello:
     `
@@ -8,7 +10,16 @@ const messages ={
     /calls - по звонкам 
     /managers - по менеджерам
     /missed - по пропущенным звонкам
-    `
+    `,
+    orders: `orders message`
 };
+
+class Menu{
+    constructor() {
+        this.year = moment().format('YYYY');
+        this.month = moment().format('MM')
+    }
+
+}
 
 module.exports = messages;

@@ -96,10 +96,20 @@ bot.on('callback_query', function (msg) {
     });
 });
 
-bot.onText(/\/start/, (msg) => {
+bot.onText(/\/start/, async (msg) => {
+    try{
+        await bot.sendMessage(msg.chat.id, menu.hello);
+    }catch (e) {
+        console.log(e)
+    }
+});
 
-    bot.sendMessage(msg.chat.id, menu.hello);
-
+bot.onText(/\/orders/, async (msg) => {
+    try{
+        await bot.sendMessage(msg.chat.id, menu.orders);
+    }catch (e) {
+        console.log(e)
+    }
 });
 
 module.exports = methods;
