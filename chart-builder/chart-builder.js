@@ -30,8 +30,8 @@ class ChartBuilder {
             symbol: '|',
             emptySymbol: '.',
             label:{
-                maxLength: 6,
-                padding: '  '
+                maxLength: 8,
+                padding: ' '
             },
             argument:{
                 maxLength: 0,
@@ -45,7 +45,15 @@ class ChartBuilder {
         this.options[optionName] = optionValue;
     }
 
-    renderBar(value) {
+    renderPadding(length){
+        let padding = '';
+        for (let i = 0; i < length; i++){
+            padding+= ' ';
+        }
+        return padding;
+    }
+
+    renderBar(value, options = null) {
         try{
             let bar = '';
             for(let i = 0; i < this.options.maxSymbolCount; i++){
@@ -54,13 +62,19 @@ class ChartBuilder {
                 else
                     bar+= this.options.emptySymbol;
             }
+            console.log(options);
+            if(options){
+                if(options.reversed){
+                    bar = bar.split('').reverse().join('');
+                }
+            }
             return bar;
         }catch (e) {
             console.log('Ошибка при построении столбца', e);
         }
     }
 
-    renderLabel(labelValue = '') {
+    renderLabel(labelValue = '', options = null) {
         let label = labelValue;
 
         if(typeof labelValue === 'number'){
@@ -74,9 +88,13 @@ class ChartBuilder {
             }
         }
         const labelLength = label.toString().length;
-        if(label.toString().length > this.options.label.maxLength)
-            this.options.label.maxLength = labelLength;
-        return `${this.options.label.padding}${label}`;
+        const paddingRight = this.renderPadding(this.options.label.maxLength - labelLength);
+        if(options){
+            if(options.reversed){
+                return `${paddingRight}${label}${this.options.label.padding}`;
+            }
+        }
+        return `${this.options.label.padding}${label}${paddingRight}`;
     }
 
     renderArgument(argVal){
@@ -95,9 +113,14 @@ class ChartBuilder {
         })
     }
 
-    renderBarWithLabel(value, label = value, argument = '') {
-        const bar = `${argument}${this.renderBar(value)}${this.renderLabel(label)}`;
-
+    renderBarWithLabel(value, label = value, argument = '', options = null) {
+        let bar = `${argument}${this.renderBar(value)}${this.renderLabel(label)}`;
+        if(options){
+            if(options.reversed){
+                bar = `${this.renderLabel(label, options)}${this.renderBar(value, options)}${argument}`;
+            }
+        }
+        return bar;
     }
 
     renderTitle(title){
@@ -106,7 +129,9 @@ class ChartBuilder {
     }
 
     renderChart(dataSet, options = null) {
+
         let chart = '';
+
         const calcBarVal = (val, maxVal) => {
             const tick = maxVal/this.options.maxSymbolCount;
             let barVal = 0;
@@ -128,11 +153,16 @@ class ChartBuilder {
             return accum;
         }, []);
         this.calcMaxArgumentLength(args);
+        if(options){
+            if(options.title){
+
+            }
+        }
         dataSet.map((item)=>{
             const val = item.val;
             const arg = this.renderArgument(item.arg);
             const chartVal = calcBarVal(val, this.calcMaxVal(values));
-            chart += this.renderBarWithLabel(chartVal, val, arg) + '\n';
+            chart += this.renderBarWithLabel(chartVal, val, arg, options) + '\n';
         });
         return chart;
     }
@@ -157,9 +187,9 @@ const Chart = new ChartBuilder();
 // console.log(bar);
 (
     async ()=>{
-        const leadsCount = await API.getOrdersDataByDay('01.08.2020','31.08.2020');
+        const leadsCount = await API.getOrdersDataByDay('01.06.2020','31.06.2020', 'sum');
         console.log(leadsCount);
-        const chart = Chart.renderChart(leadsCount);
+        const chart = Chart.renderChart(leadsCount, {reversed: true});
         console.log(chart);
     }
 )();
