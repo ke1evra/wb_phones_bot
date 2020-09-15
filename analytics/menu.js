@@ -20,7 +20,7 @@ class Menu{
         const menu = [];
         // console.log(data);
         data.data.map(item => {
-            message += `${item.client}${item.order_number ? ' | ' + item.order_number : ''}${item.client_name ? ' | ' + item.client_name : ''}`;
+            message += `${item.client}${item.order_number ? ' | ' + item.order_number : ''}${item.client_name ? ' | ' + item.client_name : ''} \n`;
             menu.push(new Button(item.client_name, 'some cb'))
         });
         let options = {
