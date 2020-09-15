@@ -114,7 +114,7 @@ bot.onText(/\/orders/, async (msg) => {
 
 bot.onText(/\/missed/, async (msg) => {
     try{
-        await message = menu.missed();
+        const message = await menu.missed();
         return bot.sendMessage(msg.chat.id, message).then((msg)=>{
             console.log(`сообщение (id: ${msg.message_id})${message} успешно отправлено в чат (${chat})`);
             return msg;
