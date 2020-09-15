@@ -58,6 +58,14 @@ class DataManager {
         });
         return orders.reverse();
     }
+    async getMissedCalls(from = moment().subtract(1, 'day').startOf('day').format('YYYY-MM-DD'), to = moment().endOf('day').format('YYYY-MM-DD')){
+        const response = await fetch(`185.176.25.157:3000/missed/missed?date_from=${from}&date_to=${to}`);
+        let data = null;
+        if(response.ok){
+            data = response.json();
+        }
+        return data;
+    }
 }
 
 // (

@@ -112,4 +112,18 @@ bot.onText(/\/orders/, async (msg) => {
     }
 });
 
+bot.onText(/\/missed/, async (msg) => {
+    try{
+        await message = menu.missed();
+        return bot.sendMessage(chat, message).then((msg)=>{
+            console.log(`сообщение (id: ${msg.message_id})${message} успешно отправлено в чат (${chat})`);
+            return msg;
+        }).catch(e => {
+            console.log(e);
+        });
+    }catch (e) {
+        console.log(e)
+    }
+});
+
 module.exports = methods;
