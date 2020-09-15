@@ -18,7 +18,7 @@ class Menu{
         const data = await API.getMissedCalls();
         let message = 'Список пропущенных вызовов: \n';
         const menu = [];
-
+        console.log(data);
         data.map(item => {
             message += `${item.client}${item.order_number ? ' | ' + item.order_number : ''}${item.client_name ? ' | ' + item.client_name : ''}`;
             menu.push(new Button(item.client_name, 'some cb'))

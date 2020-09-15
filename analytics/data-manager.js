@@ -58,7 +58,7 @@ class DataManager {
         });
         return orders.reverse();
     }
-    async getMissedCalls(from = moment().subtract(1, 'day').startOf('day').format('YYYY-MM-DD'), to = moment().endOf('day').format('YYYY-MM-DD')){
+    async getMissedCalls(from = moment().startOf('month').format('YYYY-MM-DD'), to = moment().endOf('day').format('YYYY-MM-DD')){
         return await axios.get(`http://185.176.25.157:3000/calls/missed?date_from=${from}&date_to=${to}`);
     }
 }
