@@ -48,7 +48,7 @@ const messages ={
     /missed - по пропущенным звонкам
     `,
     orders: `orders message`,
-    missed: API.getMissedCalls,
+    missed: menu.renderMissedCalls,
 };
 
 
