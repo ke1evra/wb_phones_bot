@@ -93,7 +93,7 @@ bot.on('callback_query', function (msg) {
             console.log(`Сообщение успешно отредактировано (${msg.data})`);
         }).catch(e => {
         console.log(e);
-    });
+});
 });
 
 bot.onText(/\/start/, async (msg) => {
