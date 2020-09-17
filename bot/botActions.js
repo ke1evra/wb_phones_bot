@@ -89,7 +89,7 @@ const methods = {
         let chat_id = msg ? msg.chat.id : chats.manager;
         const message = await menu.missed();
         return bot.sendMessage(chat_id, message).then((msg)=>{
-            console.log(`сообщение (id: ${msg.message_id})${message} успешно отправлено в чат (${chat})`);
+            console.log(`сообщение (id: ${msg.message_id})${message} успешно отправлено в чат (${chat_id})`);
             return msg;
         }).catch(e => {
             console.log(e);
@@ -130,6 +130,7 @@ bot.onText(/\/missed/, async (msg) => {
     }
 });
 
+methods.checkMissedCalls().catch(e => console.log(e));
 setInterval(async ()=>{
     await methods.checkMissedCalls();
 }, 60 * 60 * 1000);
