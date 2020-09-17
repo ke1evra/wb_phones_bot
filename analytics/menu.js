@@ -31,6 +31,8 @@ class Menu{
             }),
             // disable_web_page_preview: true,
         };
+        if(!data.data.length)
+            message = 'Нет пропущенных вызовов';
         return message;
     }
 }

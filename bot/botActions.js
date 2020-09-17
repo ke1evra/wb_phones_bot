@@ -132,7 +132,9 @@ bot.onText(/\/missed/, async (msg) => {
 
 methods.checkMissedCalls().catch(e => console.log(e));
 setInterval(async ()=>{
-    await methods.checkMissedCalls();
+    if(moment().format('HH') > 9 && moment().format('HH') < 20){
+        await methods.checkMissedCalls();
+    }
 }, 60 * 60 * 1000);
 
 module.exports = methods;
