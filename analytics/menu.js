@@ -16,11 +16,11 @@ class Menu{
 
     async renderMissedCalls(){
         const data = await API.getMissedCalls();
-        let message = 'Список пропущенных вызовов: \n';
+        let message = 'Список пропущенных вызовов: \n ---------\n';
         const menu = [];
         // console.log(data);
         data.data.map(item => {
-            message += `${item.client} | ${moment(item.missed_at).format('DD.MM.YYYY HH:mm:ss')}${item.order_number ? ' | ' + item.order_number : ''}${item.client_name ? ' | ' + item.client_name : ''} \n`;
+            message += `${item.client} | ${moment(item.missed_at).format('DD.MM HH:mm')}${item.order_number ? ' | ' + item.order_number : ''}${item.client_name ? ' | ' + item.client_name : ''} \n`;
             menu.push(new Button(item.client_name, 'some cb'))
         });
         let options = {
