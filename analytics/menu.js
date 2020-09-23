@@ -14,13 +14,16 @@ class Menu{
         this.month = moment().format('MM')
     }
 
-    async renderMissedCalls(){
-        const data = await API.getMissedCalls();
+    async renderMissedCalls(days){
+        const data = await API.getMissedCalls(days);
         let message = 'Список пропущенных вызовов: \n ---------\n';
         const menu = [];
         // console.log(data);
+
         data.data.map(item => {
-            message += `${item.client} | ${moment(item.missed_at).format('DD.MM HH:mm')}${item.order_number ? ' | ' + item.order_number : ''}${item.client_name ? ' | ' + item.client_name : ''} \n`;
+            const orderNum = `${item.order_number ? ' | ' + item.order_number : ''}`;
+            const clientName = `${item.client_name ? ' | ' + item.client_name : ''}`;
+            message += `${item.client} | ${item.lineNumber} | Попыток дозвона: ${item.nedozvon_cnt} | ${moment(item.missed_at).format('DD.MM HH:mm')}${orderNum}${clientName} \n`;
             menu.push(new Button(item.client_name, 'some cb'))
         });
         let options = {

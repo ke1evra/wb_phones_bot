@@ -85,9 +85,9 @@ const methods = {
             disable_web_page_preview: true,
         });
     },
-    async checkMissedCalls(msg = null){
+    async checkMissedCalls(msg = null, days = 1){
         let chat_id = msg ? msg.chat.id : chats.manager;
-        const message = await menu.missed();
+        const message = await menu.missed(days);
         return bot.sendMessage(chat_id, message).then((msg)=>{
             console.log(`сообщение (id: ${msg.message_id})${message} успешно отправлено в чат (${chat_id})`);
             return msg;
@@ -122,9 +122,10 @@ bot.onText(/\/orders/, async (msg) => {
     }
 });
 
-bot.onText(/\/missed/, async (msg) => {
+bot.onText(/\/missed (.+)/, async (msg, match) => {
     try{
-        await methods.checkMissedCalls(msg);
+        const days = match[0] ? match[0] : 1;
+        await methods.checkMissedCalls(msg, days);
     }catch (e) {
         console.log(e)
     }
