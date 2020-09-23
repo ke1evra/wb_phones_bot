@@ -16,7 +16,7 @@ class Menu{
 
     async renderMissedCalls(days){
         const data = await API.getMissedCalls(days);
-        console.log(data);
+        // console.log(data);
         let message = 'Список пропущенных вызовов: \n ---------\n';
         const menu = [];
         // console.log(data);
