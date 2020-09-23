@@ -23,7 +23,7 @@ class Menu{
         data.data.map(item => {
             const orderNum = `${item.order_number ? ' | ' + item.order_number : ''}`;
             const clientName = `${item.client_name ? ' | ' + item.client_name : ''}`;
-            message += `${item.client} | ${item.lineNumber} | Попыток дозвона: ${item.nedozvon_cnt} | ${moment(item.missed_at).format('DD.MM HH:mm')}${orderNum}${clientName} \n`;
+            message += `${item.client} | ${item.line_number} | (📲: ${item.nedozvon_cnt}) | ${moment(item.missed_at).format('DD.MM HH:mm')}${orderNum}${clientName} \n`;
             menu.push(new Button(item.client_name, 'some cb'))
         });
         let options = {
