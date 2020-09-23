@@ -122,9 +122,9 @@ bot.onText(/\/orders/, async (msg) => {
     }
 });
 
-bot.onText(/\/misseddays (.+)/, async (msg, match) => {
+bot.onText(/\/missed_days (.+)/, async (msg, match) => {
     try{
-        console.log('/misseddays');
+        console.log('/missed_days');
         console.log(match);
         const days = match[1] ? match[1] : 1;
         await methods.checkMissedCalls(msg, days);
