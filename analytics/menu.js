@@ -1,7 +1,7 @@
 const moment = require('moment');
 const API = require('../analytics/data-manager.js');
 const axios = require('axios');
-const icons = require('numberIcons.js');
+const icons = require('./numberIcons.js');
 
 class Button {
     constructor(text, cb) {
