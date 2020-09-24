@@ -18,18 +18,16 @@ class Menu{
     async renderMissedCalls(days){
         const data = await API.getMissedCalls(days);
         // console.log(data);
-        let message = 'Список пропущенных вызовов: \n ---------\n';
+        let message = 'Список пропущенных вызовов: \n ---------------------------\n';
         const menu = [];
         // console.log(data);
 
-        data.data.map(item => {
+        data.data.map((item, index) => {
             const orderNum = `${item.order_number ? ' | ' + item.order_number : ''}`;
             const clientName = `${item.client_name ? ' | ' + item.client_name : ''}`;
             const missedAt = moment(item.missed_at).format('DD.MM HH:mm');
-            console.log(toString(item.nedozvon_cnt));
-            console.log(item.nedozvon_cnt.toString());
-            const tryCount = icons[toString(item.nedozvon_cnt)] ? icons[toString(item.nedozvon_cnt)] : item.nedozvon_cnt;
-            message += `☎️ ${item.client} | ${missedAt} ⤴️${tryCount}  | ${item.line_number}${orderNum}${clientName} \n`;
+            const tryCount = icons[item.nedozvon_cnt.toString()] ? icons[item.nedozvon_cnt.toString()] : item.nedozvon_cnt;
+            message += `${index + 1}.️ ${item.client} | ${missedAt} ⤴️${tryCount}  | ${item.line_number}${orderNum}${clientName} \n------------------\n`;
             menu.push(new Button(item.client_name, 'some cb'))
         });
         let options = {
