@@ -28,7 +28,7 @@ class Menu{
             const missedAt = moment(item.missed_at).format('DD.MM HH:mm');
             console.log(icons[toString(item.nedozvon_cnt)]);
             const tryCount = icons[toString(item.nedozvon_cnt)] ? icons[toString(item.nedozvon_cnt)] : item.nedozvon_cnt;
-            message += `☎️ ${item.client} | ${missedAt} ⤴️${tryCount}  | ${item.line_number} | ${orderNum}${clientName} \n`;
+            message += `☎️ ${item.client} | ${missedAt} ⤴️${tryCount}  | ${item.line_number}${orderNum}${clientName} \n`;
             menu.push(new Button(item.client_name, 'some cb'))
         });
         let options = {
