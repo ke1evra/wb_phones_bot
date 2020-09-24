@@ -26,7 +26,7 @@ class Menu{
             const orderNum = `${item.order_number ? '\nНомер заказа: ' + item.order_number : ''}`;
             const clientName = `${item.client_name ? ' | ' + item.client_name : ''}`;
             const missedAt = moment(item.missed_at).format('DD.MM HH:mm');
-            message += `☎️ ${item.client} ☎️ ( ${missedAt} )\n Попыток дозвона: ${item.nedozvon_cnt}\nЛиния: ${item.line_number}${orderNum}${clientName} \n------------------\n`;
+            message += `${index + 1}. ${item.client} ( ${missedAt} )\nПопыток дозвона: ${item.nedozvon_cnt}\nЛиния: ${item.line_number}${orderNum}${clientName} \n---------------------------\n`;
             menu.push(new Button(item.client_name, 'some cb'))
         });
         let options = {
