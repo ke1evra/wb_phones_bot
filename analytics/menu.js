@@ -23,11 +23,10 @@ class Menu{
         // console.log(data);
 
         data.data.map((item, index) => {
-            const orderNum = `${item.order_number ? ' | ' + item.order_number : ''}`;
+            const orderNum = `${item.order_number ? '\nНомер заказа: ' + item.order_number : ''}`;
             const clientName = `${item.client_name ? ' | ' + item.client_name : ''}`;
             const missedAt = moment(item.missed_at).format('DD.MM HH:mm');
-            const tryCount = icons[item.nedozvon_cnt.toString()] ? icons[item.nedozvon_cnt.toString()] : item.nedozvon_cnt;
-            message += `${index + 1}.️ ${item.client} | ${missedAt} ⤴️${tryCount}  | ${item.line_number}${orderNum}${clientName} \n------------------\n`;
+            message += `☎️ ${item.client} ☎️ ( ${missedAt} )\n Попыток дозвона: ${item.nedozvon_cnt}\nЛиния: ${item.line_number}${orderNum}${clientName} \n------------------\n`;
             menu.push(new Button(item.client_name, 'some cb'))
         });
         let options = {
