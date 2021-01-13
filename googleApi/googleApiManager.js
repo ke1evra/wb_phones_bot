@@ -5,11 +5,30 @@ const API = {
     async login(){
         return await doc.useServiceAccountAuth(require('./dolgovapi-955301a7af9e.json'));
     },
+    ///Чистка излишков сообщений
+    async cleanUp(sheet)
+    {
+        const rowsNumber=50;//максимальное число строк
+        try {
+            let cycle_count=0;
+            while (sheet.rowCount > rowsNumber) {
+                cycle_count++;
+                if(cycle_count>10000){console.log(`Ошибка в функции API.cleanUp():Зацикливание`)};
+                await sheet.rows[1].delete();
+                for (let i = 1; i < sheet.rowCount; i++) {
+                    await sheet.rows[i] = sheet.rows[i + 1];
+                    await sheet.rows[i].save();
+                }
+            }
+        }
+        catch(e){console.log(`Ошибка в функции API.cleanUp():${e}`)};
+    },
     async addRow(chat_id, message_id, message){
         await this.login();
         await doc.loadInfo();
         const sheet = doc.sheetsByIndex[0];
         await sheet.addRow({ chat_id, message_id, message });
+        await this.cleanUp(sheet);
     },
     async getMessages(){
         await this.login();
