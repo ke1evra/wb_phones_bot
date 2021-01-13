@@ -13,7 +13,7 @@ const API = {
             let cycle_count=0;
             while (sheet.rowCount > rowsNumber) {
                 cycle_count++;
-                if(cycle_count>10000){console.log(`Ошибка в функции API.cleanUp():Зацикливание`)};
+                if(cycle_count>10000){console.log(`Ошибка в функции API.cleanUp():Зацикливание`);break;};
                 await sheet.rows[1].delete();
                 for (let i = 1; i < sheet.rowCount; i++) {
                     await sheet.rows[i] = sheet.rows[i + 1];
