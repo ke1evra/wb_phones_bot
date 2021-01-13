@@ -9,15 +9,19 @@ const API = {
     async cleanUp(sheet)
     {
         const rowsNumber=50;//максимальное число строк
-        while(sheet.rowCount>rowsNumber)
-        {
-            sheet.rows[1].delete();
-            for(let i=1;i<sheet.rowCount;i++)
-            {
-                sheet.rows[i]=sheet.rows[i+1];
-                sheet.rows[i].save();
+        try {
+            let cycle_count=0;
+            while (sheet.rowCount > rowsNumber) {
+                cycle_count++;
+                if(cycle_count>10000){console.log(`Ошибка в функции API.cleanUp():Зацикливание`)};
+                await sheet.rows[1].delete();
+                for (let i = 1; i < sheet.rowCount; i++) {
+                    await sheet.rows[i] = sheet.rows[i + 1];
+                    await sheet.rows[i].save();
+                }
             }
         }
+        catch(e){console.log(`Ошибка в функции API.cleanUp():${e}`)};
     },
     async addRow(chat_id, message_id, message){
         await this.login();
