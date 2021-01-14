@@ -10,15 +10,12 @@ const API = {
     {
         const rowsNumber=50;//максимальное число строк
         try {
-            let cycle_count=0;
-            while (sheet.rowCount > rowsNumber) {
-                cycle_count++;
-                if(cycle_count>10000){console.log(`Ошибка в функции API.cleanUp():Зацикливание`);break;};
-                await sheet.rows[1].delete();
-                for (let i = 1; i < sheet.rowCount; i++) {
-                    sheet.rows[i] = sheet.rows[i + 1];
-                    await sheet.rows[i].save();
-                }
+            let rows=await sheet.getRows();
+            if(rows.length<rowsNumber)return;
+            while(rows.length>=rowsNumber)
+            {
+                await rows[0].delete();
+                rows=await sheet.getRows();
             }
         }
         catch(e){console.log(`Ошибка в функции API.cleanUp():${e}`)};
@@ -27,7 +24,7 @@ const API = {
         await this.login();
         await doc.loadInfo();
         const sheet = doc.sheetsByIndex[0];
-        await sheet.addRow({ chat_id, message_id, message });
+        //await sheet.addRow({ chat_id, message_id, message });
         await this.cleanUp(sheet);
     },
     async getMessages(){
@@ -45,5 +42,4 @@ const API = {
         return messages;
     }
 };
-
 module.exports = API;
