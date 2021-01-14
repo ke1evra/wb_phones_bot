@@ -24,7 +24,7 @@ const API = {
         await this.login();
         await doc.loadInfo();
         const sheet = doc.sheetsByIndex[0];
-        //await sheet.addRow({ chat_id, message_id, message });
+        await sheet.addRow({ chat_id, message_id, message });
         await this.cleanUp(sheet);
     },
     async getMessages(){
