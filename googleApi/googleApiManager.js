@@ -31,7 +31,8 @@ const API = {
         await this.login();
         await doc.loadInfo();
         const sheet = doc.sheetsByIndex[0];
-        const rows = await sheet.getRows(sheet.rowCount > 50 ? {limit: 50, offset: sheet.rowCount - 50} : {});
+        //const rows = await sheet.getRows(sheet.rowCount > 50 ? {limit: 50, offset: sheet.rowCount - 50} : {});
+        const rows = await sheet.getRows();
         const messages = {};
         rows.map(row => {
             const d = row._rawData;
