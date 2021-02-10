@@ -59,7 +59,7 @@ class DataManager {
         return orders.reverse();
     }
     async getMissedCalls(days = 1, from = moment().subtract(days, 'days').format('YYYY-MM-DD'), to = moment().endOf('day').format('YYYY-MM-DD')){
-        return await axios.get(`http://185.176.25.157:3000/calls/missed?date_from=${from}&date_to=${to}`);
+        return await axios.get(`http://185.211.247.12:3000/calls/missed?date_from=${from}&date_to=${to}`);
     }
 }
 
