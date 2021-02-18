@@ -41,6 +41,29 @@ class Menu{
             message = 'Нет пропущенных вызовов';
         return message;
     }
+    async renderExpenses(days){
+        const data = await API.getExpenses(days);
+        // console.log(data);
+        let message = 'Список расходов: \n ---------------------------\n';
+        const menu = [];
+        // console.log(data);
+
+        data.data.map((item, index) => {
+            message += `${index + 1}. (${item.date})\nЯндекс.Маркет: ${item.yandexmarket}\nЯндекс.Директ: ${item.yandexdirect}\nGoogle Ads: ${item.googleads}\nВсего: ${item['total']} \n---------------------------\n`;
+            menu.push(new Button(item.client_name, 'some cb'))
+        });
+        let options = {
+            reply_markup: JSON.stringify({
+                inline_keyboard: [
+                    menu,
+                ]
+            }),
+            // disable_web_page_preview: true,
+        };
+        if(!data.data.length)
+            message = 'Нет расходов';
+        return message;
+    }
 }
 
 const menu = new Menu();
@@ -58,6 +81,7 @@ const messages ={
     `,
     orders: `orders message`,
     missed: menu.renderMissedCalls,
+    expenses: menu.renderExpenses
 };
 
 

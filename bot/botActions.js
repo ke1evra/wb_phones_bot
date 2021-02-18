@@ -161,6 +161,14 @@ bot.onText(/\/orders/, async (msg) => {
   }
 });
 
+bot.onText(/\/expenses/, async (msg) => {
+  try {
+    await bot.sendMessage(msg.chat.id, menu.expenses);
+  } catch (e) {
+    console.log(e);
+  }
+});
+
 bot.onText(/\/missed(\s.+)?/, async (msg, match) => {
   try {
     console.log("/missed");

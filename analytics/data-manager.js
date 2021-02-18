@@ -72,6 +72,15 @@ class DataManager {
       `http://185.211.247.12:3000/calls/missed?date_from=${from}&date_to=${to}`
     );
   }
+  async getExpenses(
+      days = 1,
+      from = moment().subtract(days, "days").format("YYYY-MM-DD"),
+      to = moment().endOf("day").format("YYYY-MM-DD")
+  ) {
+    return await axios.get(
+        `http://185.211.247.12:3000/expenses/cost?date_from=${from}&date_to=${to}&shop=vkostume`
+    );
+  }
 }
 
 // (
