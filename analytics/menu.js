@@ -108,7 +108,7 @@ const messages ={
     `,
     orders: menu.renderOrders,
     missed: menu.renderMissedCalls,
-    expenses: menu.renderExpenses
+    expenses: 'expenses'
 };
 
 
