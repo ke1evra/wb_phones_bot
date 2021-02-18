@@ -64,6 +64,33 @@ class Menu{
             message = 'Нет расходов';
         return message;
     }
+
+    async renderOrders(days)
+    {
+        const data = await API.getMissedCalls(days);
+        let message='Счётчик заказов за последнюю неделю: \n ---------------------------\n';
+        const menu = [];
+        // console.log(data);
+
+        data.data.map((item, index) => {
+            const status = `${item.order_status ? '\tСтатус: ' + item.order_status : ''}`;
+            const orderSum = `${item.order_sum ? ' \tОбщая сумма заказов с таким статусом: ' + item.order_sum : ''}`;
+            const orderCount = `${item.order_count ? '\tКоличество заказов: ' + item.order_count : ''}`;
+            message += `${index + 1}. ${status}${orderCount}${orderSum}.\n`;
+            menu.push(new Button(item.client_name, 'some cb'))
+        });
+        let options = {
+            reply_markup: JSON.stringify({
+                inline_keyboard: [
+                    menu,
+                ]
+            }),
+            // disable_web_page_preview: true,
+        };
+        if(!data.data.length)
+            message = 'Нет заказов за период.';
+        return message;
+    }
 }
 
 const menu = new Menu();
@@ -79,7 +106,7 @@ const messages ={
     /managers - по менеджерам
     /missed - по пропущенным звонкам
     `,
-    orders: `orders message`,
+    orders: menu.renderOrders,
     missed: menu.renderMissedCalls,
     expenses: menu.renderExpenses
 };

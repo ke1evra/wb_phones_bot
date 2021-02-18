@@ -153,7 +153,7 @@ bot.onText(/\/start/, async (msg) => {
   }
 });
 
-bot.onText(/\/orders/, async (msg) => {
+bot.onText(/^\/orders(\s.+)?/, async (msg) => {
   try {
     await bot.sendMessage(msg.chat.id, menu.orders);
   } catch (e) {
@@ -169,7 +169,7 @@ bot.onText(/\/expenses/, async (msg) => {
   }
 });
 
-bot.onText(/\/missed(\s.+)?/, async (msg, match) => {
+bot.onText(/^\/missed(\s.+)?/, async (msg, match) => {
   try {
     console.log("/missed");
     console.log(match);
