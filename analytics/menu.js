@@ -129,36 +129,36 @@ class Menu{
 
         data.data.map((call, index) => {
             statistics['calls_count']++;
-            statistics['calls_duration']+=call.call_duration;
+            statistics['calls_duration']+=parseFloat(call.call_duration);
             if(statistics['disconnect_reasons']['total'].hasOwnProperty(call.disconnect_reason))
                 statistics['disconnect_reasons']['total'][call.disconnect_reason]++;
             else
-                statistics['disconnect_reasons']['total'][call.disconnect_reason]=0;
+                statistics['disconnect_reasons']['total'][call.disconnect_reason]=1;
             //line_numbers
             if(statistics['line_numbers'].hasOwnProperty(call.line_number))
                 statistics['line_numbers'][call.line_number]++;
             else
-                statistics['line_numbers'][call.line_number]=0;
+                statistics['line_numbers'][call.line_number]=1;
             switch (call.call_type) {
                 case 'Входящий':
                     statistics['Входящий']['calls_count']++;
-                    statistics['Входящий']['calls_duration']+=call.call_duration;
-                    statistics['Входящий']['time_before_answer']+=call.answer_time;
+                    statistics['Входящий']['calls_duration']+=parseFloat(call.call_duration);
+                    statistics['Входящий']['time_before_answer']+=parseFloat(call.answer_time);
                     //Причины дисконнекта
                     if(statistics['disconnect_reasons']['Входящий'].hasOwnProperty(call.disconnect_reason))
                         statistics['disconnect_reasons']['Входящий'][call.disconnect_reason]++;
                     else
-                        statistics['disconnect_reasons']['Входящий'][call.disconnect_reason]=0;
+                        statistics['disconnect_reasons']['Входящий'][call.disconnect_reason]=1;
                     break;
                 case 'Исходящий':
                     statistics['Исходящий']['calls_count']++;
-                    statistics['Исходящий']['calls_duration']+=call.call_duration;
-                    statistics['Исходящий']['time_before_answer']+=call.answer_time;
+                    statistics['Исходящий']['calls_duration']+=parseFloat(call.call_duration);
+                    statistics['Исходящий']['time_before_answer']+=parseFloat(call.answer_time);
                     //Причины дисконнекта
                     if(statistics['disconnect_reasons']['Исходящий'].hasOwnProperty(call.disconnect_reason))
                         statistics['disconnect_reasons']['Исходящий'][call.disconnect_reason]++;
                     else
-                        statistics['disconnect_reasons']['Исходящий'][call.disconnect_reason]=0;
+                        statistics['disconnect_reasons']['Исходящий'][call.disconnect_reason]=1;
                     break;
                 case 'Недозвон':
                     statistics['Недозвон']['calls_count']++;
@@ -167,22 +167,23 @@ class Menu{
                     if(statistics['disconnect_reasons']['Исходящий'].hasOwnProperty(call.disconnect_reason))
                         statistics['disconnect_reasons']['Исходящий'][call.disconnect_reason]++;
                     else
-                        statistics['disconnect_reasons']['Исходящий'][call.disconnect_reason]=0;
+                        statistics['disconnect_reasons']['Исходящий'][call.disconnect_reason]=1;
                     break;
                 case 'Пропущенный':
                     statistics['Пропущенный']['calls_count']++;
-                    statistics['Пропущенный']['time_before_finish']+=call.finish-call.start;
+                    statistics['Пропущенный']['time_before_finish']+=parseFloat(call.finish)-parseFloat(call.start);
                     //Причины дисконнекта
                     if(statistics['disconnect_reasons']['Исходящий'].hasOwnProperty(call.disconnect_reason))
                         statistics['disconnect_reasons']['Исходящий'][call.disconnect_reason]++;
                     else
-                        statistics['disconnect_reasons']['Исходящий'][call.disconnect_reason]=0;
+                        statistics['disconnect_reasons']['Исходящий'][call.disconnect_reason]=1;
                     break;
                 default: break;
             }
         });
+
         console.log(statistics);
-        message+=JSON.stringify(statistics,'\t');
+        message+=JSON.stringify(statistics,null,'\t');
         if(!data.data.length)
             message = 'Нет данных по звонкам за период.';
         return message;
