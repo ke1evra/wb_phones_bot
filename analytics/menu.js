@@ -74,9 +74,9 @@ class Menu{
 
         data.data.map((item, index) => {
             const status = `${item.order_status ? 'Статус: ' + item.order_status +',\n' : ''}`;
-            const orderSum = `${item.order_sum ? ' Общая сумма заказов: ' + item.order_sum + ',\n' : ''}`;
-            const orderCount = `${item.order_count ? 'Количество заказов: ' + item.order_count : ''}`;
-            message += `${index + 1}. ${status}${orderCount}${orderSum}.\n--------------------------\n`;
+            const orderSum = `${item.order_sum ? ' Общая сумма заказов: ' + item.order_sum + '.\n' : ''}`;
+            const orderCount = `${item.order_count ? 'Количество заказов: ' + item.order_count+',\n' : ''}`;
+            message += `${index + 1}. ${status}${orderCount}${orderSum}\n--------------------------\n`;
             menu.push(new Button(item.client_name, 'some cb'))
         });
         let options = {
