@@ -123,8 +123,7 @@ const methods = {
       return bot
         .sendMessage(chat_id, message)
         .then((msg) => {
-          console.log(
-            `сообщение (id: ${msg.message_id})${message} успешно отправлено в чат (${chat_id})`
+          console.log(`сообщение (id: ${msg.message_id})${message} успешно отправлено в чат (${chat_id})`
           );
           return msg;
         })
@@ -147,10 +146,8 @@ const methods = {
           .sendMessage(chat_id, message)
           .then((msg) => {
             console.log(
-                `сообщение (id: ${msg.message_id})${message} успешно отправлено в чат (${chat_id})`
-            );
-            return msg;
-          })
+                `сообщение (id: ${msg.message_id})${message.length>80?message.slice(0,80)+'...':message} успешно отправлено в чат (${chat_id})`);
+            return msg;})
           .catch((e) => {
             console.log(e);
           });
@@ -163,6 +160,29 @@ const methods = {
   async getOrders(msg = null, days = 1) {
     let chat_id = msg ? msg.chat.id : chats.manager;
     const message = await menu.orders(days);
+    const messageList = message.match(/[\s\S]{1,4000}/g) || [];
+
+    const sendMsg = (message) => {
+      return bot
+          .sendMessage(chat_id, message)
+          .then((msg) => {
+            console.log(
+                `сообщение (id: ${msg.message_id})${message.length>80?message.slice(0,80)+'...':message} успешно отправлено в чат (${chat_id})`
+            );
+            return msg;
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+    };
+
+    for (let message of messageList) {
+      await sendMsg(message);
+    }
+  },
+  async getCalls(msg = null, days = 1) {
+    let chat_id = msg ? msg.chat.id : chats.manager;
+    const message = await menu.calls(days);
     const messageList = message.match(/[\s\S]{1,4000}/g) || [];
 
     const sendMsg = (message) => {
@@ -240,7 +260,16 @@ bot.onText(/^\/missed(\s.+)?/, async (msg, match) => {
     console.log(e);
   }
 });
-
+bot.onText(/^\/calls(\s.+)?/, async (msg, match) => {
+  try {
+    console.log("/calls");
+    console.log(match);
+    const days = match[1] ? match[1] : 1;
+    await methods.getCalls(msg, days);
+  } catch (e) {
+    console.log(e);
+  }
+});
 // methods.checkMissedCalls().catch(e => console.log(e));
 setInterval(async () => {
   if (moment().format("HH") > 9 && moment().format("HH") < 20) {

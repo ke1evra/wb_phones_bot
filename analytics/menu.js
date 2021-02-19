@@ -76,7 +76,7 @@ class Menu{
             const status = `${item.order_status ? 'Статус: ' + item.order_status +',\n' : ''}`;
             const orderSum = `${item.order_sum ? ' Общая сумма заказов: ' + item.order_sum + '.\n' : ''}`;
             const orderCount = `${item.order_count ? 'Количество заказов: ' + item.order_count+',\n' : ''}`;
-            message += `${index + 1}. ${status}${orderCount}${orderSum}\n--------------------------\n`;
+            message += `${index + 1}. ${status}${orderCount}${orderSum}--------------------------\n`;
             menu.push(new Button(item.client_name, 'some cb'))
         });
         let options = {
@@ -89,6 +89,101 @@ class Menu{
         };
         if(!data.data.length)
             message = 'Нет заказов за период.';
+        return message;
+    }
+    async renderCalls(days)
+    {
+        const data = await API.getCalls(days);
+        let message='Статистика по звонкам: \n ---------------------------\n';
+        let statistics=[];
+        // console.log(data);
+        statistics['calls_count']=0
+        statistics['calls_duration']=0;
+        statistics['line_numbers']={};
+        statistics['disconnect_reasons']={}
+        statistics['disconnect_reasons']['total']={};
+        statistics['disconnect_reasons']['Входящий']={};
+        statistics['disconnect_reasons']['Исходящий']={};
+        statistics['disconnect_reasons']['Недозвон']={};
+        statistics['disconnect_reasons']['Пропущенный']={};
+
+        statistics['Входящий']={};
+        statistics['Входящий']['calls_duration']=0;
+        statistics['Входящий']['calls_count']=0;
+        statistics['Входящий']['time_before_answer']=0;
+
+        statistics['Исходящий']={};
+        statistics['Исходящий']['calls_duration']=0;
+        statistics['Исходящий']['calls_count']=0;
+        statistics['Исходящий']['time_before_answer']=0;
+
+        statistics['Недозвон']={};
+        statistics['Недозвон']['calls_duration']=0;
+        statistics['Недозвон']['calls_count']=0;
+        statistics['Недозвон']['time_before_finish']=0;
+
+        statistics['Пропущенный']={};
+        statistics['Пропущенный']['calls_duration']=0;
+        statistics['Пропущенный']['calls_count']=0;
+        statistics['Пропущенный']['time_before_finish']=0;
+
+        data.data.map((call, index) => {
+            statistics['calls_count']++;
+            statistics['calls_duration']+=call.call_duration;
+            if(statistics['disconnect_reasons']['total'].hasOwnProperty(call.disconnect_reason))
+                statistics['disconnect_reasons']['total'][call.disconnect_reason]++;
+            else
+                statistics['disconnect_reasons']['total'][call.disconnect_reason]=0;
+            //line_numbers
+            if(statistics['line_numbers'].hasOwnProperty(call.line_number))
+                statistics['line_numbers'][call.line_number]++;
+            else
+                statistics['line_numbers'][call.line_number]=0;
+            switch (call.call_type) {
+                case 'Входящий':
+                    statistics['Входящий']['calls_count']++;
+                    statistics['Входящий']['calls_duration']+=call.call_duration;
+                    statistics['Входящий']['time_before_answer']+=call.answer_time;
+                    //Причины дисконнекта
+                    if(statistics['disconnect_reasons']['Входящий'].hasOwnProperty(call.disconnect_reason))
+                        statistics['disconnect_reasons']['Входящий'][call.disconnect_reason]++;
+                    else
+                        statistics['disconnect_reasons']['Входящий'][call.disconnect_reason]=0;
+                    break;
+                case 'Исходящий':
+                    statistics['Исходящий']['calls_count']++;
+                    statistics['Исходящий']['calls_duration']+=call.call_duration;
+                    statistics['Исходящий']['time_before_answer']+=call.answer_time;
+                    //Причины дисконнекта
+                    if(statistics['disconnect_reasons']['Исходящий'].hasOwnProperty(call.disconnect_reason))
+                        statistics['disconnect_reasons']['Исходящий'][call.disconnect_reason]++;
+                    else
+                        statistics['disconnect_reasons']['Исходящий'][call.disconnect_reason]=0;
+                    break;
+                case 'Недозвон':
+                    statistics['Недозвон']['calls_count']++;
+                    statistics['Недозвон']['time_before_finish']+=call.finish-call.start;
+                    //Причины дисконнекта
+                    if(statistics['disconnect_reasons']['Исходящий'].hasOwnProperty(call.disconnect_reason))
+                        statistics['disconnect_reasons']['Исходящий'][call.disconnect_reason]++;
+                    else
+                        statistics['disconnect_reasons']['Исходящий'][call.disconnect_reason]=0;
+                    break;
+                case 'Пропущенный':
+                    statistics['Пропущенный']['calls_count']++;
+                    statistics['Пропущенный']['time_before_finish']+=call.finish-call.start;
+                    //Причины дисконнекта
+                    if(statistics['disconnect_reasons']['Исходящий'].hasOwnProperty(call.disconnect_reason))
+                        statistics['disconnect_reasons']['Исходящий'][call.disconnect_reason]++;
+                    else
+                        statistics['disconnect_reasons']['Исходящий'][call.disconnect_reason]=0;
+                    break;
+                default: break;
+            }
+        });
+        message+=JSON.stringify(statistics,)
+        if(!data.data.length)
+            message = 'Нет данных по звонкам за период.';
         return message;
     }
 }
@@ -108,6 +203,7 @@ const messages ={
     `,
     orders: menu.renderOrders,
     missed: menu.renderMissedCalls,
+    calls:menu.renderCalls,
     expenses: menu.renderExpenses
 };
 
