@@ -150,6 +150,29 @@ const methods = {
       await sendMsg(message);
     }
   },
+  async getOrders(msg = null, days = 1) {
+    let chat_id = msg ? msg.chat.id : chats.manager;
+    const message = await menu.orders(days);
+    const messageList = message.match(/[\s\S]{1,4000}/g) || [];
+
+    const sendMsg = (message) => {
+      return bot
+          .sendMessage(chat_id, message)
+          .then((msg) => {
+            console.log(
+                `сообщение (id: ${msg.message_id})${message} успешно отправлено в чат (${chat_id})`
+            );
+            return msg;
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+    };
+
+    for (let message of messageList) {
+      await sendMsg(message);
+    }
+  },
 };
 
 bot.on("callback_query", function (msg) {
@@ -176,9 +199,11 @@ bot.onText(/\/start/, async (msg) => {
   }
 });
 
-bot.onText(/^\/orders(\s.+)?/, async (msg) => {
+bot.onText(/^\/orders(\s.+)?/, async (msg,match) => {
   try {
-    await bot.sendMessage(msg.chat.id, menu.orders);
+    console.log("/orders");
+    const days = match[1] ? match[1] : 1;
+    await methods.getOrders(msg, days);
   } catch (e) {
     console.log(e);
   }
