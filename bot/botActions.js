@@ -127,6 +127,29 @@ const methods = {
       await sendMsg(message);
     }
   },
+  async getExpenses(msg = null, days = 1) {
+    let chat_id = msg ? msg.chat.id : chats.manager;
+    const message = await menu.expenses(days);
+    const messageList = message.match(/[\s\S]{1,4000}/g) || [];
+
+    const sendMsg = (message) => {
+      return bot
+          .sendMessage(chat_id, message)
+          .then((msg) => {
+            console.log(
+                `сообщение (id: ${msg.message_id})${message} успешно отправлено в чат (${chat_id})`
+            );
+            return msg;
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+    };
+
+    for (let message of messageList) {
+      await sendMsg(message);
+    }
+  },
 };
 
 bot.on("callback_query", function (msg) {
@@ -161,9 +184,12 @@ bot.onText(/^\/orders(\s.+)?/, async (msg) => {
   }
 });
 
-bot.onText(/\/expenses/, async (msg) => {
+bot.onText(/^\/expenses(\s.+)?/, async (msg, match) => {
   try {
-    await bot.sendMessage(msg.chat.id, menu.expenses);
+    console.log("/expenses");
+    console.log(match);
+    const days = match[1] ? match[1] : 1;
+    await methods.getExpenses(msg, days);
   } catch (e) {
     console.log(e);
   }
