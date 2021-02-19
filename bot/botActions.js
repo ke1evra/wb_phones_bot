@@ -4,6 +4,7 @@ const moment = require("moment");
 const htmlToText = require("html-to-text");
 const gApi = require("../googleApi/googleApiManager.js");
 const menu = require("../analytics/menu.js");
+const spamList = require("../constants/SpamList.js")
 
 const shortenMessage = (str, len = 400) => {
   let shortStr = "";
@@ -17,14 +18,22 @@ const methods = {
     const message = `sms от ${b.src} на ${b.dst} (${moment().format(
       "DD.MM.YYYY HH:mm:ss"
     )})\n---------------------\n${b.body}`;
-    return bot
-      .sendMessage(chat, message)
-      .then(() => {
-        console.log(`сообщение ${message} успешно отправлено в чат (${chat})`);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    let thisIsSpam=false
+    spamList.forEach(spam =>{
+      message.includes(spam) ? thisIsSpam = true : null;
+    })
+    if (!thisIsSpam){
+      return bot
+          .sendMessage(chat, message)
+          .then(() => {
+            console.log(`сообщение ${message} успешно отправлено в чат (${chat})`);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+    } else {
+      console.log(`сообщение ${message} расцененно как спам`);
+    }
   },
   formatEmailMessage(b) {
     let text = htmlToText.fromString(b.html, {
