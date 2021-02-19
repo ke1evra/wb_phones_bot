@@ -181,7 +181,8 @@ class Menu{
                 default: break;
             }
         });
-        message+=JSON.stringify(statistics,)
+        console.log(statistics);
+        message+=JSON.stringify(statistics,'\t');
         if(!data.data.length)
             message = 'Нет данных по звонкам за период.';
         return message;
