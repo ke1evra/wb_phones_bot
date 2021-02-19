@@ -33,6 +33,7 @@ const methods = {
           });
     } else {
       console.log(`сообщение ${message} расцененно как спам`);
+      return Promise.resolve()
     }
   },
   formatEmailMessage(b) {
