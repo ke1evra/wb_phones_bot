@@ -67,7 +67,7 @@ class Menu{
 
     async renderOrders(days)
     {
-        const data = await API.getMissedCalls(days);
+        const data = await API.getOrdersCount(days);
         let message='Счётчик заказов за последнюю неделю: \n ---------------------------\n';
         const menu = [];
         // console.log(data);
