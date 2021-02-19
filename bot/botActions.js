@@ -26,13 +26,13 @@ const methods = {
       return bot
           .sendMessage(chat, message)
           .then(() => {
-            console.log(`сообщение ${message} успешно отправлено в чат (${chat})`);
+            console.log(`Cообщение\n"${message.slice(0,80)}"\nуспешно отправлено в чат (${chat})`);
           })
           .catch((e) => {
             console.log(e);
           });
     } else {
-      console.log(`сообщение ${message} расцененно как спам`);
+      console.log(`Cообщение\n"${message.slice(0,80)}"\nбыло расцененно как спам`);
       return Promise.resolve()
     }
   },
