@@ -93,12 +93,16 @@ class Menu{
     }
     async renderCalls(days)
     {
+        const codes=require('../constants/disconnect-reasons-codes');
+        let from = moment().subtract(days, "days").format("YYYY-MM-DD");
+        let to = moment().endOf("day").format("YYYY-MM-DD")
         const data = await API.getCalls(days);
         let message='Статистика по звонкам: \n ---------------------------\n';
         let statistics=[];
         // console.log(data);
         statistics['calls_count']=0
         statistics['calls_duration']=0;
+        statistics['real_calls_count']=0;
         statistics['line_numbers']={};
         statistics['disconnect_reasons']={}
         statistics['disconnect_reasons']['total']={};
@@ -127,9 +131,13 @@ class Menu{
         statistics['Пропущенный']['calls_count']=0;
         statistics['Пропущенный']['time_before_finish']=0;
 
-        data.data.map((call, index) => {
+        data.data.forEach((call) => {
             statistics['calls_count']++;
-            statistics['calls_duration']+=parseFloat(call.call_duration);
+            if(call.call_duration!=='')
+            {
+                statistics['calls_duration']+=parseFloat(call.call_duration);
+                statistics['real_calls_count']++;
+            }
             if(statistics['disconnect_reasons']['total'].hasOwnProperty(call.disconnect_reason))
                 statistics['disconnect_reasons']['total'][call.disconnect_reason]++;
             else
@@ -164,26 +172,51 @@ class Menu{
                     statistics['Недозвон']['calls_count']++;
                     statistics['Недозвон']['time_before_finish']+=call.finish-call.start;
                     //Причины дисконнекта
-                    if(statistics['disconnect_reasons']['Исходящий'].hasOwnProperty(call.disconnect_reason))
-                        statistics['disconnect_reasons']['Исходящий'][call.disconnect_reason]++;
+                    if(statistics['disconnect_reasons']['Недозвон'].hasOwnProperty(call.disconnect_reason))
+                        statistics['disconnect_reasons']['Недозвон'][call.disconnect_reason]++;
                     else
-                        statistics['disconnect_reasons']['Исходящий'][call.disconnect_reason]=1;
+                        statistics['disconnect_reasons']['Недозвон'][call.disconnect_reason]=1;
                     break;
                 case 'Пропущенный':
                     statistics['Пропущенный']['calls_count']++;
                     statistics['Пропущенный']['time_before_finish']+=parseFloat(call.finish)-parseFloat(call.start);
                     //Причины дисконнекта
-                    if(statistics['disconnect_reasons']['Исходящий'].hasOwnProperty(call.disconnect_reason))
-                        statistics['disconnect_reasons']['Исходящий'][call.disconnect_reason]++;
+                    if(statistics['disconnect_reasons']['Пропущенный'].hasOwnProperty(call.disconnect_reason))
+                        statistics['disconnect_reasons']['Пропущенный'][call.disconnect_reason]++;
                     else
-                        statistics['disconnect_reasons']['Исходящий'][call.disconnect_reason]=1;
+                        statistics['disconnect_reasons']['Пропущенный'][call.disconnect_reason]=1;
                     break;
                 default: break;
             }
         });
-
-        console.log(statistics);
-        message+=JSON.stringify(statistics,null,'\t');
+        //формирование сообщения
+        message+=`За период с ${from} по ${to} было совершено: ${statistics.calls_count} звонков,
+Общей длительностью ${statistics.calls_duration} секунд, 
+Средней продолжительностью: ${(statistics.calls_duration/statistics.real_calls_count).toFixed(2)} секунд.
+------------------------
+Статистика по причинам окончаниям звонка:`;
+        for(let reason in statistics.disconnect_reasons.total){
+           message+=`\n    ${codes[reason]}: ${statistics.disconnect_reasons.total[reason]},`
+        }
+        message+='\nСтатистика по типам звонков:';
+        let call_types=['Входящий','Исходящий','Недозвон','Пропущенный'];
+        for(let i in call_types)
+        {
+            message+=`\n${call_types[i]}:`;
+            message+=`\n    Число звонков: ${statistics[call_types[i]].calls_count},`;
+            if(['Входящий','Исходящий'].includes(call_types[i]))
+            {
+                message+=`\n    Суммарная длительность: ${statistics[call_types[i]].calls_duration} с`;
+                message+=`\n    Средняя длительность: ${(statistics[call_types[i]].calls_duration/statistics[call_types[i]].calls_count).toFixed(2)} с`;
+                message+=`\n    Среднее время до ответа: ${(statistics[call_types[i]].time_before_answer/statistics[call_types[i]].calls_count).toFixed(2)} с`;
+            }
+            else
+                message+=`\n    Среднее время до сброса звонка: ${(statistics[call_types[i]].time_before_finish/statistics[call_types[i]].calls_count).toFixed(2)} с`;
+            message+=`\n   По причинам окончания:`;
+            for(let reason in statistics.disconnect_reasons[call_types[i]]){
+                message+=`\n     ${codes[reason]}: ${statistics.disconnect_reasons[call_types[i]][reason]}`;
+            }
+        }
         if(!data.data.length)
             message = 'Нет данных по звонкам за период.';
         return message;
