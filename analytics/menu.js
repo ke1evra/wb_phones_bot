@@ -187,9 +187,9 @@ class Menu{
         \nСредней продолжительностью: ${statistics.calls_duration/statistics.calls_count} секунд.
         \n--------------------
         \nСтатистика по причинам окончаниям звонка:`;
-        statistics.disconnect_reasons.total.forEach(reason=>{
+        for(let reason in statistics.disconnect_reasons.total){
            message+=`\n  ${reason}: ${statistics.disconnect_reasons.total[reason]},`
-        });
+        };
         message+='\nСтатистика по типам звонков:';
         for(let call_type in['Входящий','Исходящий','Недозвон','Пропущенный'])
         {
@@ -202,9 +202,9 @@ class Menu{
             ${statistics[call_type].hasOwnProperty("time_before_answer")?
                 `\n    Среднее время до сброса звонка: ${statistics[call_type].time_before_answer/statistics[call_type].calls_count}`:''}
             \n    По причинам окончания:`;
-            statistics.disconnect_reasons[call_type].forEach(reason=>{
+            for(let reason in statistics.disconnect_reasons[call_type]){
                 message+=`\n     ${reason}: ${statistics.disconnect_reasons[call_type][reason]}`;
-            });
+            };
 
         }
         console.log(`Сообщение в renderCalls: ${message}`);
