@@ -196,17 +196,14 @@ class Menu{
         {
             message+=`\n${call_types[i]}:
                 Число звонков: ${statistics[call_types[i]].calls_count},
-                Суммарная длительность: ${statistics[call_types[i]].calls_duration} секунд,
-                Средняя длительность: ${statistics[call_types[i]].calls_duration/statistics[call_types[i]].calls_count},
-            ${statistics[call_types[i]].hasOwnProperty("time_before_finish")?
-                `    Среднее время до сброса звонка: ${statistics[call_types[i]].time_before_finish/statistics[call_types[i]].calls_count} секунд`:''}
-            ${statistics[call_types[i]].hasOwnProperty("time_before_answer")?
-                `    Среднее время до ответа: ${statistics[call_types[i]].time_before_answer/statistics[call_types[i]].calls_count} секунд`:''}
-            \n   По причинам окончания:`;
+                Суммарная длительность: ${statistics[call_types[i]].calls_duration} сек.
+                Средняя длительность: ${statistics[call_types[i]].calls_duration/statistics[call_types[i]].calls_count},`;
+            message+=`\n    ${statistics[call_types[i]].hasOwnProperty("time_before_finish")?`    Среднее время до сброса звонка: ${statistics[call_types[i]].time_before_finish/statistics[call_types[i]].calls_count} сек.`:''}`;
+            message+=`\n    ${statistics[call_types[i]].hasOwnProperty("time_before_answer")?`    Среднее время до ответа: ${statistics[call_types[i]].time_before_answer/statistics[call_types[i]].calls_count} сек.`:''}`;
+            message+=`\nПо причинам окончания:`;
             for(let reason in statistics.disconnect_reasons[call_types[i]]){
                 message+=`\n     ${reason}: ${statistics.disconnect_reasons[call_types[i]][reason]}`;
             }
-
         }
         if(!data.data.length)
             message = 'Нет данных по звонкам за период.';
