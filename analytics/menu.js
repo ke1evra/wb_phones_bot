@@ -95,7 +95,7 @@ class Menu{
     {
         const data = await API.getCalls(days);
         let message='Статистика по звонкам: \n ---------------------------\n';
-        var statistics=[];
+        let statistics=[];
         // console.log(data);
         statistics['calls_count']=0
         statistics['calls_duration']=0;
@@ -191,20 +191,20 @@ class Menu{
            message+=`\n  ${reason}: ${statistics.disconnect_reasons.total[reason]},`
         }
         message+='\nСтатистика по типам звонков:';
-        console.log(`Общий этам по звонкам пройден ${message}`);
-        for(let call_type in['Входящий','Исходящий','Недозвон','Пропущенный'])
+        let call_types=['Входящий','Исходящий','Недозвон','Пропущенный'];
+        for(let i in call_types)
         {
-            message+=`${call_type}:
-            \n    Число звонков: ${statistics[call_type].calls_count},
-            \n    Суммарная длительность: ${statistics[call_type].calls_duration} секунд,
-            \n    Средняя длительность: ${statistics[call_type].calls_duration/statistics[call_type].calls_count},
-            ${statistics[call_type].hasOwnProperty("time_before_finish")?
-                `\n    Среднее время до сброса звонка: ${statistics[call_type].time_before_finish/statistics[call_type].calls_count} секунд`:''}
-            ${statistics[call_type].hasOwnProperty("time_before_answer")?
-                `\n    Среднее время до сброса звонка: ${statistics[call_type].time_before_answer/statistics[call_type].calls_count} секунд`:''}
+            message+=`${call_types[i]}:
+            \n    Число звонков: ${statistics[call_types[i]].calls_count},
+            \n    Суммарная длительность: ${statistics[call_types[i]].calls_duration} секунд,
+            \n    Средняя длительность: ${statistics[call_types[i]].calls_duration/statistics[call_types[i]].calls_count},
+            ${statistics[call_types[i]].hasOwnProperty("time_before_finish")?
+                `\n    Среднее время до сброса звонка: ${statistics[call_types[i]].time_before_finish/statistics[call_types[i]].calls_count} секунд`:''}
+            ${statistics[call_types[i]].hasOwnProperty("time_before_answer")?
+                `\n    Среднее время до сброса звонка: ${statistics[call_types[i]].time_before_answer/statistics[call_types[i]].calls_count} секунд`:''}
             \n    По причинам окончания:`;
-            for(let reason in statistics.disconnect_reasons[call_type]){
-                message+=`\n     ${reason}: ${statistics.disconnect_reasons[call_type][reason]}`;
+            for(let reason in statistics.disconnect_reasons[call_types[i]]){
+                message+=`\n     ${reason}: ${statistics.disconnect_reasons[call_types[i]][reason]}`;
             }
 
         }
