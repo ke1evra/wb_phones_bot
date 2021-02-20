@@ -71,7 +71,7 @@ class Menu {
         // console.log(data);
         let message = 'Менеджеры: \n ---------------------------\n';
         const menu = [];
-        console.log(data.data["data1"]);
+        //console.log(data.data["data1"]);
 
         data.data["data1"].map((item, index) => {
             message += `${index + 1}. (${item})\n`;
