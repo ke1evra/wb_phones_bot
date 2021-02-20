@@ -81,6 +81,15 @@ class DataManager {
         `http://185.211.247.12:3000/expenses/cost?date_from=${from}&date_to=${to}&shop=vkostume`
     );
   }
+  async getManagers(
+      days = 1,
+      from = moment().subtract(days, "days").unix(),
+      to = moment().endOf("day").unix()
+  ) {
+    return await axios.get(
+        `http://185.211.247.12:3000/mango/day?date_from=${from}&date_to=${to}`
+    );
+  }
   async getOrdersCount(
     days = 1,
     from = moment().subtract(days, "days").format("YYYY-MM-DD"),

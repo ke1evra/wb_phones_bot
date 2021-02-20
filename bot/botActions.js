@@ -136,6 +136,27 @@ const methods = {
       await sendMsg(message);
     }
   },
+  async getManagers(msg = null, days = 1) {
+    let chat_id = msg ? msg.chat.id : chats.manager;
+    const message = await menu.managers(days);
+    const messageList = message.match(/[\s\S]{1,4000}/g) || [];
+
+    const sendMsg = (message) => {
+      return bot
+          .sendMessage(chat_id, message)
+          .then((msg) => {
+            console.log(
+                `сообщение (id: ${msg.message_id})${message.length>80?message.slice(0,80)+'...':message} успешно отправлено в чат (${chat_id})`);
+            return msg;})
+          .catch((e) => {
+            console.log(e);
+          });
+    };
+
+    for (let message of messageList) {
+      await sendMsg(message);
+    }
+  },
   async getExpenses(msg = null, days = 1) {
     let chat_id = msg ? msg.chat.id : chats.manager;
     const message = await menu.expenses(days);
@@ -249,7 +270,16 @@ bot.onText(/^\/expenses(\s.+)?/, async (msg, match) => {
     console.log(e);
   }
 });
-
+bot.onText(/^\/managers(\s.+)?/, async (msg, match) => {
+  try {
+    console.log("/missed");
+    console.log(match);
+    const days = match[1] ? match[1] : 1;
+    await methods.getManagers(msg, days);
+  } catch (e) {
+    console.log(e);
+  }
+});
 bot.onText(/^\/missed(\s.+)?/, async (msg, match) => {
   try {
     console.log("/missed");
