@@ -99,6 +99,7 @@ class Menu{
         // console.log(data);
         statistics['calls_count']=0
         statistics['calls_duration']=0;
+        statistics['real_calls_count']=0;
         statistics['line_numbers']={};
         statistics['disconnect_reasons']={}
         statistics['disconnect_reasons']['total']={};
@@ -129,7 +130,11 @@ class Menu{
 
         data.data.forEach((call) => {
             statistics['calls_count']++;
-            statistics['calls_duration']+=call.call_duration===''?0:parseFloat(call.call_duration);
+            if(call.call_duration!=='')
+            {
+                statistics['calls_duration']+=parseFloat(call.call_duration);
+                statistics['real_calls_count']++;
+            }
             if(statistics['disconnect_reasons']['total'].hasOwnProperty(call.disconnect_reason))
                 statistics['disconnect_reasons']['total'][call.disconnect_reason]++;
             else
@@ -184,7 +189,7 @@ class Menu{
         //формирование сообщения
         message+=`За период было совершено: ${statistics.calls_count} звонков,
 Общей длительностью ${statistics.calls_duration} секунд, 
-Средней продолжительностью: ${(statistics.calls_duration/statistics.calls_count).toFixed(2)} секунд.
+Средней продолжительностью: ${(statistics.calls_duration/statistics.real_calls_count).toFixed(2)} секунд.
 ------------------------
 Статистика по причинам окончаниям звонка:`;
         for(let reason in statistics.disconnect_reasons.total){
@@ -204,7 +209,7 @@ class Menu{
             }
             else
                 message+=`\n    Среднее время до сброса звонка: ${(statistics[call_types[i]].time_before_finish/statistics[call_types[i]].calls_count).toFixed(2)} с`;
-            message+=`\n  По причинам окончания:`;
+            message+=`\n   По причинам окончания:`;
             for(let reason in statistics.disconnect_reasons[call_types[i]]){
                 message+=`\n     ${reason}: ${statistics.disconnect_reasons[call_types[i]][reason]}`;
             }
