@@ -2,6 +2,7 @@ const moment = require('moment');
 const API = require('../analytics/data-manager.js');
 const axios = require('axios');
 const icons = require('./numberIcons.js');
+const codes = require('../constants/disconnect-reasons-codes');
 
 class Button {
     constructor(text, cb) {
@@ -69,12 +70,13 @@ class Menu {
     async renderManagers(days) {
         const data = await API.getManagers(days);
         // console.log(data);
-        let message = 'Менеджеры: \n ---------------------------\n';
+        let message = 'Менеджеры:\n';
         const menu = [];
         //console.log(data.data["data1"]);
 
         data.data["data1"].map((item, index) => {
-            message += `${index + 1}. (${item})\n`;
+            message += `${index + 1}. ${item.call_type ==='inComing'? `Входящий`: 'Исходящий'} вызов на номер ${item.to_number} (${item.person}) с номера ${item.from_number}\n
+            ${item.startFix} - ${item.endFix} (${item["start"]} - ${item["end"]})\nпричина окончания: ${codes[item.disconnect_reason]} (${item.disconnect_reason})`;
             menu.push(new Button(item.client_name, 'some cb'))
         });
         let options = {
@@ -117,7 +119,6 @@ class Menu {
     }
 
     async renderCalls(days) {
-        const codes = require('../constants/disconnect-reasons-codes');
         let from = moment().subtract(days, "days").format("YYYY-MM-DD");
         let to = moment().endOf("day").format("YYYY-MM-DD")
         const data = await API.getCalls(days);
