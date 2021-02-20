@@ -194,13 +194,16 @@ class Menu{
         let call_types=['Входящий','Исходящий','Недозвон','Пропущенный'];
         for(let i in call_types)
         {
-            message+=`\n${call_types[i]}:
-                Число звонков: ${statistics[call_types[i]].calls_count},
-                Суммарная длительность: ${statistics[call_types[i]].calls_duration} сек.
-                Средняя длительность: ${statistics[call_types[i]].calls_duration/statistics[call_types[i]].calls_count},`;
-            message+=`\n    ${statistics[call_types[i]].hasOwnProperty("time_before_finish")?`    Среднее время до сброса звонка: ${statistics[call_types[i]].time_before_finish/statistics[call_types[i]].calls_count} сек.`:''}`;
-            message+=`\n    ${statistics[call_types[i]].hasOwnProperty("time_before_answer")?`    Среднее время до ответа: ${statistics[call_types[i]].time_before_answer/statistics[call_types[i]].calls_count} сек.`:''}`;
-            message+=`\nПо причинам окончания:`;
+            message+=`\n${call_types[i]}:`;
+            message+=`\n    Число звонков: ${statistics[call_types[i]].calls_count},`;
+            if(['Входящий','Исходящий'].includes(call_types[i]))
+            {
+                message+=`\n    Суммарная длительность: ${statistics[call_types[i]].calls_duration} сек.`;
+                message+=`\n    Средняя длительность: ${(statistics[call_types[i]].calls_duration/statistics[call_types[i]].calls_count).toFixed(2)},`;
+            }
+            message+=`\n    ${statistics[call_types[i]].hasOwnProperty("time_before_finish")?`    Среднее время до сброса звонка: ${(statistics[call_types[i]].time_before_finish/statistics[call_types[i]].calls_count).toFixed(2)} сек.`:''}`;
+            message+=`\n    ${statistics[call_types[i]].hasOwnProperty("time_before_answer")?`    Среднее время до ответа: ${(statistics[call_types[i]].time_before_answer/statistics[call_types[i]].calls_count).toFixed(2)} сек.`:''}`;
+            message+=`\n  По причинам окончания:`;
             for(let reason in statistics.disconnect_reasons[call_types[i]]){
                 message+=`\n     ${reason}: ${statistics.disconnect_reasons[call_types[i]][reason]}`;
             }
