@@ -183,12 +183,12 @@ class Menu{
         });
         //формирование сообщения
         message+=`За период было совершено: ${statistics.calls_count} звонков,
-Общей длительностью ${statistics.calls_duration}, 
+Общей длительностью ${statistics.calls_duration} секунд, 
 Средней продолжительностью: ${(statistics.calls_duration/statistics.calls_count).toFixed(2)} секунд.
 ------------------------
 Статистика по причинам окончаниям звонка:`;
         for(let reason in statistics.disconnect_reasons.total){
-           message+=`\n  ${reason}: ${statistics.disconnect_reasons.total[reason]},`
+           message+=`\n    ${reason}: ${statistics.disconnect_reasons.total[reason]},`
         }
         message+='\nСтатистика по типам звонков:';
         let call_types=['Входящий','Исходящий','Недозвон','Пропущенный'];
@@ -198,11 +198,12 @@ class Menu{
             message+=`\n    Число звонков: ${statistics[call_types[i]].calls_count},`;
             if(['Входящий','Исходящий'].includes(call_types[i]))
             {
-                message+=`\n    Суммарная длительность: ${statistics[call_types[i]].calls_duration} сек.`;
-                message+=`\n    Средняя длительность: ${(statistics[call_types[i]].calls_duration/statistics[call_types[i]].calls_count).toFixed(2)},`;
+                message+=`\n    Суммарная длительность: ${statistics[call_types[i]].calls_duration} с`;
+                message+=`\n    Средняя длительность: ${(statistics[call_types[i]].calls_duration/statistics[call_types[i]].calls_count).toFixed(2)} с`;
+                message+=`\n    Среднее время до ответа: ${(statistics[call_types[i]].time_before_answer/statistics[call_types[i]].calls_count).toFixed(2)} с`;
             }
-            message+=`\n    ${statistics[call_types[i]].hasOwnProperty("time_before_finish")?`    Среднее время до сброса звонка: ${(statistics[call_types[i]].time_before_finish/statistics[call_types[i]].calls_count).toFixed(2)} сек.`:''}`;
-            message+=`\n    ${statistics[call_types[i]].hasOwnProperty("time_before_answer")?`    Среднее время до ответа: ${(statistics[call_types[i]].time_before_answer/statistics[call_types[i]].calls_count).toFixed(2)} сек.`:''}`;
+            else
+                message+=`\n    Среднее время до сброса звонка: ${(statistics[call_types[i]].time_before_finish/statistics[call_types[i]].calls_count).toFixed(2)} с`;
             message+=`\n  По причинам окончания:`;
             for(let reason in statistics.disconnect_reasons[call_types[i]]){
                 message+=`\n     ${reason}: ${statistics.disconnect_reasons[call_types[i]][reason]}`;
