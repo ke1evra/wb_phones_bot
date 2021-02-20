@@ -73,7 +73,7 @@ class Menu {
         const menu = [];
         // console.log(data);
 
-        data["data1"].map((item, index) => {
+        data.data.map((item, index) => {
             message += `${index + 1}. (${item})\n`;
             menu.push(new Button(item.client_name, 'some cb'))
         });

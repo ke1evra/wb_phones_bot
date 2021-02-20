@@ -272,7 +272,7 @@ bot.onText(/^\/expenses(\s.+)?/, async (msg, match) => {
 });
 bot.onText(/^\/managers(\s.+)?/, async (msg, match) => {
   try {
-    console.log("/missed");
+    console.log("/managers");
     console.log(match);
     const days = match[1] ? match[1] : 1;
     await methods.getManagers(msg, days);
