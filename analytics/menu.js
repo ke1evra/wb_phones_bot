@@ -76,7 +76,7 @@ class Menu {
 
         data.data["data1"].map((item, index) => {
             message += `${index + 1}. ${item.call_type ==='inComing'? `Входящий`: 'Исходящий'} вызов на номер ${item.to_number} (${item.person}) с номера ${item.from_number}\n
-            ${item.startFix} - ${item.endFix} (${item["start"]} - ${item["end"]})\nпричина окончания: ${codes[item.disconnect_reason]} (${item.disconnect_reason})`;
+            ${item.startFix} - ${item.endFix} (${item["start"]} - ${item["end"]})\nпричина окончания: ${codes[item.disconnect_reason]} (${item.disconnect_reason})\n ---------------------------\n`;
             menu.push(new Button(item.client_name, 'some cb'))
         });
         let options = {
