@@ -95,7 +95,7 @@ class Menu{
     {
         const data = await API.getCalls(days);
         let message='Статистика по звонкам: \n ---------------------------\n';
-        let statistics=[];
+        var statistics=[];
         // console.log(data);
         statistics['calls_count']=0
         statistics['calls_duration']=0;
@@ -127,7 +127,7 @@ class Menu{
         statistics['Пропущенный']['calls_count']=0;
         statistics['Пропущенный']['time_before_finish']=0;
 
-        data.data.map((call, index) => {
+        data.data.forEach((call) => {
             statistics['calls_count']++;
             statistics['calls_duration']+=call.call_duration===''?0:parseFloat(call.call_duration);
             if(statistics['disconnect_reasons']['total'].hasOwnProperty(call.disconnect_reason))
@@ -184,13 +184,14 @@ class Menu{
         //формирование сообщения
         message+=`За период было совершено: ${statistics.calls_count} звонков,
         \nОбщей длительностью ${statistics.calls_duration}, 
-        \nСредней продолжительностью: ${statistics.calls_duration/statistics.calls_count} секунд.
+        \nСредней продолжительностью: ${(statistics.calls_duration/statistics.calls_count).toFixed(2)} секунд.
         \n--------------------
         \nСтатистика по причинам окончаниям звонка:`;
         for(let reason in statistics.disconnect_reasons.total){
            message+=`\n  ${reason}: ${statistics.disconnect_reasons.total[reason]},`
-        };
+        }
         message+='\nСтатистика по типам звонков:';
+        console.log(`Общий этам по звонкам пройден ${message}`);
         for(let call_type in['Входящий','Исходящий','Недозвон','Пропущенный'])
         {
             message+=`${call_type}:
@@ -198,13 +199,13 @@ class Menu{
             \n    Суммарная длительность: ${statistics[call_type].calls_duration} секунд,
             \n    Средняя длительность: ${statistics[call_type].calls_duration/statistics[call_type].calls_count},
             ${statistics[call_type].hasOwnProperty("time_before_finish")?
-                `\n    Среднее время до сброса звонка: ${statistics[call_type].time_before_finish/statistics[call_type].calls_count}`:''}
+                `\n    Среднее время до сброса звонка: ${statistics[call_type].time_before_finish/statistics[call_type].calls_count} секунд`:''}
             ${statistics[call_type].hasOwnProperty("time_before_answer")?
-                `\n    Среднее время до сброса звонка: ${statistics[call_type].time_before_answer/statistics[call_type].calls_count}`:''}
+                `\n    Среднее время до сброса звонка: ${statistics[call_type].time_before_answer/statistics[call_type].calls_count} секунд`:''}
             \n    По причинам окончания:`;
             for(let reason in statistics.disconnect_reasons[call_type]){
                 message+=`\n     ${reason}: ${statistics.disconnect_reasons[call_type][reason]}`;
-            };
+            }
 
         }
         console.log(`Сообщение в renderCalls: ${message}`);
