@@ -129,7 +129,7 @@ class Menu{
 
         data.data.map((call, index) => {
             statistics['calls_count']++;
-            statistics['calls_duration']+=parseFloat(call.call_duration);
+            statistics['calls_duration']+=call.call_duration===''?0:parseFloat(call.call_duration);
             if(statistics['disconnect_reasons']['total'].hasOwnProperty(call.disconnect_reason))
                 statistics['disconnect_reasons']['total'][call.disconnect_reason]++;
             else
@@ -181,9 +181,33 @@ class Menu{
                 default: break;
             }
         });
+        //формирование сообщения
+        message+=`За период было совершено: ${statistics.calls_count} звонков,
+        \nОбщей длительностью ${statistics.calls_duration}, 
+        \nСредней продолжительностью: ${statistics.calls_duration/statistics.calls_count} секунд.
+        \n--------------------
+        \nСтатистика по причинам окончаниям звонка:`;
+        statistics.disconnect_reasons.total.forEach(reason=>{
+           message+=`\n  ${reason}: ${statistics.disconnect_reasons.total[reason]},`
+        });
+        message+='\nСтатистика по типам звонков:';
+        for(let call_type in['Входящий','Исходящий','Недозвон','Пропущенный'])
+        {
+            message+=`${call_type}:
+            \n    Число звонков: ${statistics[call_type].calls_count},
+            \n    Суммарная длительность: ${statistics[call_type].calls_duration} секунд,
+            \n    Средняя длительность: ${statistics[call_type].calls_duration/statistics[call_type].calls_count},
+            ${statistics[call_type].hasOwnProperty("time_before_finish")?
+                `\n    Среднее время до сброса звонка: ${statistics[call_type].time_before_finish/statistics[call_type].calls_count}`:''}
+            ${statistics[call_type].hasOwnProperty("time_before_answer")?
+                `\n    Среднее время до сброса звонка: ${statistics[call_type].time_before_answer/statistics[call_type].calls_count}`:''}
+            \n    По причинам окончания:`;
+            statistics.disconnect_reasons[call_type].forEach(reason=>{
+                message+=`\n     ${reason}: ${statistics.disconnect_reasons[call_type][reason]}`;
+            });
 
-        console.log(statistics);
-        message+=JSON.stringify(statistics,null,'\t');
+        }
+        console.log(`Сообщение в renderCalls: ${message}`);
         if(!data.data.length)
             message = 'Нет данных по звонкам за период.';
         return message;
