@@ -93,6 +93,9 @@ class Menu{
     }
     async renderCalls(days)
     {
+        const codes=require('../constants/disconnect-reasons-codes');
+        let from = moment().subtract(days, "days").format("YYYY-MM-DD");
+        let to = moment().endOf("day").format("YYYY-MM-DD")
         const data = await API.getCalls(days);
         let message='Статистика по звонкам: \n ---------------------------\n';
         let statistics=[];
@@ -187,13 +190,13 @@ class Menu{
             }
         });
         //формирование сообщения
-        message+=`За период было совершено: ${statistics.calls_count} звонков,
+        message+=`За период с ${from} по ${to} было совершено: ${statistics.calls_count} звонков,
 Общей длительностью ${statistics.calls_duration} секунд, 
 Средней продолжительностью: ${(statistics.calls_duration/statistics.real_calls_count).toFixed(2)} секунд.
 ------------------------
 Статистика по причинам окончаниям звонка:`;
         for(let reason in statistics.disconnect_reasons.total){
-           message+=`\n    ${reason}: ${statistics.disconnect_reasons.total[reason]},`
+           message+=`\n    ${codes[reason]}: ${statistics.disconnect_reasons.total[reason]},`
         }
         message+='\nСтатистика по типам звонков:';
         let call_types=['Входящий','Исходящий','Недозвон','Пропущенный'];
@@ -211,7 +214,7 @@ class Menu{
                 message+=`\n    Среднее время до сброса звонка: ${(statistics[call_types[i]].time_before_finish/statistics[call_types[i]].calls_count).toFixed(2)} с`;
             message+=`\n   По причинам окончания:`;
             for(let reason in statistics.disconnect_reasons[call_types[i]]){
-                message+=`\n     ${reason}: ${statistics.disconnect_reasons[call_types[i]][reason]}`;
+                message+=`\n     ${codes[reason]}: ${statistics.disconnect_reasons[call_types[i]][reason]}`;
             }
         }
         if(!data.data.length)
