@@ -184,8 +184,6 @@ const methods = {
     let chat_id = msg ? msg.chat.id : chats.manager;
     const message = await menu.calls(days);
     const messageList = message.match(/[\s\S]{1,4000}/g) || [];
-    console.log(`message:${message}`);
-    console.log(`messageList:${messageList}`);
 
     const sendMsg = (message) => {
       return bot
