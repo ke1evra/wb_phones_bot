@@ -71,10 +71,10 @@ class Menu {
         // console.log(data);
         let message = 'Менеджеры: \n ---------------------------\n';
         const menu = [];
-        console.log(data.data);
+        console.log(data.data["data1"]);
 
         data.data["data1"].map((item, index) => {
-            message += `${index + 1}. (${item})\n`;
+            message += `${index + 1}. На номер ${item.to_number} (${item.disconnect_reason})\n`;
             menu.push(new Button(item.client_name, 'some cb'))
         });
         let options = {
