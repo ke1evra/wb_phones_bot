@@ -74,7 +74,7 @@ class Menu {
         console.log(data.data["data1"]);
 
         data.data["data1"].map((item, index) => {
-            message += `${index + 1}. На номер ${item.to_number} (${item.disconnect_reason})\n`;
+            message += `${index + 1}. (${item})\n`;
             menu.push(new Button(item.client_name, 'some cb'))
         });
         let options = {
@@ -85,7 +85,7 @@ class Menu {
             }),
             // disable_web_page_preview: true,
         };
-        if (!data.data.length)
+        if (!data.data["data1"].length)
             message = 'Нет данных';
         return message;
     }
