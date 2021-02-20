@@ -71,7 +71,7 @@ class Menu {
         // console.log(data);
         let message = 'Менеджеры: \n ---------------------------\n';
         const menu = [];
-        // console.log(data.data);
+        console.log(data.data);
 
         data.data["data1"].map((item, index) => {
             message += `${index + 1}. (${item})\n`;
@@ -86,7 +86,7 @@ class Menu {
             // disable_web_page_preview: true,
         };
         if (!data.data.length)
-            message = 'Нет расходов';
+            message = 'Нет данных';
         return message;
     }
 
