@@ -131,7 +131,7 @@ class Menu {
                 message = 'Нет заказов за период.';
             return message;
         }catch (e) {
-            console.log("Ошибка в функции renderOrders:${e}");
+            console.log(`Ошибка в функции renderOrders:${e}`);
             return "";
         }
 
