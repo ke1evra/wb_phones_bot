@@ -126,7 +126,7 @@ class Menu {
             message+=`Всего заказов поступило ${orderTotalCount} на сумму ${orderTotalSum}, из них:\n`
             data.data.map((item, index) => {
                 message+=`${item.order_count} - `;
-                message+=this.renderPercentage(item.order_status,item.order_count/orderTotalCount);
+                message+=menu.renderPercentage(item.order_status,item.order_count/orderTotalCount);
                 message+='\n';
             });
             if (!data.data.length)
