@@ -43,7 +43,7 @@ class Menu {
         return message;
     }
     ///Функция которая возвращает ProcessBar. "title"-Строка заголовка. "value"- процент(число от 0 до 1)
-    renderPercentage(title="",value=0){
+    async renderPercentage(title="",value=0){
         try {
             if(value>1 ||value<0)
             {
@@ -125,10 +125,12 @@ class Menu {
             });
             message+=`Всего заказов поступило ${orderTotalCount} на сумму ${orderTotalSum}, из них:\n`
             data.data.map((item, index) => {
-                message+=`${item.order_count} - ${this.renderPercentage(item.order_status,item.order_count/orderTotalCount)}\n`;
+                message+=`${item.order_count} - `;
+                message+=this.renderPercentage(item.order_status,item.order_count/orderTotalCount);
+                message+='\n';
             });
             if (!data.data.length)
-                message = 'Нет заказов за период.';
+                message = `Нет заказов за период с ${from} по ${to}.`;
             return message;
         }catch (e) {
             console.log(`Ошибка в функции renderOrders:${e}`);
