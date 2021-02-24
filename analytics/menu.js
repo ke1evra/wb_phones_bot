@@ -51,9 +51,15 @@ class Menu {
                 return "ERROR";
             }
             let msg=`${title} (${(value*100).toFixed(2)}%)\n`;
-            for(let i=1;i<(value/0.05).toFixed();i++)
+            let counter=1;
+            while(value>0.05)
+            {
                 msg+='🟩';
-            for(let i=20-(value/0.05).toFixed();i>0;i--)
+                counter++;
+                value-=0.05;
+            }
+            msg+=value>=0.025?'🟢':'⚪️';
+            for(counter;counter<20;counter++)
                 msg+='⬜️';
             return msg;
         }catch (e) {
