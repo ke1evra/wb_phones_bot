@@ -120,7 +120,7 @@ class Menu {
             let orderTotalSum=0;
             let orderTotalCount=0;
             data.data.forEach((item)=>{
-                orderTotalCount++;
+                orderTotalCount+=item.order_count;
                 orderTotalSum+=item.order_sum;
             });
             message+=`Всего заказов поступило ${orderTotalCount} на сумму ${orderTotalSum}, из них:\n`
