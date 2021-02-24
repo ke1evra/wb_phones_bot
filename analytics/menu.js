@@ -53,7 +53,7 @@ class Menu {
             let msg=`${title} (${(value*100).toFixed(2)}%)\n`;
             for(let i=0;i<value;i+=0.05)
                 msg+='🟩';
-            for(let i=1-value;i>0;i-=0.05)
+            for(let i=20-(value/0.05).toFixed();i>0;i--)
                 msg+='⬜️';
             return msg;
         }catch (e) {
