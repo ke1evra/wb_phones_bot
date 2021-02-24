@@ -42,7 +42,25 @@ class Menu {
             message = 'Нет пропущенных вызовов';
         return message;
     }
-
+    ///Функция которая возвращает ProcessBar. "title"-Строка заголовка. "value"- процент(число от 0 до 1)
+    renderPercentage(title="",value=0){
+        try {
+            if(value>1 ||value<0)
+            {
+                console.log(`Ошибка в функции renderPercentage: Значение "value"=${value} выходит за рамки от 0 до 1!`)
+                return "ERROR";
+            }
+            let msg=`${title} (${(value*100).toFixed(2)}%)\n`;
+            for(let i=0;i<value;i+=0.05)
+                msg+='🟩';
+            for(let i=1-value;i>0;i-=0.05)
+                msg+='⬜️';
+            return msg;
+        }catch (e) {
+            console.log(`Ошибка в функции renderPercentage: ${e}`);
+            return "ERROR";
+        }
+    }
     async renderExpenses(days) {
         const data = await API.getExpenses(days);
         // console.log(data);
@@ -92,29 +110,31 @@ class Menu {
     }
 
     async renderOrders(days) {
-        const data = await API.getOrdersCount(days);
-        let message = 'Счётчик по заказам: \n ---------------------------\n';
-        const menu = [];
-        // console.log(data);
+        try{
+            let from = moment().subtract(days, "days").format("YYYY-MM-DD");
+            let to = moment().endOf("day").format("YYYY-MM-DD")
+            const data = await API.getOrdersCount(days);
+            let message = `Счётчик по заказам с ${from} по ${to}: \n ---------------------------\n`;
+            // console.log(data);
+            //Объявление переменных
+            let orderTotalSum=0;
+            let orderTotalCount=0;
+            data.data.forEach((item)=>{
+                orderTotalCount++;
+                orderTotalSum+=item.order_sum;
+            });
+            message+=`Всего заказов поступило ${orderTotalCount} на сумму ${orderTotalSum}, из них:\n`
+            data.data.map((item, index) => {
+                message+=`${item.order_count} - ${this.renderPercentage(item.order_status,item.order_count/orderTotalCount)}\n`;
+            });
+            if (!data.data.length)
+                message = 'Нет заказов за период.';
+            return message;
+        }catch (e) {
+            console.log("Ошибка в функции renderOrders:${e}");
+            return "";
+        }
 
-        data.data.map((item, index) => {
-            const status = `${item.order_status ? 'Статус: ' + item.order_status + ',\n' : ''}`;
-            const orderSum = `${item.order_sum ? ' Общая сумма заказов: ' + item.order_sum + '.\n' : ''}`;
-            const orderCount = `${item.order_count ? 'Количество заказов: ' + item.order_count + ',\n' : ''}`;
-            message += `${index + 1}. ${status}${orderCount}${orderSum}--------------------------\n`;
-            menu.push(new Button(item.client_name, 'some cb'))
-        });
-        let options = {
-            reply_markup: JSON.stringify({
-                inline_keyboard: [
-                    menu,
-                ]
-            }),
-            // disable_web_page_preview: true,
-        };
-        if (!data.data.length)
-            message = 'Нет заказов за период.';
-        return message;
     }
 
     async renderCalls(days) {
