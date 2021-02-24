@@ -1,4 +1,3 @@
-process.env.NTBA_FIX_319 = 1;
 const express = require('express');
 const bot = require('./bot/bot.js');
 const app = express();
