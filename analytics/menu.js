@@ -117,81 +117,61 @@ class Menu {
             message = 'Нет данных';
         return message;
     }
-
+    ///для сортировки массивов в renderOrders формата arr=[[elem1,count],[elem2,count]]
+    sortOrdersArrays(arr) {
+        arr.sort((a,b)=>{return a[1]>b[1]});
+        return arr;
+    }
+    ///для отформатированных массивов в renderOrders формата arr=[[elem1,count],[elem2,count]]
+    searchPushOrdersArrays(elem,arr)
+    {
+        let found=false;
+        for (let i=0;i<arr.length;i++)
+        {
+            if(arr[0]===elem)
+            {
+                found=true;
+                arr[i][1]++;
+                break;
+            }
+        }
+        if(!found)arr.push([elem,1]);
+    }
     async renderOrders(days) {
         try{
             let from = moment().subtract(days, "days").format("YYYY-MM-DD");
             let to = moment().add(1,"days").format("YYYY-MM-DD")
             const ordersCountData = await API.getOrdersCount(days);
             const ordersData=await API.getOrders(days);
-            let otkaz_reasons={};
+            let otkaz_reasons=[];
             let otkaz_count=0;
             let samovivoz=0;
             let proceed_time=0;
-            let managers={};
-            let couriers={};
-            let cities={};
+            let managers=[];
+            let couriers=[];
+            let cities=[];
             ordersData.data.forEach((item)=>{
                 proceed_time+=item.proceed_time;
                 if(item.order_status_title==="Отказ")
                 {
                     otkaz_count++;
-                    if(otkaz_reasons.hasOwnProperty(item.otkaz_title))
-                        otkaz_reasons[item.otkaz_title]++;
-                    else
-                        otkaz_reasons[item.otkaz_title]=1;
+                    menu.searchPushOrdersArrays(item.otkaz_title,otkaz_reasons);
                 }
                 samovivoz+=item.samovivoz=="нет"?0:1;
                 if(item.name!=null)
-                {
-                    if(managers.hasOwnProperty(item.name))
-                        managers[item.name]++;
-                    else
-                        managers[item.name]=1;
-                }
+                    menu.searchPushOrdersArrays(item.name,managers);
                 if(item.courier!==null)
-                {
-                    if(couriers.hasOwnProperty(item.courier))
-                        couriers[item.courier]++;
-                    else
-                        couriers[item.courier]=1;
-                }
-                if(cities!==null)
-                {
-                    if(cities.hasOwnProperty(item.city))
-                        cities[item.city]++;
-                    else
-                        cities[item.city]=1;
-                }
+                    menu.searchPushOrdersArrays(item.courier,couriers);
+                if(item.city!==null)
+                    menu.searchPushOrdersArrays(item.city,cities);
             });
+            //Сортировка
+            otkaz_reasons.sort((a,b)=>{return a[1]>b[1]});
+            managers.sort((a,b)=>{return a[1]>b[1]});
+            couriers.sort((a,b)=>{return a[1]>b[1]});
+            cities.sort((a,b)=>{return a[1]>b[1]});
             //rework cities
-            let city=[];
-            let max_cities=Object.values(cities).sort();
-            let others=0;
-            let cities_count=0
-            for(let c in cities)
-            {
-                if(cities_count<5)
-                {
-                    let found=false;
-                    for(let i=max_cities.length-1;i>max_cities.length-6+cities_count;i--)
-                    {
-                        if(max_cities[i]===cities[c])
-                        {
-                            found=true;
-                            cities_count++;
-                            city.push([c,cities[c]]);
-                            delete max_cities[i];
-                            break;
-                        }
-                    }
-                    if(!found)others+=cities[c];
-                }
-                else
-                    others+=cities[c];
-            }
-            city.push("Другие",others);
-            console.log("Города:",city);
+
             //Начало составления сообщения
             let message = `Счётчик по заказам с ${from} по ${to}: \n ---------------------------\n`;
             // console.log(data);
@@ -209,31 +189,31 @@ class Menu {
                 message+='\n';
             });
             message+=`----------------------\nСтатистика по причинам отказов\nВсего отказов ${otkaz_count}, из них:\n`;
-            for(let reason in otkaz_reasons)
+            for(let i=0;i<otkaz_reasons.length;i++)
             {
-                message+=`\n${otkaz_reasons[reason]} - `;
-                message+=menu.renderPercentage(reason,otkaz_reasons[reason]/otkaz_count);
+                message+=`\n${otkaz_reasons[i][1]} - `;
+                message+=menu.renderPercentage(otkaz_reasons[i][0],otkaz_reasons[i][1]/otkaz_count);
                 message+='\n';
             }
             message+=`----------------------\nСтатистика по менджерам:\n`;
-            for(let manager in managers)
+            for(let i=0;i<managers.length;i++)
             {
-                message+=`\n${managers[manager]} - `;
-                message+=menu.renderPercentage(manager,managers[manager]/orderTotalCount);
+                message+=`\n${managers[i][1]} - `;
+                message+=menu.renderPercentage(managers[i][0],managers[i][1]/orderTotalCount);
                 message+='\n';
             }
             message+=`----------------------\nСтатистика по курьерам:\n`;
-            for(let courier in couriers)
+            for(let i=0;i<couriers.length;i++)
             {
-                message+=`\n${couriers[courier]} - `;
-                message+=menu.renderPercentage(courier,couriers[courier]/orderTotalCount);
+                message+=`\n${couriers[i][1]} - `;
+                message+=menu.renderPercentage(couriers[i][0],couriers[i][1]/orderTotalCount);
                 message+='\n';
             }
             message+=`----------------------\nСтатистика по городам:\n`;
-            for(let i=0;i<city.length;i++)
+            for(let i=0;i<cities.length;i++)
             {
-                message+=`\n${city[i][1]} - `;
-                message+=menu.renderPercentage(city[i][0],city[i][1]/orderTotalCount);
+                message+=`\n${cities[i][1]} - `;
+                message+=menu.renderPercentage(cities[i][0],cities[i][1]/orderTotalCount);
                 message+='\n';
             }
             message+=`----------------------\nСтатистика по самовывозу:\n`;
