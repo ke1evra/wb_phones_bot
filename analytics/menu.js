@@ -1,3 +1,4 @@
+let TimeFormat = require('hh-mm-ss');
 const moment = require('moment');
 const API = require('../analytics/data-manager.js');
 const axios = require('axios');
@@ -147,6 +148,24 @@ class Menu {
         }
         if(!found)arr.push([elem,1]);
     }
+    formatSecondsAsHHMMSS (number,text){
+            if (!text) {
+                text = '';
+            } else {
+                text = `${text}: `;
+            }
+            let format = 'hh:mm:ss';
+            if (number > 3600) {
+                format = 'hh:mm:ss';
+            } else {
+                format = 'mm:ss';
+            }
+            let returnString = '';
+            if (number > 0) {
+                returnString = `${text}${TimeFormat.fromS(Math.round(number), format)}`;
+            }
+            return returnString;
+        }
     async renderOrders(days) {
         try{
             let from = moment().subtract(days, "days").format("YYYY-MM-DD");
@@ -178,7 +197,7 @@ class Menu {
                     //let created_at=moment(item.created_at.substr(0,19).replace('T',' ')).format('YYYY-MM-DD HH:mm:ss');
                     if(moment(item.created_at).format('HH') > 9 && moment(item.created_at).format('HH') <20)
                     {
-                        proceed_time+=item.proceed_time;
+                        proceed_time+=parseInt(item.proceed_time);
                         proceed_count++;
                     }
                 }
@@ -209,7 +228,7 @@ class Menu {
             //Начало составления сообщения
             let message = `Счётчик по заказам с ${from} по ${to}: \n ---------------------------\n`;
 
-            message+=`Всего заказов поступило ${orderTotalCount} на сумму ${orderTotalSum}. Среднее время обработки заказов - ${proceed_time/proceed_count}, из них:\n`
+            message+=`Всего заказов поступило ${orderTotalCount} на сумму ${orderTotalSum}. Среднее время обработки заказов - ${menu.formatSecondsAsHHMMSS(proceed_time/proceed_count.toFixed())}, из них:\n`
             for(let i=0;i<ordersTypesCount.length;i++){
                 message+=`\n${ordersTypesCount[i][1]} - `;
                 message+=menu.renderPercentage(ordersTypesCount[i][0],ordersTypesCount[i][1]/orderTotalCount);
