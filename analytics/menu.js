@@ -192,7 +192,7 @@ class Menu {
             let cities=[];
             ordersData.data.forEach((item)=>{
                 //Преобразование затраченного времени
-                if(item.proceed_time!=null)
+                if(item.proceed_time!=null&&item.proceed_time>0)
                 {
                     console.log(moment(item.created_at).format('HH') > 9 && moment(item.created_at).format('HH') <20);
                     //let created_at=moment(item.created_at.substr(0,19).replace('T',' ')).format('YYYY-MM-DD HH:mm:ss');
@@ -230,7 +230,7 @@ class Menu {
             //Начало составления сообщения
             let message = `Счётчик по заказам с ${from} по ${to}: \n ---------------------------\n`;
 
-            message+=`Всего заказов поступило ${orderTotalCount} на сумму ${orderTotalSum}. Среднее время обработки заказов - ${menu.formatSecondsAsHHMMSS((proceed_time/proceed_count).toFixed())}, из них:\n`
+            message+=`Всего заказов поступило ${orderTotalCount} на сумму ${orderTotalSum}.${proceed_time>0? ` Среднее время обработки заказов - ${menu.formatSecondsAsHHMMSS((proceed_time/proceed_count).toFixed())}`:''}, из них:\n`
             for(let i=0;i<ordersTypesCount.length;i++){
                 message+=`\n${ordersTypesCount[i][1]} - `;
                 message+=menu.renderPercentage(ordersTypesCount[i][0],ordersTypesCount[i][1]/orderTotalCount);
