@@ -117,20 +117,20 @@ class Menu {
             message = 'Нет данных';
         return message;
     }
-    ///для сортировки массивов в renderOrders формата arr=[[elem1,count],[elem2,count]]
-    sortOrdersArrays(arr) {
-        for(let i=0;i<arr.length;i++)
+    ///Для отформатированных массивов renderOrders arr=[[elem,count],[elem2,count]]
+    searchPushOrdersArrays(elem,arr)
+    {
+        let found=false;
+        for (let i=0;i<arr.length;i++)
         {
-            for(let j=i+1;j<arr.length;j++)
+            if(arr[i][0]===elem)
             {
-                if(arr[i][1]<arr[j][1])
-                {
-                    let a=arr[i];
-                    arr[i]=arr[j];
-                    arr[j]=a;
-                }
+                found=true;
+                arr[i][1]++;
+                break;
             }
         }
+        if(!found)arr.push([elem,1]);
     }
 
     async renderOrders(days) {
