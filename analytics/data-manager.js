@@ -91,7 +91,7 @@ class DataManager {
     );
   }
   async getOrdersCount(
-    days = 1,
+    days = 0,
     from = moment().subtract(days, "days").format("YYYY-MM-DD"),
     to = moment().add(1,"day").format("YYYY-MM-DD")
   ){
@@ -100,7 +100,7 @@ class DataManager {
     );
   }
   async getOrders(
-      days = 1,
+      days = 0,
       from = moment().subtract(days, "days").format("YYYY-MM-DD"),
       to = moment().add(1,"days").format("YYYY-MM-DD")
   ){

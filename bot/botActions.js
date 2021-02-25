@@ -178,7 +178,7 @@ const methods = {
       await sendMsg(message);
     }
   },
-  async getOrders(msg = null, days = 1) {
+  async getOrders(msg = null, days = 0) {
     let chat_id = msg ? msg.chat.id : chats.manager;
     const message = await menu.orders(days);
     const messageList = message.match(/[\s\S]{1,4000}/g) || [];
