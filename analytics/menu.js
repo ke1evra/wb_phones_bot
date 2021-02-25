@@ -194,13 +194,11 @@ class Menu {
                 //Преобразование затраченного времени
                 if(item.proceed_time!=null&&item.proceed_time>0)
                 {
-                    console.log(moment(item.created_at).format('HH') > 9 && moment(item.created_at).format('HH') <20);
                     //let created_at=moment(item.created_at.substr(0,19).replace('T',' ')).format('YYYY-MM-DD HH:mm:ss');
                     if(moment(item.created_at).format('HH') > 9 && moment(item.created_at).format('HH') <20)
                     {
                         proceed_time+=parseInt(item.proceed_time);
                         proceed_count++;
-                        console.log(proceed_time);
                     }
                 }
                 //Счёт по типам
