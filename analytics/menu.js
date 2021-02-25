@@ -118,24 +118,48 @@ class Menu {
     async renderOrders(days) {
         try{
             let from = moment().subtract(days, "days").format("YYYY-MM-DD");
-            let to = moment().endOf("day").format("YYYY-MM-DD")
-            const data = await API.getOrdersCount(days);
+            let to = moment().add(1,"days").format("YYYY-MM-DD")
+            const ordersCountData = await API.getOrdersCount(days);
+            const ordersData=await API.getOrders(days);
+            let otkaz_reasons={};
+            let otkaz_count=0;
+            let samovivoz=0;
+            let proceed_time=0;
+            ordersData.data.forEach((item)=>{
+                proceed_time+=item.proceed_time;
+                samovivoz+=item.samovivoz;
+                if(item.order_status_title==="Отказ")
+                {
+                    otkaz_count++;
+                    if(otkaz_reasons.hasOwnProperty(item.otkaz_title))
+                        otkaz_reasons[item.otkaz_title]++;
+                    else
+                        otkaz_reasons[item.otkaz_title]=1;
+                }
+            });
             let message = `Счётчик по заказам с ${from} по ${to}: \n ---------------------------\n`;
             // console.log(data);
             //Объявление переменных
             let orderTotalSum=0;
             let orderTotalCount=0;
-            data.data.forEach((item)=>{
+            ordersCountData.data.forEach((item)=>{
                 orderTotalCount+=item.order_count;
                 orderTotalSum+=item.order_sum;
             });
             message+=`Всего заказов поступило ${orderTotalCount} на сумму ${orderTotalSum}, из них:\n`
-            data.data.map((item, index) => {
+            ordersCountData.data.map((item, index) => {
                 message+=`${item.order_count} - `;
                 message+=menu.renderPercentage(item.order_status,item.order_count/orderTotalCount);
                 message+='\n';
             });
-            if (!data.data.length)
+            message+=`----------------------\nСтатистика по причинам отказов\n Всего отказов ${otkaz_count}, из них:\n`;
+            for(let reason in otkaz_reasons)
+            {
+                message+=`${otkaz_reasons[reason]} - `;
+                message+=menu.renderPercentage(reason,otkaz_reasons[reason]/otkaz_count);
+                message+='\n';
+            }
+            if (!ordersCountData.data.length)
                 message = `Нет заказов за период с ${from} по ${to}.`;
             return message;
         }catch (e) {
