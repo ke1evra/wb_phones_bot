@@ -226,7 +226,7 @@ class Menu {
             for(let i=5;i<cities.length;i++)
                 other_cities+=cities[i][1];
             //Начало составления сообщения
-            let message = `Счётчик по заказам с ${from} по ${to}: \n ---------------------------\n`;
+            let message = `Статистика по заказам с ${from}: \n ---------------------------\n`;
 
             message+=`Всего заказов поступило ${orderTotalCount} на сумму ${orderTotalSum}.${proceed_time>0? ` Среднее время обработки заказов - ${menu.formatSecondsAsHHMMSS((proceed_time/proceed_count).toFixed())}`:''}, из них:\n`
             for(let i=0;i<ordersTypesCount.length;i++){
