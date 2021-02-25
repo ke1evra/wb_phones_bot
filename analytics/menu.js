@@ -174,13 +174,13 @@ class Menu {
                 if(cities_count<5)
                 {
                     let found=false;
-                    for(let i=0;i<5-cities_count;i++)
+                    for(let i=max_cities.length-1;i>max_cities.length-6+cities_count;i--)
                     {
                         if(max_cities[i]===cities[c])
                         {
                             found=true;
                             cities_count++;
-                            city.push([c,cities[c]]);
+                            city.push(c,cities[c]);
                             delete max_cities[i];
                             break;
                         }
@@ -190,6 +190,7 @@ class Menu {
                 else
                     others+=cities[c];
             }
+            console.log("Города:",city);
             city.push("Другие",others);
             //Начало составления сообщения
             let message = `Счётчик по заказам с ${from} по ${to}: \n ---------------------------\n`;
