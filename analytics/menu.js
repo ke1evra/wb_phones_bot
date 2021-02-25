@@ -132,21 +132,7 @@ class Menu {
             }
         }
     }
-    ///для отформатированных массивов в renderOrders формата arr=[[elem1,count],[elem2,count]]
-    searchPushOrdersArrays(elem,arr)
-    {
-        let found=false;
-        for (let i=0;i<arr.length;i++)
-        {
-            if(arr[i][0]===elem)
-            {
-                found=true;
-                arr[i][1]++;
-                break;
-            }
-        }
-        if(!found)arr.push([elem,1]);
-    }
+
     async renderOrders(days) {
         try{
             let from = moment().subtract(days, "days").format("YYYY-MM-DD");
@@ -176,10 +162,10 @@ class Menu {
                     menu.searchPushOrdersArrays(item.city,cities);
             });
             //Сортировка
-            otkaz_reasons;
-            menu.sortOrdersArrays(managers);
-            menu.sortOrdersArrays(couriers);
-            menu.sortOrdersArrays(cities);
+            otkaz_reasons.sort((a,b)=>{return a[1]<b[1]});
+            managers.sort((a,b)=>{return a[1]<b[1]});
+            couriers.sort((a,b)=>{return a[1]<b[1]});
+            cities.sort((a,b)=>{return a[1]<b[1]});
             //rework cities
 
             //Начало составления сообщения
