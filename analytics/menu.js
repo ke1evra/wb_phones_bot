@@ -138,11 +138,14 @@ class Menu {
                     else
                         otkaz_reasons[item.otkaz_title]=1;
                 }
-                samovivoz+=item.samovivoz;
-                if(managers.hasOwnProperty(item.name))
-                    managers[item.name]++;
-                else
-                    managers[item.name]=1;
+                samovivoz+=item.samovivoz=="нет"?0:1;
+                if(item.name!=null)
+                {
+                    if(managers.hasOwnProperty(item.name))
+                        managers[item.name]++;
+                    else
+                        managers[item.name]=1;
+                }
                 if(item.courier!==null)
                 {
                     if(couriers.hasOwnProperty(item.courier))
