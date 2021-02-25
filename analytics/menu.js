@@ -150,7 +150,7 @@ class Menu {
     }
     numberWithCommas (x, text) {
         const value = x.value ? x.value : x;
-        const formatted = Math.round(value).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '&nbsp;');
+        const formatted = Math.round(value).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
         return text ? `${text} ${formatted}` : formatted;
     }
     formatSecondsAsHHMMSS (number,text){
@@ -231,7 +231,7 @@ class Menu {
             for(let i=5;i<cities.length;i++)
                 other_cities+=cities[i][1];
             //Начало составления сообщения
-            let message = `Статистика по заказам с ${from}: \n ---------------------------\n`;
+            let message = `Статистика по заказам ${days>1?`с ${from}`:`на ${from`}: \n ---------------------------\n`;
 
             message+=`Всего заказов поступило ${menu.numberWithCommas(orderTotalCount)} на сумму ${menu.numberWithCommas(orderTotalSum)}.${proceed_time>0? ` Среднее время обработки заказов - ${menu.formatSecondsAsHHMMSS((proceed_time/proceed_count).toFixed())}`:''}, из них:\n`
             for(let i=0;i<ordersTypesCount.length;i++){
