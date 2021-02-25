@@ -167,11 +167,22 @@ class Menu {
             let otkaz_count=0;
             let samovivoz=0;
             let proceed_time=0;
+            let proceed_count=0;
             let managers=[];
             let couriers=[];
             let cities=[];
             ordersData.data.forEach((item)=>{
-                proceed_time+=item.proceed_time;
+                //Преобразование затраченного времени
+                if(item.proceed_time!=null)
+                {
+                    //let created_at=moment(item.created_at.substr(0,19).replace('T',' ')).format('YYYY-MM-DD HH:mm:ss');
+                    if(moment(item.created_at).format('HH') > 9 && moment(item.created_at).format('HH') <20)
+                    {
+                        proceed_time+=item.proceed_time;
+                        proceed_count++;
+                    }
+                }
+                //Счёт по типам
                 if(item.order_status_title==="Отказ")
                 {
                     otkaz_count++;
@@ -195,13 +206,10 @@ class Menu {
             let other_cities=0;
             for(let i=5;i<cities.length;i++)
                 other_cities+=cities[i][1];
-            cities=cities.splice(0,5);
-            cities.push(["Другие",other_cities]);
-            menu.sortOrdersArrays(cities);
             //Начало составления сообщения
             let message = `Счётчик по заказам с ${from} по ${to}: \n ---------------------------\n`;
 
-            message+=`Всего заказов поступило ${orderTotalCount} на сумму ${orderTotalSum}, из них:\n`
+            message+=`Всего заказов поступило ${orderTotalCount} на сумму ${orderTotalSum}. Среднее время обработки заказов - ${proceed_time/proceed_count}, из них:\n`
             for(let i=0;i<ordersTypesCount.length;i++){
                 message+=`\n${ordersTypesCount[i][1]} - `;
                 message+=menu.renderPercentage(ordersTypesCount[i][0],ordersTypesCount[i][1]/orderTotalCount);
@@ -229,12 +237,15 @@ class Menu {
                 message+='\n';
             }
             message+=`----------------------\nСтатистика по городам:\n`;
-            for(let i=0;i<cities.length;i++)
+            for(let i=0;i<5;i++)
             {
                 message+=`\n${cities[i][1]} - `;
                 message+=menu.renderPercentage(cities[i][0],cities[i][1]/orderTotalCount);
                 message+='\n';
             }
+            message+=`\n${other_cities} - `;
+            message+=menu.renderPercentage("Другие",other_cities/orderTotalCount);
+            message+='\n';
             //По самовывозу
             message+=`----------------------\nСтатистика по самовывозу:\n`;
             if(samovivoz>orderTotalCount/2)
