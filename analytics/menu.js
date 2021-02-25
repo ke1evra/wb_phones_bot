@@ -143,7 +143,7 @@ class Menu {
                     managers[item.name]++;
                 else
                     managers[item.name]=1;
-                if(courier!==null)
+                if(item.courier!==null)
                 {
                     if(couriers.hasOwnProperty(item.courier))
                         couriers[item.courier]++;
