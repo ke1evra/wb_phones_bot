@@ -58,7 +58,10 @@ class Menu {
                 counter++;
                 value-=0.05;
             }
-            msg+=value>=0.025?'🟢':'⚪️';
+            if(value.toFixed(4)!=0)
+                msg+=value>=0.025?'🟢':'⚪️';
+            else
+                msg+='⬜️';
             for(counter;counter<20;counter++)
                 msg+='⬜️';
             return msg;
@@ -161,6 +164,34 @@ class Menu {
                         cities[item.city]=1;
                 }
             });
+            //rework cities
+            let city=[];
+            let max_cities=Object.values(cities).sort();
+            let others=0;
+            let cities_count=0
+            for(let c in cities)
+            {
+                if(cities_count<5)
+                {
+                    for(let i=0;i<5-cities_count;i++)
+                    {
+                        let found=false;
+                        if(max_cities[i]===cities[c])
+                        {
+                            found=true;
+                            cities_count++;
+                            city.push([c,cities[c]]);
+                            delete max_cities[i];
+                            break;
+                        }
+                    }
+                    if(!found)others+=cities[c];
+                }
+                else
+                    others+=cities[c];
+            }
+            city.push("Другие",others);
+            //Начало составления сообщения
             let message = `Счётчик по заказам с ${from} по ${to}: \n ---------------------------\n`;
             // console.log(data);
             //Объявление переменных
@@ -198,15 +229,18 @@ class Menu {
                 message+='\n';
             }
             message+=`----------------------\nСтатистика по городам:\n`;
-            for(let city in cities)
+            for(let i=0;i<city.length;i++)
             {
-                message+=`\n${cities[city]} - `;
-                message+=menu.renderPercentage(city,cities[city]/orderTotalCount);
+                message+=`\n${city[i][1]} - `;
+                message+=menu.renderPercentage(city[i][0],city[i][1]/orderTotalCount);
                 message+='\n';
             }
             message+=`----------------------\nСтатистика по самовывозу:\n`;
             message+=`\n${samovivoz} - `;
-            message+=menu.renderPercentage("Самовывоз",samovivoz/orderTotalCount);
+            message+=menu.renderPercentage("самовывоз",samovivoz/orderTotalCount);
+            message+='\n';
+            message+=`\n${orderTotalCount-samovivoz} - `;
+            message+=menu.renderPercentage("курьер",(orderTotalCount-samovivoz)/orderTotalCount);
             message+='\n';
 
             if (!ordersCountData.data.length)
