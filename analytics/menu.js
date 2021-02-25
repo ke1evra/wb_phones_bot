@@ -125,9 +125,11 @@ class Menu {
             let otkaz_count=0;
             let samovivoz=0;
             let proceed_time=0;
+            let managers={};
+            let couriers={};
+            let cities={};
             ordersData.data.forEach((item)=>{
                 proceed_time+=item.proceed_time;
-                samovivoz+=item.samovivoz;
                 if(item.order_status_title==="Отказ")
                 {
                     otkaz_count++;
@@ -135,6 +137,25 @@ class Menu {
                         otkaz_reasons[item.otkaz_title]++;
                     else
                         otkaz_reasons[item.otkaz_title]=1;
+                }
+                samovivoz+=item.samovivoz;
+                if(managers.hasOwnProperty(item.name))
+                    managers[item.name]++;
+                else
+                    managers[item.name]=1;
+                if(courier!==null)
+                {
+                    if(couriers.hasOwnProperty(item.courier))
+                        couriers[item.courier]++;
+                    else
+                        couriers[item.courier]=1;
+                }
+                if(cities!==null)
+                {
+                    if(cities.hasOwnProperty(item.city))
+                        cities[item.city]++;
+                    else
+                        cities[item.city]=1;
                 }
             });
             let message = `Счётчик по заказам с ${from} по ${to}: \n ---------------------------\n`;
@@ -148,17 +169,43 @@ class Menu {
             });
             message+=`Всего заказов поступило ${orderTotalCount} на сумму ${orderTotalSum}, из них:\n`
             ordersCountData.data.map((item, index) => {
-                message+=`${item.order_count} - `;
+                message+=`\n${item.order_count} - `;
                 message+=menu.renderPercentage(item.order_status,item.order_count/orderTotalCount);
                 message+='\n';
             });
-            message+=`----------------------\nСтатистика по причинам отказов\n Всего отказов ${otkaz_count}, из них:\n`;
+            message+=`----------------------\nСтатистика по причинам отказов\nВсего отказов ${otkaz_count}, из них:\n`;
             for(let reason in otkaz_reasons)
             {
-                message+=`${otkaz_reasons[reason]} - `;
+                message+=`\n${otkaz_reasons[reason]} - `;
                 message+=menu.renderPercentage(reason,otkaz_reasons[reason]/otkaz_count);
                 message+='\n';
             }
+            message+=`----------------------\nСтатистика по менджерам:\n`;
+            for(let manager in managers)
+            {
+                message+=`\n${managers[manager]} - `;
+                message+=menu.renderPercentage(manager,managers[manager]/orderTotalCount);
+                message+='\n';
+            }
+            message+=`----------------------\nСтатистика по курьерам:\n`;
+            for(let courier in couriers)
+            {
+                message+=`\n${couriers[courier]} - `;
+                message+=menu.renderPercentage(courier,couriers[courier]/orderTotalCount);
+                message+='\n';
+            }
+            message+=`----------------------\nСтатистика по городам:\n`;
+            for(let city in cities)
+            {
+                message+=`\n${cities[city]} - `;
+                message+=menu.renderPercentage(city,cities[city]/orderTotalCount);
+                message+='\n';
+            }
+            message+=`----------------------\nСтатистика по самовывозу:\n`;
+            message+=`\n${samovivoz} - `;
+            message+=menu.renderPercentage("Самовывоз",samovivoz/orderTotalCount);
+            message+='\n';
+
             if (!ordersCountData.data.length)
                 message = `Нет заказов за период с ${from} по ${to}.`;
             return message;
