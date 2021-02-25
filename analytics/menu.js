@@ -138,7 +138,7 @@ class Menu {
         let found=false;
         for (let i=0;i<arr.length;i++)
         {
-            if(arr[0]===elem)
+            if(arr[i][0]===elem)
             {
                 found=true;
                 arr[i][1]++;
