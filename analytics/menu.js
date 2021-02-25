@@ -176,13 +176,15 @@ class Menu {
                     menu.searchPushOrdersArrays(item.city,cities);
             });
             //Сортировка
-            otkaz_reasons;
             menu.sortOrdersArrays(managers);
             menu.sortOrdersArrays(couriers);
             menu.sortOrdersArrays(cities);
             menu.sortOrdersArrays(otkaz_reasons);
             //rework cities
-
+            let cities_count=0;
+            let other_cities=0;
+            for(let i=5;i<cities.length;i++)
+                other_cities+=cities[i][1];
             //Начало составления сообщения
             let message = `Счётчик по заказам с ${from} по ${to}: \n ---------------------------\n`;
             // console.log(data);
@@ -221,12 +223,16 @@ class Menu {
                 message+='\n';
             }
             message+=`----------------------\nСтатистика по городам:\n`;
-            for(let i=0;i<cities.length;i++)
+            for(let i=0;i<5;i++)
             {
                 message+=`\n${cities[i][1]} - `;
                 message+=menu.renderPercentage(cities[i][0],cities[i][1]/orderTotalCount);
                 message+='\n';
             }
+            message+=`\n${other_cities} - `;
+            message+=menu.renderPercentage("Другие",other_cities/orderTotalCount);
+            message+='\n';
+            //По самовывозу
             message+=`----------------------\nСтатистика по самовывозу:\n`;
             message+=`\n${samovivoz} - `;
             message+=menu.renderPercentage("самовывоз",samovivoz/orderTotalCount);
