@@ -180,6 +180,7 @@ class Menu {
             menu.sortOrdersArrays(managers);
             menu.sortOrdersArrays(couriers);
             menu.sortOrdersArrays(cities);
+            menu.sortOrdersArrays(otkaz_reasons);
             //rework cities
 
             //Начало составления сообщения
