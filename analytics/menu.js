@@ -173,9 +173,9 @@ class Menu {
             {
                 if(cities_count<5)
                 {
+                    let found=false;
                     for(let i=0;i<5-cities_count;i++)
                     {
-                        let found=false;
                         if(max_cities[i]===cities[c])
                         {
                             found=true;
