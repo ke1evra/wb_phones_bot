@@ -150,8 +150,18 @@ class Menu {
     async renderOrders(days) {
         try{
             let from = moment().subtract(days, "days").format("YYYY-MM-DD");
-            let to = moment().add(1,"days").format("YYYY-MM-DD")
+            let to = moment().add(1,"days").format("YYYY-MM-DD");
+            //По типам заказов
             const ordersCountData = await API.getOrdersCount(days);
+            let orderTotalSum=0;
+            let orderTotalCount=0;
+            let ordersTypesCount=[];
+            ordersCountData.data.forEach((item)=>{
+                orderTotalCount+=item.order_count;
+                orderTotalSum+=item.order_sum;
+                ordersTypesCount.push([item.order_status,item.order_count]);
+            });
+            //По конкретным заказам
             const ordersData=await API.getOrders(days);
             let otkaz_reasons=[];
             let otkaz_count=0;
@@ -180,27 +190,23 @@ class Menu {
             menu.sortOrdersArrays(couriers);
             menu.sortOrdersArrays(cities);
             menu.sortOrdersArrays(otkaz_reasons);
+            menu.sortOrdersArrays(ordersTypesCount);
             //rework cities
-            let cities_count=0;
             let other_cities=0;
             for(let i=5;i<cities.length;i++)
                 other_cities+=cities[i][1];
+            cities=cities.splice(0,5);
+            cities.push(["Другие",other_cities]);
+            menu.sortOrdersArrays(cities);
             //Начало составления сообщения
             let message = `Счётчик по заказам с ${from} по ${to}: \n ---------------------------\n`;
-            // console.log(data);
-            //Объявление переменных
-            let orderTotalSum=0;
-            let orderTotalCount=0;
-            ordersCountData.data.forEach((item)=>{
-                orderTotalCount+=item.order_count;
-                orderTotalSum+=item.order_sum;
-            });
+
             message+=`Всего заказов поступило ${orderTotalCount} на сумму ${orderTotalSum}, из них:\n`
-            ordersCountData.data.map((item, index) => {
-                message+=`\n${item.order_count} - `;
-                message+=menu.renderPercentage(item.order_status,item.order_count/orderTotalCount);
+            for(let i=0;i<ordersTypesCount.length;i++){
+                message+=`\n${ordersTypesCount[i][1]} - `;
+                message+=menu.renderPercentage(ordersTypesCount[i][0],ordersTypesCount[i][1]/orderTotalCount);
                 message+='\n';
-            });
+            }
             message+=`----------------------\nСтатистика по причинам отказов\nВсего отказов ${otkaz_count}, из них:\n`;
             for(let i=0;i<otkaz_reasons.length;i++)
             {
@@ -223,23 +229,32 @@ class Menu {
                 message+='\n';
             }
             message+=`----------------------\nСтатистика по городам:\n`;
-            for(let i=0;i<5;i++)
+            for(let i=0;i<cities.length;i++)
             {
                 message+=`\n${cities[i][1]} - `;
                 message+=menu.renderPercentage(cities[i][0],cities[i][1]/orderTotalCount);
                 message+='\n';
             }
-            message+=`\n${other_cities} - `;
-            message+=menu.renderPercentage("Другие",other_cities/orderTotalCount);
-            message+='\n';
             //По самовывозу
             message+=`----------------------\nСтатистика по самовывозу:\n`;
-            message+=`\n${samovivoz} - `;
-            message+=menu.renderPercentage("самовывоз",samovivoz/orderTotalCount);
-            message+='\n';
-            message+=`\n${orderTotalCount-samovivoz} - `;
-            message+=menu.renderPercentage("курьер",(orderTotalCount-samovivoz)/orderTotalCount);
-            message+='\n';
+            if(samovivoz>orderTotalCount/2)
+            {
+                message+=`\n${samovivoz} - `;
+                message+=menu.renderPercentage("самовывоз",samovivoz/orderTotalCount);
+                message+='\n';
+                message+=`\n${orderTotalCount-samovivoz} - `;
+                message+=menu.renderPercentage("курьер",(orderTotalCount-samovivoz)/orderTotalCount);
+                message+='\n';
+            }
+            else
+            {
+                message+=`\n${orderTotalCount-samovivoz} - `;
+                message+=menu.renderPercentage("курьер",(orderTotalCount-samovivoz)/orderTotalCount);
+                message+='\n';
+                message+=`\n${samovivoz} - `;
+                message+=menu.renderPercentage("самовывоз",samovivoz/orderTotalCount);
+                message+='\n';
+            }
 
             if (!ordersCountData.data.length)
                 message = `Нет заказов за период с ${from} по ${to}.`;
