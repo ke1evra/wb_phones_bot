@@ -253,7 +253,7 @@ bot.onText(/\/start/, async (msg) => {
 bot.onText(/^\/orders(\s.+)?/, async (msg,match) => {
   try {
     console.log("/orders");
-    const days = match[1] ? match[1] : 1;
+    const days = match[1] ? match[1] : 0;
     await methods.getOrders(msg, days);
   } catch (e) {
     console.log(e);
