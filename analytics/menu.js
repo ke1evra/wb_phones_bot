@@ -119,8 +119,18 @@ class Menu {
     }
     ///для сортировки массивов в renderOrders формата arr=[[elem1,count],[elem2,count]]
     sortOrdersArrays(arr) {
-        arr.sort((a,b)=>{return a[1]>b[1]});
-        return arr;
+        for(let i=0;i<arr.length;i++)
+        {
+            for(let j=i+1;j<arr.length;j++)
+            {
+                if(arr[i][1]<arr[j][1])
+                {
+                    let a=arr[i];
+                    arr[i]=arr[j];
+                    arr[j]=a;
+                }
+            }
+        }
     }
     ///для отформатированных массивов в renderOrders формата arr=[[elem1,count],[elem2,count]]
     searchPushOrdersArrays(elem,arr)
@@ -166,10 +176,10 @@ class Menu {
                     menu.searchPushOrdersArrays(item.city,cities);
             });
             //Сортировка
-            otkaz_reasons.sort((a,b)=>{return a[1]>b[1]});
-            managers.sort((a,b)=>{return a[1]>b[1]});
-            couriers.sort((a,b)=>{return a[1]>b[1]});
-            cities.sort((a,b)=>{return a[1]>b[1]});
+            otkaz_reasons;
+            menu.sortOrdersArrays(managers);
+            menu.sortOrdersArrays(couriers);
+            menu.sortOrdersArrays(cities);
             //rework cities
 
             //Начало составления сообщения
