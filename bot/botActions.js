@@ -258,6 +258,7 @@ bot.onText(/^\/orders(\s.+)?/, async (msg,match) => {
     if(/^\s*range\s(\d{4}-\d{2}-\d{2})\s*(\d{4}-\d{2}-\d{2})/.test(match[1]))
     {
       let from_to=match[1].match(/^\s*range\s(\d{4}-\d{2}-\d{2})\s*(\d{4}-\d{2}-\d{2})/);
+      console.log(from_to);
       let from=moment(from_to[0]).format("YYYY-MM-DD");
       let to=moment(from_to[1]).format("YYYY-MM-DD");
       console.log(from, to)
