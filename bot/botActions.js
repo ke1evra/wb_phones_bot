@@ -255,15 +255,15 @@ bot.onText(/^\/orders(\s.+)?/, async (msg,match) => {
     console.log("/orders");
     console.log(match);
 
-    if(/^\srange\s(\d{4}\.[0-1]\d\.[0-3]\d})-(\d{4}\.[0-1]\d\.[0-3]\d)/.test(match[1]))
+    if(/^\s*range\s(\d{4}-\d{2}-\d{2})\s*(\d{4}-\d{2}-\d{2})/.test(match[1]))
     {
-      let from_to=match[1].match(/^\srange\s(\d{4}\.[0-1]\d\.[0-3]\d})-(\d{4}\.[0-1]\d\.[0-3]\d)/);
+      let from_to=match[1].match(/^\s*range\s(\d{4}-\d{2}-\d{2})\s*(\d{4}-\d{2}-\d{2})/);
       let from=moment(from_to[0]).format("YYYY-MM-DD");
       let to=moment(from_to[1]).format("YYYY-MM-DD");
       console.log(from, to)
       await methods.getOrders(msg, null, from, to);
     }
-    if(/^\s*(\d+)?/.test(match[1]))
+    else if(/^\s*(\d+)?/.test(match[1]))
     {
       console.log(`match[1]:${match[1]}`);
       const days = match[1] ? match[1] : 0;
