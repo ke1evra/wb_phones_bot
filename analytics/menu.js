@@ -175,12 +175,11 @@ class Menu {
         try{
             const request_type=from==null&&to==null?'days':'range';
             from = from==null?moment().subtract(days, "days").format("YYYY-MM-DD"):from;
-            to = to==null?moment().format("YYYY-MM-DD"):to;
+            to = to==null?moment():to;
             //т.к. берёт не включительно добавляем +1 день
             to.add(1,"day");
-
             //По типам заказов
-            const ordersCountData = await API.getOrdersCount(days,from,to);
+            const ordersCountData = await API.getOrdersCount(days,from,to.format("YYYY-MM-DD"));
             let orderTotalSum=0;
             let orderTotalCount=0;
             let ordersTypesCount=[];
@@ -190,9 +189,9 @@ class Menu {
                 ordersTypesCount.push([item.order_status,item.order_count]);
             });
             //По конкретным заказам
-            const ordersData=await API.getOrders(days,from,to);
+            const ordersData=await API.getOrders(days,from,to.format("YYYY-MM-DD"));
             //После запроса возвращаем "to" как было
-            to.add(1,"day");
+            to=to.add(-1,"day").format("YYYY-MM-DD");
             let otkaz_reasons=[];
             let otkaz_count=0;
             let samovivoz=0;
