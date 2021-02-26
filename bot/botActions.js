@@ -257,7 +257,7 @@ bot.onText(/^\/orders(\s.+)?/, async (msg,match) => {
 
     if(/^\srange\s(\d{2}\.\d{2}\.\d{4})-(\d{2}\.\d{2}\.\d{4})/.test(match[1]))
     {
-      let from_to=match.match(/^\srange\s(\d{2}\.\d{2}\.\d{4})-(\d{2}\.\d{2}\.\d{4})/);
+      let from_to=match[1].match(/^\srange\s(\d{2}\.\d{2}\.\d{4})-(\d{2}\.\d{2}\.\d{4})/);
       let from=moment(from_to[0]).format("YYYY-MM-DD");
       let to=moment(from_to[1]).format("YYYY-MM-DD");
       console.log(from, to)
