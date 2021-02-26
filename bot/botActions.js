@@ -255,7 +255,7 @@ bot.onText(/^\/orders(\s.+)?/, async (msg,match) => {
     console.log("/orders");
     console.log(match);
 
-    if(/^\srange\s(\d{2}\.\d{2}\.\d{4})-(\d{2}\.\d{2}\.\d{4})/.test(match))
+    if(/^\srange\s(\d{2}\.\d{2}\.\d{4})-(\d{2}\.\d{2}\.\d{4})/.test(match[1]))
     {
       let from_to=match.match(/^\srange\s(\d{2}\.\d{2}\.\d{4})-(\d{2}\.\d{2}\.\d{4})/);
       let from=moment(from_to[0]).format("YYYY-MM-DD");
@@ -263,7 +263,7 @@ bot.onText(/^\/orders(\s.+)?/, async (msg,match) => {
       console.log(from, to)
       await methods.getOrders(msg, null, from, to);
     }
-    if(/^\s*(\d+)?/.test(match))
+    if(/^\s*(\d+)?/.test(match[1]))
     {
       console.log(`match[0]:${match[1]}`);
       const days = match[1] ? match[1] : 0;
