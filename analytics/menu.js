@@ -175,7 +175,7 @@ class Menu {
         try{
             const request_type=from==null&&to==null?'days':'range';
             from = from==null?moment().subtract(days, "days").format("YYYY-MM-DD"):from;
-            to = to==null?moment():to;
+            to = to==null?moment():moment(to);
             //т.к. берёт не включительно добавляем +1 день
             to.add(1,"day");
             //По типам заказов
