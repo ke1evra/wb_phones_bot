@@ -174,7 +174,8 @@ class Menu {
     async renderOrders(days,from,to) {
         try{
             from = from==null?moment().subtract(days, "days").format("YYYY-MM-DD"):from;
-            to = to==null?moment().subtract(days, "days").format("YYYY-MM-DD"):to;
+            to = to==null?moment().add(1,"day").format("YYYY-MM-DD"):to;
+
             //По типам заказов
             const ordersCountData = await API.getOrdersCount(days,from,to);
             let orderTotalSum=0;

@@ -265,7 +265,7 @@ bot.onText(/^\/orders(\s.+)?/, async (msg,match) => {
     }
     if(/^\s*(\d+)?/.test(match[1]))
     {
-      console.log(`match[0]:${match[1]}`);
+      console.log(`match[1]:${match[1]}`);
       const days = match[1] ? match[1] : 0;
       console.log(`days:${days}`);
       await methods.getOrders(msg, days);
