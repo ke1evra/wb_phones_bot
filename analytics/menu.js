@@ -171,12 +171,12 @@ class Menu {
             }
             return returnString;
         }
-    async renderOrders(days) {
+    async renderOrders(days,from,to) {
         try{
-            let from = moment().subtract(days, "days").format("YYYY-MM-DD");
-            let to = moment().add(1,"days").format("YYYY-MM-DD");
+            from = from==null?moment().subtract(days, "days").format("YYYY-MM-DD"):from;
+            to = to==null?moment().subtract(days, "days").format("YYYY-MM-DD"):to;
             //По типам заказов
-            const ordersCountData = await API.getOrdersCount(days);
+            const ordersCountData = await API.getOrdersCount(days,from,to);
             let orderTotalSum=0;
             let orderTotalCount=0;
             let ordersTypesCount=[];
@@ -186,7 +186,7 @@ class Menu {
                 ordersTypesCount.push([item.order_status,item.order_count]);
             });
             //По конкретным заказам
-            const ordersData=await API.getOrders(days);
+            const ordersData=await API.getOrders(days,from,to);
             let otkaz_reasons=[];
             let otkaz_count=0;
             let samovivoz=0;
@@ -207,7 +207,7 @@ class Menu {
                     }
                 }
                 //Счёт по типам
-                if(item.order_status_title==="Отказ")
+                if(item.order_status_title==="Отказ"&&item.otkaz_title!==null)
                 {
                     otkaz_count++;
                     menu.searchPushOrdersArrays(item.otkaz_title,otkaz_reasons);

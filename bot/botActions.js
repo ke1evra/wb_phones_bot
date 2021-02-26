@@ -178,9 +178,9 @@ const methods = {
       await sendMsg(message);
     }
   },
-  async getOrders(msg = null, days = 0) {
+  async getOrders(msg = null, days = 0,from=null,to=null) {
     let chat_id = msg ? msg.chat.id : chats.manager;
-    const message = await menu.orders(days);
+    const message = await menu.orders(days, from,to);
     const messageList = message.match(/[\s\S]{1,4000}/g) || [];
 
     const sendMsg = (message) => {
@@ -254,12 +254,22 @@ bot.onText(/^\/orders(\s.+)?/, async (msg,match) => {
   try {
     console.log("/orders");
     console.log(match);
-    /*
-    let b=/^(\s\d+)?/;
-    let c=/^\srange (\d{2}\.\d{2}\.\d{4})-(\d{2}\.\d{2}\.\d{4})/;
-     */
-    const days = match[1] ? match[1] : 0;
-    await methods.getOrders(msg, days);
+
+    if(/^\srange\s(\d{2}\.\d{2}\.\d{4})-(\d{2}\.\d{2}\.\d{4})/.test(match))
+    {
+      let from_to=match.match(/^\srange\s(\d{2}\.\d{2}\.\d{4})-(\d{2}\.\d{2}\.\d{4})/);
+      let from=moment(from_to[0]).format("YYYY-MM-DD");
+      let to=moment(from_to[1]).format("YYYY-MM-DD");
+      console.log(from, to)
+      await methods.getOrders(msg, null, from, to);
+    }
+    if(/^\s*(\d+)?/.test(match))
+    {
+      console.log(`match[0]:${match[1]}`);
+      const days = match[1] ? match[1] : 0;
+      console.log(`days:${days}`);
+      await methods.getOrders(msg, days);
+    }
   } catch (e) {
     console.log(e);
   }
