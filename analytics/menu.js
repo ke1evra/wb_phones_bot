@@ -173,6 +173,7 @@ class Menu {
         }
     async renderOrders(days,from,to) {
         try{
+            const request_type=from==null&&to==null?'days':'range';
             from = from==null?moment().subtract(days, "days").format("YYYY-MM-DD"):from;
             to = to==null?moment().add(1,"day").format("YYYY-MM-DD"):to;
 
@@ -232,7 +233,10 @@ class Menu {
             for(let i=5;i<cities.length;i++)
                 other_cities+=cities[i][1];
             //Начало составления сообщения
-            let message = `Статистика по заказам ${days>0?`с ${from}`:`на ${from}`}: \n ---------------------------\n`;
+            let message = request_type==='days'?
+                `Статистика по заказам ${days>0?`с ${from}`:`на ${from}`}`
+                :`Статистика по заказам на период с ${from} по ${to}`;
+            message+=`:\n ---------------------------\n`;
 
             message+=`Всего заказов поступило ${menu.numberWithCommas(orderTotalCount)} на сумму ${menu.numberWithCommas(orderTotalSum)}.${proceed_time>0? ` Среднее время обработки заказов - ${menu.formatSecondsAsHHMMSS((proceed_time/proceed_count).toFixed())}`:''}, из них:\n`
             for(let i=0;i<ordersTypesCount.length;i++){

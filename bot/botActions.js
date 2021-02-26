@@ -253,22 +253,18 @@ bot.onText(/\/start/, async (msg) => {
 bot.onText(/^\/orders(\s.+)?/, async (msg,match) => {
   try {
     console.log("/orders");
-    console.log(match);
-
+    //Первым проверяется запрос на range
     if(/^\s*range\s(\d{4}-\d{2}-\d{2})\s*(\d{4}-\d{2}-\d{2})/.test(match[1]))
     {
       let from_to=match[1].match(/^\s*range\s(\d{4}-\d{2}-\d{2})\s*(\d{4}-\d{2}-\d{2})/);
-      console.log(from_to);
       let from=moment(from_to[1]).format("YYYY-MM-DD");
       let to=moment(from_to[2]).format("YYYY-MM-DD");
-      console.log(from, to)
       await methods.getOrders(msg, null, from, to);
     }
+    //теперь старая версия
     else if(/^\s*(\d+)?/.test(match[1]))
     {
-      console.log(`match[1]:${match[1]}`);
       const days = match[1] ? match[1] : 0;
-      console.log(`days:${days}`);
       await methods.getOrders(msg, days);
     }
   } catch (e) {
