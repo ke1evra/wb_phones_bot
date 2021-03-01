@@ -188,7 +188,11 @@ class Menu {
                 to=a;
             }
             if(request_type==='day')
+            {
                 to=from;
+                //Далее всё будет как в запросе days=0
+                request_type='days';
+            }
             from = from==null?moment().subtract(days, "days").format("YYYY-MM-DD"):from;
             to = to==null?moment():moment(to);
             //т.к. берёт не включительно добавляем +1 день
