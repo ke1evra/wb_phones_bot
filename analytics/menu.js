@@ -173,13 +173,22 @@ class Menu {
         }
     async renderOrders(days,from,to) {
         try{
-            const request_type=from==null&&to==null?'days':'range';
+            let request_type='days';
+            if(from!=null)
+            {
+                if(to!=null)
+                    request_type='range';
+                else
+                    request_type='day'
+            }
             if(request_type==='range'&&to<from)
             {
                 let a=from;
                 from=to;
                 to=a;
             }
+            if(request_type==='day')
+                to=from;
             from = from==null?moment().subtract(days, "days").format("YYYY-MM-DD"):from;
             to = to==null?moment():moment(to);
             //т.к. берёт не включительно добавляем +1 день

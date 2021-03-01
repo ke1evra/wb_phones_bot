@@ -261,6 +261,13 @@ bot.onText(/^\/orders(\s.+)?/, async (msg,match) => {
       let to=moment(from_to[2]).format("YYYY-MM-DD");
       await methods.getOrders(msg, null, from, to);
     }
+    //Проверка на запрос day
+    else if(/^\s*day\s*(\d{4}-\d{2}-\d{2})/.test(match[1])){
+      let from=match[1].match(/^\s*range\s(\d{4}-\d{2}-\d{2})\s*(\d{4}-\d{2}-\d{2})/);
+      from=moment(from_to[1]).format("YYYY-MM-DD");
+      const days=1;
+      await methods.getOrders(msg,days,from);
+    }
     //теперь старая версия
     else if(/^\s*(\d+)?/.test(match[1]))
     {
