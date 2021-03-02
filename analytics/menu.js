@@ -117,6 +117,7 @@ class Menu {
                 `Доставка: ${item.courier_del_id}, ${item.courier}\n` +
                 `Статус: ${item.status}\n` +
                 `Комментарий заказчика: ${item.comments}\n` +
+                `Действия: ${item.actions}\n` +
                 `Предметы: ${item.items}\n` +
                 `Стоимость заказа: ${item.order_sum}\n` +
                 `Инфа по клиенту:\n` +
