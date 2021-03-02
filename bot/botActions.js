@@ -185,9 +185,15 @@ bot.on("callback_query", function (msg) {
 });
 bot.onText(/^\/([a-z]+)\s*.*/,async (msg,match) => {
 try{
-  //console.log('match=',match);
+  console.log('match=',match);
   let router_type=match[1];
   let fields={};
+  if(/\s*number\s*(\d+)?/.test(match[0]))
+  {
+    fields["request_type"]="number";
+    fields["order_number"]=match[0].match(/\s*number\s*(\d+)?/)[1]
+    console.log("number!")
+  }
   //Начинаем проверку на типы запросов
   //Запрос range
   if(/\s*range\s(\d{4}-\d{2}-\d{2})\s*(\d{4}-\d{2}-\d{2})/.test(match[0]))
@@ -209,12 +215,6 @@ try{
     fields["request_type"]="days";
     let day=match[0].match(/^\/[a-z]+\s*(\d+)?/);
     fields["days"] = day[1] ? day[1] : 0;
-  }
-  else if(/\s*number\s*(\d+)?/.test(match[0]))
-  {
-    fields["request_type"]="number";
-    fields["order_number"]=match[0].match(/\s*number\s*(\d+)?/)[1]
-    console.log("number!")
   }
   await methods.sendMessageByType(router_type,msg,fields);
 }catch (e) {
