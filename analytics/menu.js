@@ -100,9 +100,7 @@ class Menu {
         return message;
     }
     async renderOrderByNumber(fields) {
-        if(typeof fields.days=="undefined" ||fields.days==null)
-            fields.days=1;
-        if(!fields.days)fields.days++
+        console.log("fields=",fields)
         const data = await API.getOrderByNumber(fields.order_number);
         // console.log(data);
         let message = 'Менеджеры:\n';
