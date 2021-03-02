@@ -109,7 +109,7 @@ class Menu {
         //console.log(data.data["data1"]);
         console.log(data)
         data.data.map((item, index) => {
-            message += `id заказа: ${item.id}\n` +
+            message += `ID заказа: ${item.id}\n` +
                 `Дата регистрации: ${item.date_of_registration}\n` +
                 `Дата обработки: ${item.date_of_processing}\n` +
                 `Менеджер: ${item.manager}\n` +
@@ -128,8 +128,16 @@ class Menu {
                 `   Почта: ${item.email}\n`
             menu.push(new Button(item.client_name, 'some cb'))
         });
-        const callsLog = await API.getCallsLogByPhoneNumber(data.data.phone_key);
-        console.log(callsLog)
+        const callsLog = await API.getCallsLogByPhoneNumber(data.data[0].phone_key);
+        message+=`История звонков:\n`
+        callsLog.data.map((item, index) => {
+            message+=`   ${index}. ID звонка:${item.id}`+
+                `      Дата и время начала:${item.start_day},${item.start_time}`+
+                `      `+
+                `      `+
+                `      `+
+                `      `
+        })
         let options = {
             reply_markup: JSON.stringify({
                 inline_keyboard: [
