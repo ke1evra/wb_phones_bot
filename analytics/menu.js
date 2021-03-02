@@ -121,7 +121,7 @@ class Menu {
                 `Стоимость заказа: ${item.order_sum}\n` +
                 `Инфа по клиенту:\n` +
                 `   Имя: ${item.client_name}\n` +
-                `   Пол: ${item.client_name == 2 ? 'Ж' : item.client_name == 1 ? 'М' : null}\n` +
+                `   Пол: ${item.gender === 2 ? 'Ж' : item.client_name === 1 ? 'М' : null}\n` +
                 `   Телефон: ${item.phone_key}\n` +
                 `   Доп телефон: ${item.client_dop_phone}\n` +
                 `   Почта: ${item.email}\n`
