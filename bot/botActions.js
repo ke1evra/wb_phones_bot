@@ -213,6 +213,7 @@ try{
   else if(/\s*number\s*(\d+)?/.test(match[0]))
   {
     fields["request_type"]="number";
+    console.log("number!")
   }
   await methods.sendMessageByType(router_type,msg,fields);
 }catch (e) {
