@@ -213,6 +213,7 @@ try{
   else if(/\s*number\s*(\d+)?/.test(match[0]))
   {
     fields["request_type"]="number";
+    fields["order_number"]=match[0].match(/\s*number\s*(\d+)?/)
     console.log("number!")
   }
   await methods.sendMessageByType(router_type,msg,fields);
