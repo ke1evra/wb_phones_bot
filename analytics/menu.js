@@ -108,7 +108,7 @@ class Menu {
         let message = 'Менеджеры:\n';
         const menu = [];
         //console.log(data.data["data1"]);
-
+        console.log(data)
         data.data.map((item, index) => {
             message ="Сообщение!"
             menu.push(new Button(item.client_name, 'some cb'))
@@ -123,7 +123,7 @@ class Menu {
         };
         if (!data.data.length)
             message = 'Нет данных';
-        return data.data[0];
+        return 'Работает';
     }
     ///Функция которая возвращает ProcessBar. "title"-Строка заголовка. "value"- процент(число от 0 до 1)
     renderPercentage(title="",value=0){
