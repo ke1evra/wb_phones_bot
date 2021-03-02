@@ -114,116 +114,57 @@ const methods = {
       disable_web_page_preview: true,
     });
   },
-  async checkMissedCalls(msg = null, days = 1) {
-    let chat_id = msg ? msg.chat.id : chats.manager;
-    const message = await menu.missed(days);
-    const messageList = message.match(/[\s\S]{1,4000}/g) || [];
-
-    const sendMsg = (message) => {
-      return bot
-        .sendMessage(chat_id, message)
-        .then((msg) => {
-          console.log(`сообщение (id: ${msg.message_id})${message} успешно отправлено в чат (${chat_id})`
-          );
-          return msg;
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    };
-
-    for (let message of messageList) {
-      await sendMsg(message);
-    }
-  },
-  async getManagers(msg = null, days = 1) {
-    let chat_id = msg ? msg.chat.id : chats.manager;
-    const message = await menu.managers(days);
-    const messageList = message.match(/[\s\S]{1,4000}/g) || [];
-
-    const sendMsg = (message) => {
+  ///Отправляет сообщение:message в чат:chat_id
+  async sendMsg (chat_id,message) {
+    try{
       return bot
           .sendMessage(chat_id, message)
           .then((msg) => {
-            console.log(
-                `сообщение (id: ${msg.message_id})${message.length>80?message.slice(0,80)+'...':message} успешно отправлено в чат (${chat_id})`);
-            return msg;})
-          .catch((e) => {
-            console.log(e);
-          });
-    };
-
-    for (let message of messageList) {
-      await sendMsg(message);
-    }
-  },
-  async getExpenses(msg = null, days = 1) {
-    let chat_id = msg ? msg.chat.id : chats.manager;
-    const message = await menu.expenses(days);
-    const messageList = message.match(/[\s\S]{1,4000}/g) || [];
-
-    const sendMsg = (message) => {
-      return bot
-          .sendMessage(chat_id, message)
-          .then((msg) => {
-            console.log(
-                `сообщение (id: ${msg.message_id})${message.length>80?message.slice(0,80)+'...':message} успешно отправлено в чат (${chat_id})`);
-            return msg;})
-          .catch((e) => {
-            console.log(e);
-          });
-    };
-
-    for (let message of messageList) {
-      await sendMsg(message);
-    }
-  },
-  async getOrders(msg = null, days = 0,from=null,to=null) {
-    let chat_id = msg ? msg.chat.id : chats.manager;
-    const message = await menu.orders(days, from,to);
-    const messageList = message.match(/[\s\S]{1,4000}/g) || [];
-
-    const sendMsg = (message) => {
-      return bot
-          .sendMessage(chat_id, message)
-          .then((msg) => {
-            console.log(
-                `сообщение (id: ${msg.message_id})${message.length>80?message.slice(0,80)+'...':message} успешно отправлено в чат (${chat_id})`
+            console.log(`сообщение (id: ${msg.message_id})${message.length>80?message.splice(0,80)+'...':message} успешно отправлено в чат (${chat_id})`
             );
             return msg;
-          })
-          .catch((e) => {
+          }).catch((e) => {
             console.log(e);
           });
-    };
-
-    for (let message of messageList) {
-      await sendMsg(message);
+    }catch (e) {
+      console.log(e);
     }
   },
-  async getCalls(msg = null, days = 1) {
-    let chat_id = msg ? msg.chat.id : chats.manager;
-    const message = await menu.calls(days);
-    const messageList = message.match(/[\s\S]{1,4000}/g) || [];
-
-    const sendMsg = (message) => {
-      return bot
-          .sendMessage(chat_id, message)
-          .then((msg) => {
-            console.log(
-                `сообщение (id: ${msg.message_id})${message} успешно отправлено в чат (${chat_id})`
-            );
-            return msg;
-          })
-          .catch((e) => {
-            console.log(e);
-          });
-    };
-
-    for (let message of messageList) {
-      await sendMsg(message);
+  ///Данный метод выбирает
+  async sendMessageByType(router_type=null, msg=null, fields={}){
+    if(router_type==null)return;
+    try{
+      let chat_id = msg ? msg.chat.id : chats.manager;
+      if(requests.hasOwnProperty(router_type))
+      {
+        let message='';
+        if(typeof requests[router_type]=='function')
+          message=await requests[router_type](fields);
+        else
+          message=requests[router_type];
+        const messageList = message.match(/[\s\S]{1,4000}/g) || [];
+        //Отправка сообщений
+        for (let message of messageList)
+          await methods.sendMsg(chat_id,message);
+      }
+      else
+      {
+        let message="Данный тип запроса отсутствует в списке. Проверьте правильность запроса.";
+        await methods.sendMsg(chat_id,message);
+      }
+    }catch (e) {
+      console.log(e);
     }
   },
+};
+///Выставляет соответствие между типом запроса и функцией рендера сообщения
+const requests={
+  'start':menu.hello,
+  'missed':menu.missed,
+  'managers':menu.managers,
+  'expenses':menu.expenses,
+  'orders':menu.orders,
+  'calls':menu.calls
 };
 
 bot.on("callback_query", function (msg) {
@@ -241,88 +182,42 @@ bot.on("callback_query", function (msg) {
       console.log(e);
     });
 });
-
-bot.onText(/\/start/, async (msg) => {
-  try {
-    await bot.sendMessage(msg.chat.id, menu.hello);
-  } catch (e) {
-    console.log(e);
+bot.onText(/^\/([a-z]+)\s*.*/,async (msg,match) => {
+try{
+  //console.log('match=',match);
+  let router_type=match[1];
+  let fields={};
+  //Начинаем проверку на типы запросов
+  //Запрос range
+  if(/\s*range\s(\d{4}-\d{2}-\d{2})\s*(\d{4}-\d{2}-\d{2})/.test(match[0]))
+  {
+    fields["request_type"]="range";
+    let from_to=match[0].match(/\s*range\s(\d{4}-\d{2}-\d{2})\s*(\d{4}-\d{2}-\d{2})/);
+    fields["from"]=moment(from_to[1]).format("YYYY-MM-DD");
+    fields["to"]=moment(from_to[2]).format("YYYY-MM-DD");
   }
-});
-
-bot.onText(/^\/orders(\s.+)?/, async (msg,match) => {
-  try {
-    console.log("/orders");
-    //Первым проверяется запрос на range
-    if(/^\s*range\s(\d{4}-\d{2}-\d{2})\s*(\d{4}-\d{2}-\d{2})/.test(match[1]))
-    {
-      let from_to=match[1].match(/^\s*range\s(\d{4}-\d{2}-\d{2})\s*(\d{4}-\d{2}-\d{2})/);
-      let from=moment(from_to[1]).format("YYYY-MM-DD");
-      let to=moment(from_to[2]).format("YYYY-MM-DD");
-      await methods.getOrders(msg, null, from, to);
-    }
-    //Проверка на запрос day
-    else if(/^\s*day\s*(\d{4}-\d{2}-\d{2})/.test(match[1])){
-      let from=match[1].match(/^\s*day\s*(\d{4}-\d{2}-\d{2})/);
-      from=moment(from[1]).format("YYYY-MM-DD");
-      const days=0;
-      await methods.getOrders(msg,days,from);
-    }
-    //теперь старая версия
-    else if(/^\s*(\d+)?/.test(match[1]))
-    {
-      const days = match[1] ? match[1] : 0;
-      await methods.getOrders(msg, days);
-    }
-  } catch (e) {
-    console.log(e);
+  //Запрос day
+  else if(/\s*day\s*(\d{4}-\d{2}-\d{2})/.test(match[0])){
+    fields["request_type"]="day";
+    fields["from"]=match[0].match(/\s*day\s*(\d{4}-\d{2}-\d{2})/);
+    fields["from"]=moment(fields["from"][1]).format("YYYY-MM-DD");
+    fields["days"]=0;
   }
-});
-
-bot.onText(/^\/expenses(\s.+)?/, async (msg, match) => {
-  try {
-    console.log("/expenses");
-    console.log(match);
-    const days = match[1] ? match[1] : 1;
-    await methods.getExpenses(msg, days);
-  } catch (e) {
-    console.log(e);
+  else if(/^\/[a-z]+\s*(\d+)?/.test(match[0]))
+  {
+    fields["request_type"]="days";
+    let day=match[0].match(/^\/[a-z]+\s*(\d+)?/);
+    fields["days"] = day[1] ? day[1] : 0;
   }
-});
-bot.onText(/^\/managers(\s.+)?/, async (msg, match) => {
-  try {
-    console.log("/managers");
-    console.log(match);
-    const days = match[1] ? match[1] : 1;
-    await methods.getManagers(msg, days);
-  } catch (e) {
-    console.log(e);
-  }
-});
-bot.onText(/^\/missed(\s.+)?/, async (msg, match) => {
-  try {
-    console.log("/missed");
-    console.log(match);
-    const days = match[1] ? match[1] : 1;
-    await methods.checkMissedCalls(msg, days);
-  } catch (e) {
-    console.log(e);
-  }
-});
-bot.onText(/^\/calls(\s.+)?/, async (msg, match) => {
-  try {
-    console.log("/calls");
-    console.log(match);
-    const days = match[1] ? match[1] : 1;
-    await methods.getCalls(msg, days);
-  } catch (e) {
-    console.log(e);
-  }
+  await methods.sendMessageByType(router_type,msg,fields);
+}catch (e) {
+  console.log(e);
+}
 });
 // methods.checkMissedCalls().catch(e => console.log(e));
 setInterval(async () => {
   if (moment().format("HH") > 9 && moment().format("HH") < 20) {
-    await methods.checkMissedCalls();
+    await methods.sendMessageByType('missed');
   }
 }, 60 * 60 * 1000);
 

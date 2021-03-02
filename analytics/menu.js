@@ -17,8 +17,10 @@ class Menu {
         this.month = moment().format('MM')
     }
 
-    async renderMissedCalls(days) {
-        const data = await API.getMissedCalls(days);
+    async renderMissedCalls(fields) {
+        if(typeof fields.days=="undefined" ||fields.days==null)
+            fields.days=1;
+        const data = await API.getMissedCalls(fields.days);
         // console.log(data);
         let message = 'Список пропущенных вызовов: \n ---------------------------\n';
         const menu = [];
@@ -41,6 +43,58 @@ class Menu {
         };
         if (!data.data.length)
             message = 'Нет пропущенных вызовов';
+        return message;
+    }
+
+    async renderExpenses(fields) {
+        if(typeof fields.days=="undefined" ||fields.days==null)
+            fields.days=1;
+        const data = await API.getExpenses(fields.days);
+        // console.log(data);
+        let message = 'Список расходов: \n ---------------------------\n';
+        const menu = [];
+        // console.log(data);
+
+        data.data.map((item, index) => {
+            message += `${index + 1}. (${item.date})\nЯндекс.Маркет: ${item.yandexmarket}\nЯндекс.Директ: ${item.yandexdirect}\nGoogle Ads: ${item.googleads}\nВсего: ${item['total']} \n---------------------------\n`;
+            menu.push(new Button(item.client_name, 'some cb'))
+        });
+        let options = {
+            reply_markup: JSON.stringify({
+                inline_keyboard: [
+                    menu,
+                ]
+            }),
+            // disable_web_page_preview: true,
+        };
+        if (!data.data.length)
+            message = 'Нет расходов';
+        return message;
+    }
+
+    async renderManagers(fields) {
+        if(typeof fields.days=="undefined" ||fields.days==null)
+            fields.days=1;
+        const data = await API.getManagers(fields.days);
+        // console.log(data);
+        let message = 'Менеджеры:\n';
+        const menu = [];
+        //console.log(data.data["data1"]);
+
+        data.data["data1"].map((item, index) => {
+            message += `${index + 1}. ${item.call_type === 'inComing' ? `Входящий` : 'Исходящий'} вызов на номер ${item.to_number} (${item.person}) с номера ${item.from_number}\n${item.startFix} - ${item.endFix} (${item["start"]} - ${item["end"]})\nПричина окончания: ${codes[item.disconnect_reason]} (${item.disconnect_reason})\n---------------------------\n`;
+            menu.push(new Button(item.client_name, 'some cb'))
+        });
+        let options = {
+            reply_markup: JSON.stringify({
+                inline_keyboard: [
+                    menu,
+                ]
+            }),
+            // disable_web_page_preview: true,
+        };
+        if (!data.data["data1"].length)
+            message = 'Нет данных';
         return message;
     }
     ///Функция которая возвращает ProcessBar. "title"-Строка заголовка. "value"- процент(число от 0 до 1)
@@ -71,53 +125,6 @@ class Menu {
             return "ERROR";
         }
     }
-    async renderExpenses(days) {
-        const data = await API.getExpenses(days);
-        // console.log(data);
-        let message = 'Список расходов: \n ---------------------------\n';
-        const menu = [];
-        // console.log(data);
-
-        data.data.map((item, index) => {
-            message += `${index + 1}. (${item.date})\nЯндекс.Маркет: ${item.yandexmarket}\nЯндекс.Директ: ${item.yandexdirect}\nGoogle Ads: ${item.googleads}\nВсего: ${item['total']} \n---------------------------\n`;
-            menu.push(new Button(item.client_name, 'some cb'))
-        });
-        let options = {
-            reply_markup: JSON.stringify({
-                inline_keyboard: [
-                    menu,
-                ]
-            }),
-            // disable_web_page_preview: true,
-        };
-        if (!data.data.length)
-            message = 'Нет расходов';
-        return message;
-    }
-
-    async renderManagers(days) {
-        const data = await API.getManagers(days);
-        // console.log(data);
-        let message = 'Менеджеры:\n';
-        const menu = [];
-        //console.log(data.data["data1"]);
-
-        data.data["data1"].map((item, index) => {
-            message += `${index + 1}. ${item.call_type === 'inComing' ? `Входящий` : 'Исходящий'} вызов на номер ${item.to_number} (${item.person}) с номера ${item.from_number}\n${item.startFix} - ${item.endFix} (${item["start"]} - ${item["end"]})\nПричина окончания: ${codes[item.disconnect_reason]} (${item.disconnect_reason})\n---------------------------\n`;
-            menu.push(new Button(item.client_name, 'some cb'))
-        });
-        let options = {
-            reply_markup: JSON.stringify({
-                inline_keyboard: [
-                    menu,
-                ]
-            }),
-            // disable_web_page_preview: true,
-        };
-        if (!data.data["data1"].length)
-            message = 'Нет данных';
-        return message;
-    }
     ///для сортировки массивов в renderOrders формата arr=[[elem1,count],[elem2,count]]
     sortOrdersArrays(arr) {
         for(let i=0;i<arr.length;i++)
@@ -134,8 +141,7 @@ class Menu {
         }
     }
     ///для отформатированных массивов в renderOrders формата arr=[[elem1,count],[elem2,count]]
-    searchPushOrdersArrays(elem,arr)
-    {
+    searchPushOrdersArrays(elem,arr){
         let found=false;
         for (let i=0;i<arr.length;i++)
         {
@@ -171,34 +177,27 @@ class Menu {
             }
             return returnString;
         }
-    async renderOrders(days,from,to) {
+    async renderOrders(fields) {
         try{
-            let request_type='days';
-            if(from!=null)
+            let request_type=fields.request_type;
+            if(request_type==='range'&&fields.to<fields.from)
             {
-                if(to!=null)
-                    request_type='range';
-                else
-                    request_type='day'
-            }
-            if(request_type==='range'&&to<from)
-            {
-                let a=from;
-                from=to;
-                to=a;
+                let a=fields.from;
+                fields.from=fields.to;
+                fields.to=a;
             }
             if(request_type==='day')
             {
-                to=from;
+                fields.to=fields.from;
                 //Далее всё будет как в запросе days=0
                 request_type='days';
             }
-            from = from==null?moment().subtract(days, "days").format("YYYY-MM-DD"):from;
-            to = to==null?moment():moment(to);
+            fields.from = fields.from==null||typeof fields.from=="undefined"?moment().subtract(fields.days, "days").format("YYYY-MM-DD"):fields.from;
+            fields.to = fields.to==null||typeof fields.to=="undefined"?moment():moment(fields.to);
             //т.к. берёт не включительно добавляем +1 день
-            to.add(1,"day");
+            fields.to.add(1,"day");
             //По типам заказов
-            const ordersCountData = await API.getOrdersCount(days,from,to.format("YYYY-MM-DD"));
+            const ordersCountData = await API.getOrdersCount(fields.days,fields.from,fields.to.format("YYYY-MM-DD"));
             let orderTotalSum=0;
             let orderTotalCount=0;
             let ordersTypesCount=[];
@@ -208,9 +207,9 @@ class Menu {
                 ordersTypesCount.push([item.order_status,item.order_count]);
             });
             //По конкретным заказам
-            const ordersData=await API.getOrders(days,from,to.format("YYYY-MM-DD"));
+            const ordersData=await API.getOrders(fields.days,fields.from,fields.to.format("YYYY-MM-DD"));
             //После запроса возвращаем "to" как было
-            to=to.add(-1,"day").format("YYYY-MM-DD");
+            fields.to=fields.to.add(-1,"day").format("YYYY-MM-DD");
             let otkaz_reasons=[];
             let otkaz_count=0;
             let samovivoz=0;
@@ -256,8 +255,8 @@ class Menu {
                 other_cities+=cities[i][1];
             //Начало составления сообщения
             let message = request_type==='days'?
-                `Статистика по заказам ${days>0?`с ${from}`:`на ${from}`}`
-                :`Статистика по заказам на период с ${from} по ${to}`;
+                `Статистика по заказам ${fields.days>0?`с ${fields.from}`:`на ${fields.from}`}`
+                :`Статистика по заказам на период с ${fields.from} по ${fields.to}`;
             message+=`:\n ---------------------------\n`;
 
             message+=`Всего заказов поступило ${menu.numberWithCommas(orderTotalCount)} на сумму ${menu.numberWithCommas(orderTotalSum)}.${proceed_time>0? ` Среднее время обработки заказов - ${menu.formatSecondsAsHHMMSS((proceed_time/proceed_count).toFixed())}`:''}, из них:\n`
@@ -319,7 +318,7 @@ class Menu {
             }
 
             if (!ordersCountData.data.length)
-                message = `Нет заказов за период с ${from} по ${to}.`;
+                message = `Нет заказов за период с ${fields.from} по ${fields.to}.`;
             return message;
         }catch (e) {
             console.log(`Ошибка в функции renderOrders:${e}`);
@@ -328,10 +327,12 @@ class Menu {
 
     }
 
-    async renderCalls(days) {
-        let from = moment().subtract(days, "days").format("YYYY-MM-DD");
+    async renderCalls(fields) {
+        if(typeof fields.days=="undefined" ||fields.days==null)
+            fields.days=1;
+        let from = moment().subtract(fields.days, "days").format("YYYY-MM-DD");
         let to = moment().endOf("day").format("YYYY-MM-DD")
-        const data = await API.getCalls(days);
+        const data = await API.getCalls(fields.days);
         let message = 'Статистика по звонкам: \n ---------------------------\n';
         let statistics = [];
         // console.log(data);
@@ -425,7 +426,7 @@ class Menu {
             }
         });
         //формирование сообщения
-        message += `За период с ${from} по ${to} было совершено: ${statistics.calls_count} звонков,
+        message += `За период с ${fields.from} по ${fields.to} было совершено: ${statistics.calls_count} звонков,
 Общей длительностью ${statistics.calls_duration} секунд, 
 Средней продолжительностью: ${(statistics.calls_duration / statistics.real_calls_count).toFixed(2)} секунд.
 ------------------------
