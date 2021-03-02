@@ -75,6 +75,7 @@ class Menu {
     async renderManagers(fields) {
         if(typeof fields.days=="undefined" ||fields.days==null)
             fields.days=1;
+        if(!fields.days)fields.days++
         const data = await API.getManagers(fields.days);
         // console.log(data);
         let message = 'Менеджеры:\n';

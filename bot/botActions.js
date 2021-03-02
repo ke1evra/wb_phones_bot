@@ -120,7 +120,6 @@ const methods = {
       return bot
           .sendMessage(chat_id, message)
           .then((msg) => {
-            console.log("message=",message);
             console.log(`сообщение (id: ${msg.message_id})${message.length>80?message.substr(0,80)+'...':message} успешно отправлено в чат (${chat_id})`
             );
             return msg;
