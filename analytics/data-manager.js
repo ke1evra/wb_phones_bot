@@ -115,6 +115,13 @@ class DataManager {
         `http://185.211.247.12:3000/orders/number?order_number=${order_number}`
     );
   }
+  async getCallsLogByPhoneNumber(
+      number= 1
+  ){
+    return await axios.get(
+        `http://185.211.247.12:3000/calls/client?number=${number}`
+    );
+  }
   async getCalls(
       days = 1,
       from = moment().subtract(days, "days").format("YYYY-MM-DD"),

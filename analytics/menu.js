@@ -128,6 +128,8 @@ class Menu {
                 `   Почта: ${item.email}\n`
             menu.push(new Button(item.client_name, 'some cb'))
         });
+        const callsLog = await API.getCallsLogByPhoneNumber(data.data.phone_key);
+        console.log(callsLog)
         let options = {
             reply_markup: JSON.stringify({
                 inline_keyboard: [
