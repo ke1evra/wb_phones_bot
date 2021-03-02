@@ -185,7 +185,7 @@ bot.on("callback_query", function (msg) {
 });
 bot.onText(/^\/([a-z]+)\s*.*/,async (msg,match) => {
 try{
-  console.log('match=',match);
+  //console.log('match=',match);
   let router_type=match[1];
   let fields={};
   //Начинаем проверку на типы запросов
@@ -216,6 +216,7 @@ try{
     fields["order_number"]=match[0].match(/\s*number\s*(\d+)?/)
     console.log("number!")
   }
+  console.log(match[0].match(/\s*number\s*(\d+)?/))
   await methods.sendMessageByType(router_type,msg,fields);
 }catch (e) {
   console.log(e);
