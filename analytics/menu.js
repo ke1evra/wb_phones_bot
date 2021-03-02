@@ -103,13 +103,29 @@ class Menu {
         console.log("fields=",fields)
         const data = await API.getOrderByNumber(fields.order_number);
         // console.log(data);
-        let message = 'Менеджеры:\n';
+        let message = `Инфа по заказу №${fields.order_number}:\n`;
         const menu = [];
         //console.log(data.data["data1"]);
         console.log(data)
         data.data.map((item, index) => {
-            message ="Сообщение!"
-            menu.push(new Button(item.client_name, 'some cb'))
+            message +=`id заказа: ${item.id}\n`+
+                `Дата регистрации: ${item.date_of_registration}\n`+
+                `Дата обработки: ${item.date_of_processing}\n`+
+                `Менеджер: ${item.manager}\n`+
+                `Время обработки: ${item.processing_time}\n`+
+                `Доставка: ${item.courier_del_id}, ${item.courier}\n`+
+                `Статус: ${item.status}\n`+
+                `Комментарий заказчика: ${item.comments}\n`+
+                `Предметы: ${item.items}\n`+
+                `Стоимость заказа: ${item.order_sum}\n`+
+                `------------------------------------\n`+
+                `Инфа по клиенту:\n`+
+                `   Имя: ${item.client_name}\n`+
+                `   Пол: ${item.client_name===2?'Ж':item.client_name===1?'М':null}\n`+
+                `   Телефон: ${item.phone_key}\n`+
+                `   Доп телефон: ${item.client_dop_phone}\n`+
+                `   Почта: ${item.email}\n`
+                menu.push(new Button(item.client_name, 'some cb'))
         });
         let options = {
             reply_markup: JSON.stringify({
@@ -121,7 +137,7 @@ class Menu {
         };
         if (!data.data.length)
             message = 'Нет данных';
-        return 'Работает';
+        return message;
     }
     ///Функция которая возвращает ProcessBar. "title"-Строка заголовка. "value"- процент(число от 0 до 1)
     renderPercentage(title="",value=0){
