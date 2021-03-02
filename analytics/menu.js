@@ -194,6 +194,10 @@ class Menu {
                 //Далее всё будет как в запросе days=0
                 request_type='days';
             }
+            if(request_type==='number')
+            {
+
+            }
             fields.from = fields.from==null||typeof fields.from=="undefined"?moment().subtract(fields.days, "days").format("YYYY-MM-DD"):fields.from;
             fields.to = fields.to==null||typeof fields.to=="undefined"?moment():moment(fields.to);
             //т.к. берёт не включительно добавляем +1 день
@@ -471,6 +475,7 @@ const messages = {
     /managers - по менеджерам
     /missed - по пропущенным звонкам
     `,
+    order: menu.renderOrderByNumber,
     orders: menu.renderOrders,
     missed: menu.renderMissedCalls,
     calls: menu.renderCalls,
