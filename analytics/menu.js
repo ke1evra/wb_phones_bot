@@ -123,7 +123,7 @@ class Menu {
         };
         if (!data.data.length)
             message = 'Нет данных';
-        return JSON.stringify(data,null,4);
+        return data.data[0];
     }
     ///Функция которая возвращает ProcessBar. "title"-Строка заголовка. "value"- процент(число от 0 до 1)
     renderPercentage(title="",value=0){
