@@ -18,9 +18,9 @@ class Menu {
     }
 
     async renderMissedCalls(fields) {
-        if(typeof fields.days=="undefined" ||fields.days==null)
-            fields.days=1;
-        if (!fields.days)fields.days++
+        if (typeof fields.days == "undefined" || fields.days == null)
+            fields.days = 1;
+        if (!fields.days) fields.days++
         const data = await API.getMissedCalls(fields.days);
         // console.log(data);
         let message = 'Список пропущенных вызовов: \n ---------------------------\n';
@@ -48,8 +48,8 @@ class Menu {
     }
 
     async renderExpenses(fields) {
-        if(typeof fields.days=="undefined" ||fields.days==null)
-            fields.days=1;
+        if (typeof fields.days == "undefined" || fields.days == null)
+            fields.days = 1;
         const data = await API.getExpenses(fields.days);
         // console.log(data);
         let message = 'Список расходов: \n ---------------------------\n';
@@ -74,9 +74,9 @@ class Menu {
     }
 
     async renderManagers(fields) {
-        if(typeof fields.days=="undefined" ||fields.days==null)
-            fields.days=1;
-        if(!fields.days)fields.days++
+        if (typeof fields.days == "undefined" || fields.days == null)
+            fields.days = 1;
+        if (!fields.days) fields.days++
         const data = await API.getManagers(fields.days);
         // console.log(data);
         let message = 'Менеджеры:\n';
@@ -99,8 +99,9 @@ class Menu {
             message = 'Нет данных';
         return message;
     }
+
     async renderOrderByNumber(fields) {
-        console.log("fields=",fields)
+        console.log("fields=", fields)
         const data = await API.getOrderByNumber(fields.order_number);
         // console.log(data);
         let message = `Инфа по заказу №${fields.order_number}:\n`;
@@ -108,24 +109,23 @@ class Menu {
         //console.log(data.data["data1"]);
         console.log(data)
         data.data.map((item, index) => {
-            message +=`id заказа: ${item.id}\n`+
-                `Дата регистрации: ${item.date_of_registration}\n`+
-                `Дата обработки: ${item.date_of_processing}\n`+
-                `Менеджер: ${item.manager}\n`+
-                `Время обработки: ${item.processing_time}\n`+
-                `Доставка: ${item.courier_del_id}, ${item.courier}\n`+
-                `Статус: ${item.status}\n`+
-                `Комментарий заказчика: ${item.comments}\n`+
-                `Предметы: ${item.items}\n`+
-                `Стоимость заказа: ${item.order_sum}\n`+
-                `------------------------------------\n`+
-                `Инфа по клиенту:\n`+
-                `   Имя: ${item.client_name}\n`+
-                `   Пол: ${item.client_name===2?'Ж':item.client_name===1?'М':null}\n`+
-                `   Телефон: ${item.phone_key}\n`+
-                `   Доп телефон: ${item.client_dop_phone}\n`+
+            message += `id заказа: ${item.id}\n` +
+                `Дата регистрации: ${item.date_of_registration}\n` +
+                `Дата обработки: ${item.date_of_processing}\n` +
+                `Менеджер: ${item.manager}\n` +
+                `Время обработки: ${item.processing_time}\n` +
+                `Доставка: ${item.courier_del_id}, ${item.courier}\n` +
+                `Статус: ${item.status}\n` +
+                `Комментарий заказчика: ${item.comments}\n` +
+                `Предметы: ${item.items}\n` +
+                `Стоимость заказа: ${item.order_sum}\n` +
+                `Инфа по клиенту:\n` +
+                `   Имя: ${item.client_name}\n` +
+                `   Пол: ${item.client_name == 2 ? 'Ж' : item.client_name == 1 ? 'М' : null}\n` +
+                `   Телефон: ${item.phone_key}\n` +
+                `   Доп телефон: ${item.client_dop_phone}\n` +
                 `   Почта: ${item.email}\n`
-                menu.push(new Button(item.client_name, 'some cb'))
+            menu.push(new Button(item.client_name, 'some cb'))
         });
         let options = {
             reply_markup: JSON.stringify({
@@ -139,155 +139,148 @@ class Menu {
             message = 'Нет данных';
         return message;
     }
+
     ///Функция которая возвращает ProcessBar. "title"-Строка заголовка. "value"- процент(число от 0 до 1)
-    renderPercentage(title="",value=0){
+    renderPercentage(title = "", value = 0) {
         try {
-            if(value>1 ||value<0)
-            {
+            if (value > 1 || value < 0) {
                 console.log(`Ошибка в функции renderPercentage: Значение "value"=${value} выходит за рамки от 0 до 1!`)
                 return "ERROR";
             }
-            let msg=`${title} (${(value*100).toFixed(2)}%)\n`;
-            let counter=1;
-            while(value>0.05)
-            {
-                msg+='🟩';
+            let msg = `${title} (${(value * 100).toFixed(2)}%)\n`;
+            let counter = 1;
+            while (value > 0.05) {
+                msg += '🟩';
                 counter++;
-                value-=0.05;
+                value -= 0.05;
             }
-            if(value.toFixed(4)!=0)
-                msg+=value>=0.025?'🟢':'⚪️';
+            if (value.toFixed(4) != 0)
+                msg += value >= 0.025 ? '🟢' : '⚪️';
             else
-                msg+='⬜️';
-            for(counter;counter<20;counter++)
-                msg+='⬜️';
+                msg += '⬜️';
+            for (counter; counter < 20; counter++)
+                msg += '⬜️';
             return msg;
-        }catch (e) {
+        } catch (e) {
             console.log(`Ошибка в функции renderPercentage: ${e}`);
             return "ERROR";
         }
     }
+
     ///для сортировки массивов в renderOrders формата arr=[[elem1,count],[elem2,count]]
     sortOrdersArrays(arr) {
-        for(let i=0;i<arr.length;i++)
-        {
-            for(let j=i+1;j<arr.length;j++)
-            {
-                if(arr[i][1]<arr[j][1])
-                {
-                    let a=arr[i];
-                    arr[i]=arr[j];
-                    arr[j]=a;
+        for (let i = 0; i < arr.length; i++) {
+            for (let j = i + 1; j < arr.length; j++) {
+                if (arr[i][1] < arr[j][1]) {
+                    let a = arr[i];
+                    arr[i] = arr[j];
+                    arr[j] = a;
                 }
             }
         }
     }
+
     ///для отформатированных массивов в renderOrders формата arr=[[elem1,count],[elem2,count]]
-    searchPushOrdersArrays(elem,arr){
-        let found=false;
-        for (let i=0;i<arr.length;i++)
-        {
-            if(arr[i][0]===elem)
-            {
-                found=true;
+    searchPushOrdersArrays(elem, arr) {
+        let found = false;
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i][0] === elem) {
+                found = true;
                 arr[i][1]++;
                 break;
             }
         }
-        if(!found)arr.push([elem,1]);
+        if (!found) arr.push([elem, 1]);
     }
-    numberWithCommas (x, text) {
+
+    numberWithCommas(x, text) {
         const value = x.value ? x.value : x;
         const formatted = Math.round(value).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
         return text ? `${text} ${formatted}` : formatted;
     }
-    formatSecondsAsHHMMSS (number,text){
-            if (!text) {
-                text = '';
-            } else {
-                text = `${text}: `;
-            }
-            let format = 'hh:mm:ss';
-            if (number > 3600) {
-                format = 'hh:mm:ss';
-            } else {
-                format = 'mm:ss';
-            }
-            let returnString = '';
-            if (number > 0) {
-                returnString = `${text}${TimeFormat.fromS(Math.round(number), format)}`;
-            }
-            return returnString;
+
+    formatSecondsAsHHMMSS(number, text) {
+        if (!text) {
+            text = '';
+        } else {
+            text = `${text}: `;
         }
+        let format = 'hh:mm:ss';
+        if (number > 3600) {
+            format = 'hh:mm:ss';
+        } else {
+            format = 'mm:ss';
+        }
+        let returnString = '';
+        if (number > 0) {
+            returnString = `${text}${TimeFormat.fromS(Math.round(number), format)}`;
+        }
+        return returnString;
+    }
+
     async renderOrders(fields) {
-        try{
-            let request_type=fields.request_type;
-            if(request_type==='range'&&fields.to<fields.from)
-            {
-                let a=fields.from;
-                fields.from=fields.to;
-                fields.to=a;
+        try {
+            let request_type = fields.request_type;
+            if (request_type === 'range' && fields.to < fields.from) {
+                let a = fields.from;
+                fields.from = fields.to;
+                fields.to = a;
             }
-            if(request_type==='day')
-            {
-                fields.to=fields.from;
+            if (request_type === 'day') {
+                fields.to = fields.from;
                 //Далее всё будет как в запросе days=0
-                request_type='days';
+                request_type = 'days';
             }
-            if(request_type==='number')
-            {
+            if (request_type === 'number') {
 
             }
-            fields.from = fields.from==null||typeof fields.from=="undefined"?moment().subtract(fields.days, "days").format("YYYY-MM-DD"):fields.from;
-            fields.to = fields.to==null||typeof fields.to=="undefined"?moment():moment(fields.to);
+            fields.from = fields.from == null || typeof fields.from == "undefined" ? moment().subtract(fields.days, "days").format("YYYY-MM-DD") : fields.from;
+            fields.to = fields.to == null || typeof fields.to == "undefined" ? moment() : moment(fields.to);
             //т.к. берёт не включительно добавляем +1 день
-            fields.to.add(1,"day");
+            fields.to.add(1, "day");
             //По типам заказов
-            const ordersCountData = await API.getOrdersCount(fields.days,fields.from,fields.to.format("YYYY-MM-DD"));
-            let orderTotalSum=0;
-            let orderTotalCount=0;
-            let ordersTypesCount=[];
-            ordersCountData.data.forEach((item)=>{
-                orderTotalCount+=item.order_count;
-                orderTotalSum+=item.order_sum;
-                ordersTypesCount.push([item.order_status,item.order_count]);
+            const ordersCountData = await API.getOrdersCount(fields.days, fields.from, fields.to.format("YYYY-MM-DD"));
+            let orderTotalSum = 0;
+            let orderTotalCount = 0;
+            let ordersTypesCount = [];
+            ordersCountData.data.forEach((item) => {
+                orderTotalCount += item.order_count;
+                orderTotalSum += item.order_sum;
+                ordersTypesCount.push([item.order_status, item.order_count]);
             });
             //По конкретным заказам
-            const ordersData=await API.getOrders(fields.days,fields.from,fields.to.format("YYYY-MM-DD"));
+            const ordersData = await API.getOrders(fields.days, fields.from, fields.to.format("YYYY-MM-DD"));
             //После запроса возвращаем "to" как было
-            fields.to=fields.to.add(-1,"day").format("YYYY-MM-DD");
-            let otkaz_reasons=[];
-            let otkaz_count=0;
-            let samovivoz=0;
-            let proceed_time=0;
-            let proceed_count=0;
-            let managers=[];
-            let couriers=[];
-            let cities=[];
-            ordersData.data.forEach((item)=>{
+            fields.to = fields.to.add(-1, "day").format("YYYY-MM-DD");
+            let otkaz_reasons = [];
+            let otkaz_count = 0;
+            let samovivoz = 0;
+            let proceed_time = 0;
+            let proceed_count = 0;
+            let managers = [];
+            let couriers = [];
+            let cities = [];
+            ordersData.data.forEach((item) => {
                 //Преобразование затраченного времени
-                if(item.proceed_time!=null&&item.proceed_time>0)
-                {
+                if (item.proceed_time != null && item.proceed_time > 0) {
                     //let created_at=moment(item.created_at.substr(0,19).replace('T',' ')).format('YYYY-MM-DD HH:mm:ss');
-                    if(moment(item.created_at).format('HH') > 9 && moment(item.created_at).format('HH') <20)
-                    {
-                        proceed_time+=parseInt(item.proceed_time);
+                    if (moment(item.created_at).format('HH') > 9 && moment(item.created_at).format('HH') < 20) {
+                        proceed_time += parseInt(item.proceed_time);
                         proceed_count++;
                     }
                 }
                 //Счёт по типам
-                if(item.order_status_title==="Отказ"&&item.otkaz_title!==null)
-                {
+                if (item.order_status_title === "Отказ" && item.otkaz_title !== null) {
                     otkaz_count++;
-                    menu.searchPushOrdersArrays(item.otkaz_title,otkaz_reasons);
+                    menu.searchPushOrdersArrays(item.otkaz_title, otkaz_reasons);
                 }
-                samovivoz+=item.samovivoz=="нет"?0:1;
-                if(item.name!=null)
-                    menu.searchPushOrdersArrays(item.name,managers);
-                if(item.courier!==null)
-                    menu.searchPushOrdersArrays(item.courier,couriers);
-                if(item.city!==null)
-                    menu.searchPushOrdersArrays(item.city,cities);
+                samovivoz += item.samovivoz == "нет" ? 0 : 1;
+                if (item.name != null)
+                    menu.searchPushOrdersArrays(item.name, managers);
+                if (item.courier !== null)
+                    menu.searchPushOrdersArrays(item.courier, couriers);
+                if (item.city !== null)
+                    menu.searchPushOrdersArrays(item.city, cities);
             });
             //Сортировка
             menu.sortOrdersArrays(managers);
@@ -296,77 +289,70 @@ class Menu {
             menu.sortOrdersArrays(otkaz_reasons);
             menu.sortOrdersArrays(ordersTypesCount);
             //rework cities
-            let other_cities=0;
-            for(let i=5;i<cities.length;i++)
-                other_cities+=cities[i][1];
+            let other_cities = 0;
+            for (let i = 5; i < cities.length; i++)
+                other_cities += cities[i][1];
             //Начало составления сообщения
-            let message = request_type==='days'?
-                `Статистика по заказам ${fields.days>0?`с ${fields.from}`:`на ${fields.from}`}`
-                :`Статистика по заказам на период с ${fields.from} по ${fields.to}`;
-            message+=`:\n ---------------------------\n`;
+            let message = request_type === 'days' ?
+                `Статистика по заказам ${fields.days > 0 ? `с ${fields.from}` : `на ${fields.from}`}`
+                : `Статистика по заказам на период с ${fields.from} по ${fields.to}`;
+            message += `:\n ---------------------------\n`;
 
-            message+=`Всего заказов поступило ${menu.numberWithCommas(orderTotalCount)} на сумму ${menu.numberWithCommas(orderTotalSum)}.${proceed_time>0? ` Среднее время обработки заказов - ${menu.formatSecondsAsHHMMSS((proceed_time/proceed_count).toFixed())}`:''}, из них:\n`
-            for(let i=0;i<ordersTypesCount.length;i++){
-                message+=`\n${ordersTypesCount[i][1]} - `;
-                message+=menu.renderPercentage(ordersTypesCount[i][0],ordersTypesCount[i][1]/orderTotalCount);
-                message+='\n';
+            message += `Всего заказов поступило ${menu.numberWithCommas(orderTotalCount)} на сумму ${menu.numberWithCommas(orderTotalSum)}.${proceed_time > 0 ? ` Среднее время обработки заказов - ${menu.formatSecondsAsHHMMSS((proceed_time / proceed_count).toFixed())}` : ''}, из них:\n`
+            for (let i = 0; i < ordersTypesCount.length; i++) {
+                message += `\n${ordersTypesCount[i][1]} - `;
+                message += menu.renderPercentage(ordersTypesCount[i][0], ordersTypesCount[i][1] / orderTotalCount);
+                message += '\n';
             }
-            message+=`----------------------\nСтатистика по причинам отказов\nВсего отказов ${otkaz_count}, из них:\n`;
-            for(let i=0;i<otkaz_reasons.length;i++)
-            {
-                message+=`\n${otkaz_reasons[i][1]} - `;
-                message+=menu.renderPercentage(otkaz_reasons[i][0],otkaz_reasons[i][1]/otkaz_count);
-                message+='\n';
+            message += `----------------------\nСтатистика по причинам отказов\nВсего отказов ${otkaz_count}, из них:\n`;
+            for (let i = 0; i < otkaz_reasons.length; i++) {
+                message += `\n${otkaz_reasons[i][1]} - `;
+                message += menu.renderPercentage(otkaz_reasons[i][0], otkaz_reasons[i][1] / otkaz_count);
+                message += '\n';
             }
-            message+=`----------------------\nСтатистика по менджерам:\n`;
-            for(let i=0;i<managers.length;i++)
-            {
-                message+=`\n${managers[i][1]} - `;
-                message+=menu.renderPercentage(managers[i][0],managers[i][1]/orderTotalCount);
-                message+='\n';
+            message += `----------------------\nСтатистика по менджерам:\n`;
+            for (let i = 0; i < managers.length; i++) {
+                message += `\n${managers[i][1]} - `;
+                message += menu.renderPercentage(managers[i][0], managers[i][1] / orderTotalCount);
+                message += '\n';
             }
-            message+=`----------------------\nСтатистика по курьерам:\n`;
-            for(let i=0;i<couriers.length;i++)
-            {
-                message+=`\n${couriers[i][1]} - `;
-                message+=menu.renderPercentage(couriers[i][0],couriers[i][1]/orderTotalCount);
-                message+='\n';
+            message += `----------------------\nСтатистика по курьерам:\n`;
+            for (let i = 0; i < couriers.length; i++) {
+                message += `\n${couriers[i][1]} - `;
+                message += menu.renderPercentage(couriers[i][0], couriers[i][1] / orderTotalCount);
+                message += '\n';
             }
-            message+=`----------------------\nСтатистика по городам:\n`;
-            for(let i=0;i<5;i++)
-            {
-                message+=`\n${cities[i][1]} - `;
-                message+=menu.renderPercentage(cities[i][0],cities[i][1]/orderTotalCount);
-                message+='\n';
+            message += `----------------------\nСтатистика по городам:\n`;
+            for (let i = 0; i < 5; i++) {
+                message += `\n${cities[i][1]} - `;
+                message += menu.renderPercentage(cities[i][0], cities[i][1] / orderTotalCount);
+                message += '\n';
             }
-            message+=`\n${other_cities} - `;
-            message+=menu.renderPercentage("Другие",other_cities/orderTotalCount);
-            message+='\n';
+            message += `\n${other_cities} - `;
+            message += menu.renderPercentage("Другие", other_cities / orderTotalCount);
+            message += '\n';
             //По самовывозу
-            message+=`----------------------\nСтатистика по самовывозу:\n`;
-            if(samovivoz>orderTotalCount/2)
-            {
-                message+=`\n${samovivoz} - `;
-                message+=menu.renderPercentage("самовывоз",samovivoz/orderTotalCount);
-                message+='\n';
-                message+=`\n${orderTotalCount-samovivoz} - `;
-                message+=menu.renderPercentage("курьер",(orderTotalCount-samovivoz)/orderTotalCount);
-                message+='\n';
-            }
-            else
-            {
-                message+=`\n${orderTotalCount-samovivoz} - `;
-                message+=menu.renderPercentage("курьер",(orderTotalCount-samovivoz)/orderTotalCount);
-                message+='\n';
-                message+=`\n${samovivoz} - `;
-                message+=menu.renderPercentage("самовывоз",samovivoz/orderTotalCount);
-                message+='\n';
+            message += `----------------------\nСтатистика по самовывозу:\n`;
+            if (samovivoz > orderTotalCount / 2) {
+                message += `\n${samovivoz} - `;
+                message += menu.renderPercentage("самовывоз", samovivoz / orderTotalCount);
+                message += '\n';
+                message += `\n${orderTotalCount - samovivoz} - `;
+                message += menu.renderPercentage("курьер", (orderTotalCount - samovivoz) / orderTotalCount);
+                message += '\n';
+            } else {
+                message += `\n${orderTotalCount - samovivoz} - `;
+                message += menu.renderPercentage("курьер", (orderTotalCount - samovivoz) / orderTotalCount);
+                message += '\n';
+                message += `\n${samovivoz} - `;
+                message += menu.renderPercentage("самовывоз", samovivoz / orderTotalCount);
+                message += '\n';
             }
 
             if (!ordersCountData.data.length)
                 message = `Нет заказов за период с ${fields.from} по ${fields.to}.`;
             return message;
-        }catch (e) {
+        } catch (e) {
             console.log(`Ошибка в функции renderOrders:${e}`);
             return "";
         }
@@ -374,8 +360,8 @@ class Menu {
     }
 
     async renderCalls(fields) {
-        if(typeof fields.days=="undefined" ||fields.days==null)
-            fields.days=1;
+        if (typeof fields.days == "undefined" || fields.days == null)
+            fields.days = 1;
         let from = moment().subtract(fields.days, "days").format("YYYY-MM-DD");
         let to = moment().endOf("day").format("YYYY-MM-DD")
         const data = await API.getCalls(fields.days);
