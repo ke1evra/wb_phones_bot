@@ -134,16 +134,16 @@ class Menu {
         callsLog.data.map((item, index) => {
             message += `   ${index}. ID звонка:${item.id}\n` +
                 `      Дата и время звонка: ${item.start_day} ${item.start_time}\n` +
-                `      С номера ${item.from_number} на номер ${item.to_number}\n` +
+                `      С ${item.from_number} на ${item.to_number}\n` +
                 `      Тип: ${item.call_type}\n` +
                 `      Оператор: ${item.person}\n` +
                 `      Линия: ${item.line_number}\n` +
                 `      Время ответа: ${item.answer_time}\n` +
-                `      Начало разговора: ${moment(item.answer).format("HH:mm:ss")}` +
-                `      Конец разговора: ${moment(item["finish"]).format("HH:mm:ss")}` +
-                `      Продолжительность: ${item.call_duration}` +
-                `      Причина завершения: ${codes[item.disconnect_reason]} (${item.disconnect_reason})`+
-                `-------------------------`
+                `      Начало разговора: ${moment.unix(item.answer).format("HH:mm:ss")}\n` +
+                `      Конец разговора: ${moment.unix(item["finish"]).format("HH:mm:ss")}\n` +
+                `      Продолжительность: ${item.call_duration}\n` +
+                `      Причина завершения: ${codes[item.disconnect_reason]} (${item.disconnect_reason})\n`+
+                `-------------------------\n`
         })
         let options = {
             reply_markup: JSON.stringify({
