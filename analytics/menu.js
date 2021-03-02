@@ -138,7 +138,7 @@ class Menu {
                 `      Тип: ${item.call_type}\n` +
                 `      Оператор: ${item.person}\n` +
                 `      Линия: ${item.line_number}\n` +
-                `      Время ответа: ${answer_time}\n` +
+                `      Время ответа: ${item.answer_time}\n` +
                 `      Начало разговора: ${moment(item.answer).format("HH:mm:ss")}` +
                 `      Конец разговора: ${moment(item["finish"]).format("HH:mm:ss")}` +
                 `      Продолжительность: ${item.call_duration}` +
