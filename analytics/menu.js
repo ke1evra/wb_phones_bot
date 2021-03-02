@@ -129,6 +129,7 @@ class Menu {
             menu.push(new Button(item.client_name, 'some cb'))
         });
         const callsLog = await API.getCallsLogByPhoneNumber(data.data[0].phone_key);
+        console.log(callsLog)
         message+=`История звонков:\n`
         callsLog.data.map((item, index) => {
             message+=`   ${index}. ID звонка:${item.id}`+
