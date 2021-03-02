@@ -20,6 +20,7 @@ class Menu {
     async renderMissedCalls(fields) {
         if(typeof fields.days=="undefined" ||fields.days==null)
             fields.days=1;
+        if (!fields.days)fields.days++
         const data = await API.getMissedCalls(fields.days);
         // console.log(data);
         let message = 'Список пропущенных вызовов: \n ---------------------------\n';
