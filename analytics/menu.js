@@ -99,6 +99,32 @@ class Menu {
             message = 'Нет данных';
         return message;
     }
+    async renderOrderByNumber(fields) {
+        if(typeof fields.days=="undefined" ||fields.days==null)
+            fields.days=1;
+        if(!fields.days)fields.days++
+        const data = await API.getManagers(fields.days);
+        // console.log(data);
+        let message = 'Менеджеры:\n';
+        const menu = [];
+        //console.log(data.data["data1"]);
+
+        data.data.map((item, index) => {
+            message ="Сообщение!"
+            menu.push(new Button(item.client_name, 'some cb'))
+        });
+        let options = {
+            reply_markup: JSON.stringify({
+                inline_keyboard: [
+                    menu,
+                ]
+            }),
+            // disable_web_page_preview: true,
+        };
+        if (!data.data.length)
+            message = 'Нет данных';
+        return message;
+    }
     ///Функция которая возвращает ProcessBar. "title"-Строка заголовка. "value"- процент(число от 0 до 1)
     renderPercentage(title="",value=0){
         try {
