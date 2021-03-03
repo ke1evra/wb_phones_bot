@@ -135,7 +135,7 @@ class Menu {
                         case "Заказ отгружен":
                             return "🟩"
                     }
-                }, item.status) + ` ${item.status}\n` +
+                }) + ` ${item.status}\n` +
                 `Дата регистрации: ${item.date_of_registration}\n` +
                 `Дата обработки: ${item.date_of_processing}\n` +
                 `Менеджер: ${item.manager}\n` +
