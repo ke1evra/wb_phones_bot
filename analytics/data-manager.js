@@ -123,9 +123,9 @@ class DataManager {
     );
   }
   async getCalls(
-      days = 1,
+      days = 0,
       from = moment().subtract(days, "days").format("YYYY-MM-DD"),
-      to = moment().endOf("day").format("YYYY-MM-DD")
+      to = moment().add(1,"days").format("YYYY-MM-DD")
   ){
     return await axios.get(
         `http://185.211.247.12:3000/calls/range?date_from=${from}&date_to=${to}`
