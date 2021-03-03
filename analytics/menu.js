@@ -517,7 +517,6 @@ class Menu {
             message += `\n    ${codes[reason]}: ${statistics.disconnect_reasons.total[reason]},`
         }
         */
-        message += '\n';
         let call_types = ['Входящий', 'Исходящий', 'Недозвон', 'Пропущенный'];
         for (let i in call_types) {
             message += `\n${call_types[i]}:`;
@@ -532,7 +531,7 @@ class Menu {
                 for(let j=0;j<statistics[call_types[i]].managers.length;j++)
                     message+=`\n${statistics[call_types[i]].managers[j][1]} - ${menu.renderPercentage(statistics[call_types[i]].managers[j][0],statistics[call_types[i]].managers[j][1]/statistics[call_types[i]].calls_count)}`
             } else
-                message += `\n    Среднее время до сброса звонка: ${menu.formatSecondsAsHHMMSS((statistics[call_types[i]].time_before_finish / statistics[call_types[i]].calls_count).toFixed(2))}`;
+                message += `\n${menu.formatSecondsAsHHMMSS((statistics[call_types[i]].time_before_finish / statistics[call_types[i]].calls_count).toFixed(2))} - Среднее время до сброса звонка`;
             //Блок по причинам окончания звонков
             /*
             message += `\n   По причинам окончания:`;
