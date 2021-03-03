@@ -514,7 +514,7 @@ class Menu {
         let call_types = ['Входящий', 'Исходящий', 'Недозвон', 'Пропущенный'];
         for (let i in call_types) {
             message += `\n${call_types[i]}:`;
-            message += `\n    Число звонков:\n ${menu.renderPercentage(call_types[i],statistics[call_types[i]].calls_count/statistics.calls_count)},`;
+            message += `\n${statistics[call_types[i]].calls_count} ${menu.renderPercentage(call_types[i],statistics[call_types[i]].calls_count/statistics.calls_count)},`;
             if (['Входящий', 'Исходящий'].includes(call_types[i])) {
                 message += `\n    Суммарная длительность: ${menu.formatSecondsAsHHMMSS(statistics[call_types[i]].calls_duration)}`;
                 message += `\n    Средняя длительность: ${menu.formatSecondsAsHHMMSS((statistics[call_types[i]].calls_duration / statistics[call_types[i]].calls_count).toFixed(2))}`;
