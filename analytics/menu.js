@@ -416,6 +416,8 @@ class Menu {
         statistics['disconnect_reasons']['Недозвон'] = {};
         statistics['disconnect_reasons']['Пропущенный'] = {};
 
+        statistics['managers']=[];
+
         statistics['Входящий'] = {};
         statistics['Входящий']['calls_duration'] = 0;
         statistics['Входящий']['calls_count'] = 0;
@@ -447,6 +449,8 @@ class Menu {
             else
                 statistics['disconnect_reasons']['total'][call.disconnect_reason] = 1;
             //line_numbers
+            if(call.person!==''&&call.person!==null)
+                menu.searchPushOrdersArrays(call.person,statistics.managers)
             if (statistics['line_numbers'].hasOwnProperty(call.line_number))
                 statistics['line_numbers'][call.line_number]++;
             else
@@ -494,6 +498,7 @@ class Menu {
                     break;
             }
         });
+        menu.sortOrdersArrays(statistics.managers);
         //формирование сообщения
         message += 'За период ';
         message+=request_type==='range'?
@@ -514,7 +519,7 @@ class Menu {
         let call_types = ['Входящий', 'Исходящий', 'Недозвон', 'Пропущенный'];
         for (let i in call_types) {
             message += `\n${call_types[i]}:`;
-            message += `\n${statistics[call_types[i]].calls_count} ${menu.renderPercentage(call_types[i],statistics[call_types[i]].calls_count/statistics.calls_count)},`;
+            message += `\n${statistics[call_types[i]].calls_count} - ${menu.renderPercentage(call_types[i],statistics[call_types[i]].calls_count/statistics.calls_count)},`;
             if (['Входящий', 'Исходящий'].includes(call_types[i])) {
                 message += `\n    Суммарная длительность: ${menu.formatSecondsAsHHMMSS(statistics[call_types[i]].calls_duration)}`;
                 message += `\n    Средняя длительность: ${menu.formatSecondsAsHHMMSS((statistics[call_types[i]].calls_duration / statistics[call_types[i]].calls_count).toFixed(2))}`;
@@ -529,6 +534,10 @@ class Menu {
             }
              */
         }
+        //managers
+        message+='\nСтатистика по менеджерам:';
+        for(let i=0;i<statistics.managers.length;i++)
+            message+=`\n${statistics.managers[i][1]} - ${menu.renderPercentage(statistics.managers[i][0],statistics.managers[i][1])}`
         if (!data.data.length)
             message = 'Нет данных по звонкам за период.';
         return message;
