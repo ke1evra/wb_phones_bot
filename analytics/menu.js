@@ -498,7 +498,7 @@ class Menu {
         message+=request_type==='range'?
             `с ${from} по ${to}`
             :fields.days>0?`с ${from}`:`на ${from}`;
-        message+=`было совершено: ${statistics.calls_count} звонков,
+        message+=` было совершено: ${statistics.calls_count} звонков,
 Общей длительностью ${menu.formatSecondsAsHHMMSS(statistics.calls_duration)}, 
 Средней продолжительностью: ${menu.formatSecondsAsHHMMSS((statistics.calls_duration / statistics.real_calls_count).toFixed(2))}.
 ------------------------\n`;
