@@ -109,7 +109,33 @@ class Menu {
         //console.log(data.data["data1"]);
         console.log(data)
         data.data.map((item, index) => {
-            message += `ID заказа: ${item.id}\n` +
+            message += `Заказ ${item.id}\n-------------------------\n\n` +
+                `Cтатус: ` + (() => {
+                    switch (item.status) {
+                        case "Не обработан":
+                            return "⬜️"
+                        case "Забронирован":
+                            return "🟪"
+                        case "Передан на склад":
+                            return "🟦"
+                        case "Взят на сборку":
+                            return "🟦"
+                        case "Сборка заказа невозможна":
+                            return "🟥"
+                        case "Заказ собран и готов к выдаче":
+                            return "🟦"
+                        case "Проверка отказов в заказе":
+                            return "🟦"
+                        case "Проблема с проверкой отказов":
+                            return "🟥"
+                        case "Продажа":
+                            return "🟨"
+                        case "Отказ":
+                            return "🟥"
+                        case "Заказ отгружен":
+                            return "🟩"
+                    }
+                }, item.status) + ` ${item.status}\n` +
                 `Дата регистрации: ${item.date_of_registration}\n` +
                 `Дата обработки: ${item.date_of_processing}\n` +
                 `Менеджер: ${item.manager}\n` +
@@ -143,7 +169,7 @@ class Menu {
                 `      Начало разговора: ${moment.unix(item.answer).format("HH:mm:ss")}\n` +
                 `      Конец разговора: ${moment.unix(item["finish"]).format("HH:mm:ss")}\n` +
                 `      Продолжительность: ${item.call_duration}\n` +
-                `      Причина завершения: ${codes[item.disconnect_reason]} (${item.disconnect_reason})\n`+
+                `      Причина завершения: ${codes[item.disconnect_reason]} (${item.disconnect_reason})\n` +
                 `-------------------------\n`
         })
         let options = {
@@ -380,27 +406,26 @@ class Menu {
 
     async renderCalls(fields) {
         //Фильтр на тип запроса
-        let request_type='';
-        if(['days','day','range'].includes(fields.request_type))
-            request_type=fields.request_type;
+        let request_type = '';
+        if (['days', 'day', 'range'].includes(fields.request_type))
+            request_type = fields.request_type;
         else
-            request_type='days'
+            request_type = 'days'
         //Начало обработки передаваемых параметра
         if (typeof fields.days == "undefined" || fields.days == null)
             fields.days = 0;
-        if(request_type==='day')
-        {
+        if (request_type === 'day') {
             fields.to = fields.from;
-            request_type='days';
+            request_type = 'days';
         }
-        let from = typeof fields.from == "undefined" || fields.from == null? moment().subtract(fields.days, "days").format("YYYY-MM-DD") : fields.from;
+        let from = typeof fields.from == "undefined" || fields.from == null ? moment().subtract(fields.days, "days").format("YYYY-MM-DD") : fields.from;
         let to = typeof fields.to == "undefined" || fields.to == null ? moment() : moment(fields.to);
         //т.к. берёт не включительно добавляем +1 день
         to.add(1, "day");
         //Получение данных
-        const data = await API.getCalls(fields.days,from,to.format("YYYY-MM-DD"));
+        const data = await API.getCalls(fields.days, from, to.format("YYYY-MM-DD"));
         //Возвращаем день назад и преобразуем в строку
-        to=to.add(-1, "day").format("YYYY-MM-DD");
+        to = to.add(-1, "day").format("YYYY-MM-DD");
         //Начало обработки
         let message = 'Статистика по звонкам: \n ---------------------------\n';
         let statistics = [];
@@ -458,8 +483,8 @@ class Menu {
                     statistics['Входящий']['calls_count']++;
                     statistics['Входящий']['calls_duration'] += parseFloat(call.call_duration);
                     statistics['Входящий']['time_before_answer'] += parseFloat(call.answer_time);
-                    if(call.person!==''&&call.person!==null)
-                        menu.searchPushOrdersArrays(call.person,statistics['Входящий']['managers'])
+                    if (call.person !== '' && call.person !== null)
+                        menu.searchPushOrdersArrays(call.person, statistics['Входящий']['managers'])
                     //Причины дисконнекта
                     if (statistics['disconnect_reasons']['Входящий'].hasOwnProperty(call.disconnect_reason))
                         statistics['disconnect_reasons']['Входящий'][call.disconnect_reason]++;
@@ -470,8 +495,8 @@ class Menu {
                     statistics['Исходящий']['calls_count']++;
                     statistics['Исходящий']['calls_duration'] += parseFloat(call.call_duration);
                     statistics['Исходящий']['time_before_answer'] += parseFloat(call.answer_time);
-                    if(call.person!==''&&call.person!==null)
-                        menu.searchPushOrdersArrays(call.person,statistics['Исходящий']['managers'])
+                    if (call.person !== '' && call.person !== null)
+                        menu.searchPushOrdersArrays(call.person, statistics['Исходящий']['managers'])
                     //Причины дисконнекта
                     if (statistics['disconnect_reasons']['Исходящий'].hasOwnProperty(call.disconnect_reason))
                         statistics['disconnect_reasons']['Исходящий'][call.disconnect_reason]++;
@@ -503,10 +528,10 @@ class Menu {
         menu.sortOrdersArrays(statistics['Входящий'].managers);
         menu.sortOrdersArrays(statistics['Исходящий'].managers);
         //формирование сообщения
-        message+=request_type==='range'?
+        message += request_type === 'range' ?
             `С ${from} по ${to}`
-            :fields.days>0?`С ${from} по ${to}`:`На ${from}`;
-        message+=` было совершено: ${statistics.calls_count} звонков,
+            : fields.days > 0 ? `С ${from} по ${to}` : `На ${from}`;
+        message += ` было совершено: ${statistics.calls_count} звонков,
 Общей длительностью ${menu.formatSecondsAsHHMMSS(statistics.calls_duration)}, 
 Средней продолжительностью: ${menu.formatSecondsAsHHMMSS((statistics.calls_duration / statistics.real_calls_count).toFixed(2))}.
 ------------------------`;
@@ -519,18 +544,18 @@ class Menu {
         */
         let call_types = ['Входящий', 'Исходящий', 'Недозвон', 'Пропущенный'];
         for (let i in call_types) {
-            if(statistics[call_types[i]].calls_count===0)continue;
+            if (statistics[call_types[i]].calls_count === 0) continue;
             message += `\n${call_types[i]}:\n`;
-            message += `\n${statistics[call_types[i]].calls_count} — ${menu.renderPercentage("",statistics[call_types[i]].calls_count/statistics.calls_count)},`;
-            message +='\n'
+            message += `\n${statistics[call_types[i]].calls_count} — ${menu.renderPercentage("", statistics[call_types[i]].calls_count / statistics.calls_count)},`;
+            message += '\n'
             if (['Входящий', 'Исходящий'].includes(call_types[i])) {
                 message += `\n${menu.formatSecondsAsHHMMSS(statistics[call_types[i]].calls_duration)} — Суммарная длительность`;
                 message += `\n${menu.formatSecondsAsHHMMSS((statistics[call_types[i]].calls_duration / statistics[call_types[i]].calls_count).toFixed(2))} — Средняя длительность`;
                 message += `\n${menu.formatSecondsAsHHMMSS((statistics[call_types[i]].time_before_answer / statistics[call_types[i]].calls_count).toFixed(2))} — Среднее время до ответа`;
 
-                message+='\n';
-                for(let j=0;j<statistics[call_types[i]].managers.length;j++)
-                    message+=`\n${statistics[call_types[i]].managers[j][1]} — ${menu.renderPercentage(statistics[call_types[i]].managers[j][0],statistics[call_types[i]].managers[j][1]/statistics[call_types[i]].calls_count)}`
+                message += '\n';
+                for (let j = 0; j < statistics[call_types[i]].managers.length; j++)
+                    message += `\n${statistics[call_types[i]].managers[j][1]} — ${menu.renderPercentage(statistics[call_types[i]].managers[j][0], statistics[call_types[i]].managers[j][1] / statistics[call_types[i]].calls_count)}`
             } else
                 message += `\n${menu.formatSecondsAsHHMMSS((statistics[call_types[i]].time_before_finish / statistics[call_types[i]].calls_count).toFixed(2))} — Среднее время до сброса звонка`;
             //Блок по причинам окончания звонков
@@ -540,7 +565,7 @@ class Menu {
                 message += `\n     ${codes[reason]}: ${statistics.disconnect_reasons[call_types[i]][reason]}`;
             }
              */
-            message+='\n---------------------------'
+            message += '\n---------------------------'
         }
         //managers
         if (!data.data.length)
