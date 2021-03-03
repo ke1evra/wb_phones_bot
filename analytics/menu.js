@@ -402,7 +402,7 @@ class Menu {
         //Возвращаем день назад и преобразуем в строку
         to=to.add(-1, "day").format("YYYY-MM-DD");
         //Начало обработки
-        let message = 'Статистика по звонкам: \n ---------------------------\n';
+        let message = 'Статистика по звонкам: \n---------------------------\n';
         let statistics = [];
         // console.log(data);
         statistics['calls_count'] = 0
@@ -509,7 +509,7 @@ class Menu {
         message+=` было совершено ${statistics.calls_count} звонков,
 Общей длительностью ${menu.formatSecondsAsHHMMSS(statistics.calls_duration)}, 
 Средней продолжительностью ${menu.formatSecondsAsHHMMSS((statistics.calls_duration / statistics.real_calls_count).toFixed(2))}.
-------------------------`;
+---------------------------`;
         //Блок по причинам окончания
         /*
         message+=`Статистика по причинам окончаниям звонка:`;
@@ -524,13 +524,13 @@ class Menu {
             message += `\n${statistics[call_types[i]].calls_count} —${menu.renderPercentage("",statistics[call_types[i]].calls_count/statistics.calls_count)},`;
             message +='\n'
             if (['Входящий', 'Исходящий'].includes(call_types[i])) {
-                message += `\n${menu.formatSecondsAsHHMMSS(statistics[call_types[i]].calls_duration)}—Суммарная длительность`;
+                message += `\n${menu.formatSecondsAsHHMMSS(statistics[call_types[i]].calls_duration)} —Суммарная длительность`;
                 message += `\n${menu.formatSecondsAsHHMMSS((statistics[call_types[i]].calls_duration / statistics[call_types[i]].calls_count).toFixed(2))} —Средняя длительность`;
                 message += `\n${menu.formatSecondsAsHHMMSS((statistics[call_types[i]].time_before_answer / statistics[call_types[i]].calls_count).toFixed(2))} —Среднее время до ответа`;
 
                 message+='\n';
                 for(let j=0;j<statistics[call_types[i]].managers.length;j++)
-                    message+=`\n${statistics[call_types[i]].managers[j][1]}—${menu.renderPercentage(statistics[call_types[i]].managers[j][0],statistics[call_types[i]].managers[j][1]/statistics[call_types[i]].calls_count)}`
+                    message+=`\n${statistics[call_types[i]].managers[j][1]} —${menu.renderPercentage(statistics[call_types[i]].managers[j][0],statistics[call_types[i]].managers[j][1]/statistics[call_types[i]].calls_count)}`
             } else
                 message += `\n${menu.formatSecondsAsHHMMSS((statistics[call_types[i]].time_before_finish / statistics[call_types[i]].calls_count).toFixed(2))} —Среднее время до сброса звонка`;
             //Блок по причинам окончания звонков
