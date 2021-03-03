@@ -115,6 +115,7 @@ class Menu {
                 `Менеджер: ${item.manager}\n` +
                 `Время обработки: ${item.processing_time}\n` +
                 `Доставка: ${item.courier_del_id}, ${item.courier}\n` +
+                `Адрес: ${item.address}\n` +
                 `Статус: ${item.status}\n` +
                 `Комментарий заказчика: ${item.comments}\n` +
                 `Действия: ${item.actions}\n` +
