@@ -537,7 +537,7 @@ class Menu {
         //managers
         message+='\nСтатистика по менеджерам:';
         for(let i=0;i<statistics.managers.length;i++)
-            message+=`\n${statistics.managers[i][1]} - ${menu.renderPercentage(statistics.managers[i][0],statistics.managers[i][1])}`
+            message+=`\n${statistics.managers[i][1]} - ${menu.renderPercentage(statistics.managers[i][0],statistics.managers[i][1]/statistics.calls_count)}`
         if (!data.data.length)
             message = 'Нет данных по звонкам за период.';
         return message;
