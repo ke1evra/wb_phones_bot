@@ -506,9 +506,9 @@ class Menu {
         message+=request_type==='range'?
             `С ${from} по ${to}`
             :fields.days>0?`С ${from} по ${to}`:`На ${from}`;
-        message+=` было совершено ${statistics.calls_count} звонков,
-Общей длительностью ${menu.formatSecondsAsHHMMSS(statistics.calls_duration)}, 
-Средней продолжительностью ${menu.formatSecondsAsHHMMSS((statistics.calls_duration / statistics.real_calls_count).toFixed(2))}.
+        message+=` было совершено ${statistics.calls_count} звонков
+Общей длительностью ${menu.formatSecondsAsHHMMSS(statistics.calls_duration)}
+Средней продолжительностью ${menu.formatSecondsAsHHMMSS((statistics.calls_duration / statistics.real_calls_count).toFixed(2))}
 ---------------------------`;
         //Блок по причинам окончания
         /*
@@ -521,7 +521,7 @@ class Menu {
         for (let i in call_types) {
             if(statistics[call_types[i]].calls_count===0)continue;
             message += `\n${call_types[i]}:\n`;
-            message += `\n${statistics[call_types[i]].calls_count} —${menu.renderPercentage("",statistics[call_types[i]].calls_count/statistics.calls_count)},`;
+            message += `\n${statistics[call_types[i]].calls_count} —${menu.renderPercentage("",statistics[call_types[i]].calls_count/statistics.calls_count)}`;
             message +='\n'
             if (['Входящий', 'Исходящий'].includes(call_types[i])) {
                 message += `\n${menu.formatSecondsAsHHMMSS(statistics[call_types[i]].calls_duration)} — Суммарная длительность`;
