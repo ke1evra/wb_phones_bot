@@ -379,11 +379,29 @@ class Menu {
     }
 
     async renderCalls(fields) {
+        //Фильтр на тип запроса
+        let request_type='';
+        if(['days','day','range'].includes(fields.request_type))
+            request_type=fields.request_type;
+        else
+            request_type='days'
+        //Начало обработки передаваемых параметра
         if (typeof fields.days == "undefined" || fields.days == null)
-            fields.days = 1;
-        let from = moment().subtract(fields.days, "days").format("YYYY-MM-DD");
-        let to = moment().endOf("day").format("YYYY-MM-DD")
-        const data = await API.getCalls(fields.days);
+            fields.days = 0;
+        if(request_type==='day')
+        {
+            fields.to = fields.from;
+            request_type='days';
+        }
+        let from = typeof fields.from == "undefined" || fields.from == null? moment().subtract(fields.days, "days").format("YYYY-MM-DD") : fields.from;
+        let to = typeof fields.to == "undefined" || fields.to == null ? moment() : moment(fields.to);
+        //т.к. берёт не включительно добавляем +1 день
+        to.add(1, "day");
+        //Получение данных
+        const data = await API.getCalls(fields.days,from,to.format("YYYY-MM-DD"));
+        //Возвращаем день назад и преобразуем в строку
+        to.add(-1, "day").format("YYYY-MM-DD");
+        //Начало обработки
         let message = 'Статистика по звонкам: \n ---------------------------\n';
         let statistics = [];
         // console.log(data);
@@ -477,29 +495,39 @@ class Menu {
             }
         });
         //формирование сообщения
-        message += `За период с ${fields.from} по ${fields.to} было совершено: ${statistics.calls_count} звонков,
-Общей длительностью ${statistics.calls_duration} секунд, 
-Средней продолжительностью: ${(statistics.calls_duration / statistics.real_calls_count).toFixed(2)} секунд.
-------------------------
-Статистика по причинам окончаниям звонка:`;
+        message += 'За период ';
+        message+=request_type==='range'?
+            `с ${from} по ${to}`
+            :fields.days>0?`с ${from}`:`на ${from}`;
+        message+=`было совершено: ${statistics.calls_count} звонков,
+Общей длительностью ${menu.formatSecondsAsHHMMSS(statistics.calls_duration)}, 
+Средней продолжительностью: ${menu.formatSecondsAsHHMMSS((statistics.calls_duration / statistics.real_calls_count).toFixed(2))}.
+------------------------\n`;
+        //Блок по причинам окончания
+        /*
+        message+=`Статистика по причинам окончаниям звонка:`;
         for (let reason in statistics.disconnect_reasons.total) {
             message += `\n    ${codes[reason]}: ${statistics.disconnect_reasons.total[reason]},`
         }
+        */
         message += '\nСтатистика по типам звонков:';
         let call_types = ['Входящий', 'Исходящий', 'Недозвон', 'Пропущенный'];
         for (let i in call_types) {
             message += `\n${call_types[i]}:`;
-            message += `\n    Число звонков: ${statistics[call_types[i]].calls_count},`;
+            message += `\n    Число звонков:\n ${menu.renderPercentage(call_types[i],statistics[call_types[i]].calls_count/statistics.calls_count)},`;
             if (['Входящий', 'Исходящий'].includes(call_types[i])) {
-                message += `\n    Суммарная длительность: ${statistics[call_types[i]].calls_duration} с`;
-                message += `\n    Средняя длительность: ${(statistics[call_types[i]].calls_duration / statistics[call_types[i]].calls_count).toFixed(2)} с`;
-                message += `\n    Среднее время до ответа: ${(statistics[call_types[i]].time_before_answer / statistics[call_types[i]].calls_count).toFixed(2)} с`;
+                message += `\n    Суммарная длительность: ${menu.formatSecondsAsHHMMSS(statistics[call_types[i]].calls_duration)}`;
+                message += `\n    Средняя длительность: ${menu.formatSecondsAsHHMMSS((statistics[call_types[i]].calls_duration / statistics[call_types[i]].calls_count).toFixed(2))}`;
+                message += `\n    Среднее время до ответа: ${menu.formatSecondsAsHHMMSS((statistics[call_types[i]].time_before_answer / statistics[call_types[i]].calls_count).toFixed(2))}`;
             } else
-                message += `\n    Среднее время до сброса звонка: ${(statistics[call_types[i]].time_before_finish / statistics[call_types[i]].calls_count).toFixed(2)} с`;
+                message += `\n    Среднее время до сброса звонка: ${menu.formatSecondsAsHHMMSS((statistics[call_types[i]].time_before_finish / statistics[call_types[i]].calls_count).toFixed(2))}`;
+            //Блок по причинам окончания звонков
+            /*
             message += `\n   По причинам окончания:`;
             for (let reason in statistics.disconnect_reasons[call_types[i]]) {
                 message += `\n     ${codes[reason]}: ${statistics.disconnect_reasons[call_types[i]][reason]}`;
             }
+             */
         }
         if (!data.data.length)
             message = 'Нет данных по звонкам за период.';
