@@ -502,7 +502,7 @@ class Menu {
         message+=` было совершено: ${statistics.calls_count} звонков,
 Общей длительностью ${menu.formatSecondsAsHHMMSS(statistics.calls_duration)}, 
 Средней продолжительностью: ${menu.formatSecondsAsHHMMSS((statistics.calls_duration / statistics.real_calls_count).toFixed(2))}.
-------------------------\n`;
+------------------------`;
         //Блок по причинам окончания
         /*
         message+=`Статистика по причинам окончаниям звонка:`;
