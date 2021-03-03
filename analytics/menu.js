@@ -416,17 +416,17 @@ class Menu {
         statistics['disconnect_reasons']['Недозвон'] = {};
         statistics['disconnect_reasons']['Пропущенный'] = {};
 
-        statistics['managers']=[];
-
         statistics['Входящий'] = {};
         statistics['Входящий']['calls_duration'] = 0;
         statistics['Входящий']['calls_count'] = 0;
         statistics['Входящий']['time_before_answer'] = 0;
+        statistics['Входящий']['managers'] = [];
 
         statistics['Исходящий'] = {};
         statistics['Исходящий']['calls_duration'] = 0;
         statistics['Исходящий']['calls_count'] = 0;
         statistics['Исходящий']['time_before_answer'] = 0;
+        statistics['Исходящий']['managers'] = [];
 
         statistics['Недозвон'] = {};
         statistics['Недозвон']['calls_duration'] = 0;
@@ -449,8 +449,6 @@ class Menu {
             else
                 statistics['disconnect_reasons']['total'][call.disconnect_reason] = 1;
             //line_numbers
-            if(call.person!==''&&call.person!==null)
-                menu.searchPushOrdersArrays(call.person,statistics.managers)
             if (statistics['line_numbers'].hasOwnProperty(call.line_number))
                 statistics['line_numbers'][call.line_number]++;
             else
@@ -460,6 +458,8 @@ class Menu {
                     statistics['Входящий']['calls_count']++;
                     statistics['Входящий']['calls_duration'] += parseFloat(call.call_duration);
                     statistics['Входящий']['time_before_answer'] += parseFloat(call.answer_time);
+                    if(call.person!==''&&call.person!==null)
+                        menu.searchPushOrdersArrays(call.person,statistics['Входящий']['managers'])
                     //Причины дисконнекта
                     if (statistics['disconnect_reasons']['Входящий'].hasOwnProperty(call.disconnect_reason))
                         statistics['disconnect_reasons']['Входящий'][call.disconnect_reason]++;
@@ -470,6 +470,8 @@ class Menu {
                     statistics['Исходящий']['calls_count']++;
                     statistics['Исходящий']['calls_duration'] += parseFloat(call.call_duration);
                     statistics['Исходящий']['time_before_answer'] += parseFloat(call.answer_time);
+                    if(call.person!==''&&call.person!==null)
+                        menu.searchPushOrdersArrays(call.person,statistics['Исходящий']['managers'])
                     //Причины дисконнекта
                     if (statistics['disconnect_reasons']['Исходящий'].hasOwnProperty(call.disconnect_reason))
                         statistics['disconnect_reasons']['Исходящий'][call.disconnect_reason]++;
@@ -498,12 +500,12 @@ class Menu {
                     break;
             }
         });
-        menu.sortOrdersArrays(statistics.managers);
+        menu.sortOrdersArrays(statistics['Входящий'].managers);
+        menu.sortOrdersArrays(statistics['Исходящий'].managers);
         //формирование сообщения
-        message += 'За период ';
         message+=request_type==='range'?
-            `с ${from} по ${to}`
-            :fields.days>0?`с ${from}`:`на ${from}`;
+            `С ${from} по ${to}`
+            :fields.days>0?`С ${from}`:`На ${from}`;
         message+=` было совершено: ${statistics.calls_count} звонков,
 Общей длительностью ${menu.formatSecondsAsHHMMSS(statistics.calls_duration)}, 
 Средней продолжительностью: ${menu.formatSecondsAsHHMMSS((statistics.calls_duration / statistics.real_calls_count).toFixed(2))}.
@@ -515,15 +517,20 @@ class Menu {
             message += `\n    ${codes[reason]}: ${statistics.disconnect_reasons.total[reason]},`
         }
         */
-        message += '\nСтатистика по типам звонков:';
+        message += '\n';
         let call_types = ['Входящий', 'Исходящий', 'Недозвон', 'Пропущенный'];
         for (let i in call_types) {
             message += `\n${call_types[i]}:`;
-            message += `\n${statistics[call_types[i]].calls_count} - ${menu.renderPercentage(call_types[i],statistics[call_types[i]].calls_count/statistics.calls_count)},`;
+            message += `\n${statistics[call_types[i]].calls_count} - ${menu.renderPercentage("",statistics[call_types[i]].calls_count/statistics.calls_count)},`;
+            message +='\n'
             if (['Входящий', 'Исходящий'].includes(call_types[i])) {
                 message += `\n    Суммарная длительность: ${menu.formatSecondsAsHHMMSS(statistics[call_types[i]].calls_duration)}`;
                 message += `\n    Средняя длительность: ${menu.formatSecondsAsHHMMSS((statistics[call_types[i]].calls_duration / statistics[call_types[i]].calls_count).toFixed(2))}`;
                 message += `\n    Среднее время до ответа: ${menu.formatSecondsAsHHMMSS((statistics[call_types[i]].time_before_answer / statistics[call_types[i]].calls_count).toFixed(2))}`;
+
+                message+='\n\n';
+                for(let j=0;j<statistics[call_types[i]].managers.length;j++)
+                    message+=`\n${statistics[call_types[i]].managers[j][1]} - ${menu.renderPercentage(statistics[call_types[i]].managers[j][0],statistics[call_types[i]].managers[j][1]/statistics[call_types[i]].calls_count)}`
             } else
                 message += `\n    Среднее время до сброса звонка: ${menu.formatSecondsAsHHMMSS((statistics[call_types[i]].time_before_finish / statistics[call_types[i]].calls_count).toFixed(2))}`;
             //Блок по причинам окончания звонков
@@ -535,9 +542,6 @@ class Menu {
              */
         }
         //managers
-        message+='\nСтатистика по менеджерам:';
-        for(let i=0;i<statistics.managers.length;i++)
-            message+=`\n${statistics.managers[i][1]} - ${menu.renderPercentage(statistics.managers[i][0],statistics.managers[i][1]/statistics.calls_count)}`
         if (!data.data.length)
             message = 'Нет данных по звонкам за период.';
         return message;
