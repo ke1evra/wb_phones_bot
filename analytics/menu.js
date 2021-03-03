@@ -134,6 +134,8 @@ class Menu {
                             return "🟥"
                         case "Заказ отгружен":
                             return "🟩"
+                        default:
+                            return "default"
                     }
                 }) + ` ${item.status}\n` +
                 `Дата регистрации: ${item.date_of_registration}\n` +
