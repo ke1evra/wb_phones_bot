@@ -505,7 +505,7 @@ class Menu {
         //формирование сообщения
         message+=request_type==='range'?
             `С ${from} по ${to}`
-            :fields.days>0?`С ${from}`:`На ${from}`;
+            :fields.days>0?`С ${from} по ${to}`:`На ${from}`;
         message+=` было совершено: ${statistics.calls_count} звонков,
 Общей длительностью ${menu.formatSecondsAsHHMMSS(statistics.calls_duration)}, 
 Средней продолжительностью: ${menu.formatSecondsAsHHMMSS((statistics.calls_duration / statistics.real_calls_count).toFixed(2))}.
@@ -519,6 +519,7 @@ class Menu {
         */
         let call_types = ['Входящий', 'Исходящий', 'Недозвон', 'Пропущенный'];
         for (let i in call_types) {
+            if(statistics[call_types[i]].calls_count===0)continue;
             message += `\n${call_types[i]}:\n`;
             message += `\n${statistics[call_types[i]].calls_count} — ${menu.renderPercentage("",statistics[call_types[i]].calls_count/statistics.calls_count)},`;
             message +='\n'
