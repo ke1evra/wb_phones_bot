@@ -530,22 +530,16 @@ class Menu {
         //формирование сообщения
         message += request_type === 'range' ?
             `С ${from} по ${to}`
-            << < < < < < HEAD
             : fields.days > 0 ? `С ${from} по ${to}` : `На ${from}`;
         message += ` было совершено: ${statistics.calls_count} звонков,
 Общей длительностью ${menu.formatSecondsAsHHMMSS(statistics.calls_duration)}, 
 Средней продолжительностью: ${menu.formatSecondsAsHHMMSS((statistics.calls_duration / statistics.real_calls_count).toFixed(2))}.
 ------------------------`;
-    ======
-        =
-    :
         fields.days > 0 ? `С ${from} по ${to}` : `На ${from}`;
         message += ` было совершено ${statistics.calls_count} звонков
 Общей длительностью ${menu.formatSecondsAsHHMMSS(statistics.calls_duration)}
 Средней продолжительностью ${menu.formatSecondsAsHHMMSS((statistics.calls_duration / statistics.real_calls_count).toFixed(2))}
 ---------------------------`;
-    >>>>>>>
-        origin / master
         //Блок по причинам окончания
         /*
         message+=`Статистика по причинам окончаниям звонка:`;
@@ -557,14 +551,10 @@ class Menu {
         for (let i in call_types) {
             if (statistics[call_types[i]].calls_count === 0) continue;
             message += `\n${call_types[i]}:\n`;
-        <<<<<<<
-            HEAD
             message += `\n${statistics[call_types[i]].calls_count} — ${menu.renderPercentage("", statistics[call_types[i]].calls_count / statistics.calls_count)},`;
             message += '\n'
-            === === =
-                message += `\n${statistics[call_types[i]].calls_count} —${menu.renderPercentage("", statistics[call_types[i]].calls_count / statistics.calls_count)}`;
+            message += `\n${statistics[call_types[i]].calls_count} —${menu.renderPercentage("", statistics[call_types[i]].calls_count / statistics.calls_count)}`;
             message += '\n'
-                >>> >>> > origin / master
             if (['Входящий', 'Исходящий'].includes(call_types[i])) {
                 message += `\n${menu.formatSecondsAsHHMMSS(statistics[call_types[i]].calls_duration)} — Суммарная длительность`;
                 message += `\n${menu.formatSecondsAsHHMMSS((statistics[call_types[i]].calls_duration / statistics[call_types[i]].calls_count).toFixed(2))} — Средняя длительность`;
