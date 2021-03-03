@@ -399,7 +399,7 @@ class Menu {
         //Получение данных
         const data = await API.getCalls(fields.days,from,to.format("YYYY-MM-DD"));
         //Возвращаем день назад и преобразуем в строку
-        to = fields.to.add(-1, "day").format("YYYY-MM-DD");
+        to.add(-1, "day").format("YYYY-MM-DD");
         //Начало обработки
         let message = 'Статистика по звонкам: \n ---------------------------\n';
         let statistics = [];
