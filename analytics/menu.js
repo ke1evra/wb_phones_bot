@@ -101,6 +101,35 @@ class Menu {
     }
 
     async renderOrderByNumber(fields) {
+        function getIconByOrderStatus(os) {
+            switch (os) {
+                case "Не обработан":
+                    return "⬜️"
+                case "Забронирован":
+                    return "🟪"
+                case "Передан на склад":
+                    return "🟦"
+                case "Взят на сборку":
+                    return "🟦"
+                case "Сборка заказа невозможна":
+                    return "🟥"
+                case "Заказ собран и готов к выдаче":
+                    return "🟦"
+                case "Проверка отказов в заказе":
+                    return "🟦"
+                case "Проблема с проверкой отказов":
+                    return "🟥"
+                case "Продажа":
+                    return "🟨"
+                case "Отказ":
+                    return "🟥"
+                case "Заказ отгружен":
+                    return "🟩"
+                default:
+                    return "default"
+            }
+        }
+
         console.log("fields=", fields)
         const data = await API.getOrderByNumber(fields.order_number);
         // console.log(data);
@@ -110,34 +139,7 @@ class Menu {
         console.log(data)
         data.data.map((item, index) => {
             message += `Заказ ${item.id}\n-------------------------\n\n` +
-                `Cтатус: ` + (() => {
-                    switch (item.status) {
-                        case "Не обработан":
-                            return "⬜️"
-                        case "Забронирован":
-                            return "🟪"
-                        case "Передан на склад":
-                            return "🟦"
-                        case "Взят на сборку":
-                            return "🟦"
-                        case "Сборка заказа невозможна":
-                            return "🟥"
-                        case "Заказ собран и готов к выдаче":
-                            return "🟦"
-                        case "Проверка отказов в заказе":
-                            return "🟦"
-                        case "Проблема с проверкой отказов":
-                            return "🟥"
-                        case "Продажа":
-                            return "🟨"
-                        case "Отказ":
-                            return "🟥"
-                        case "Заказ отгружен":
-                            return "🟩"
-                        default:
-                            return "default"
-                    }
-                }) + ` ${item.status}\n` +
+                `Статус: ` + getIconByOrderStatus(item.status) + ` ${item.status}\n` +
                 `Дата регистрации: ${item.date_of_registration}\n` +
                 `Дата обработки: ${item.date_of_processing}\n` +
                 `Менеджер: ${item.manager}\n` +
