@@ -18,12 +18,33 @@ class Menu {
     }
 
     async renderMissedCalls(fields) {
+        //Фильтр на тип запроса
+        let request_type = '';
+        if (['days', 'day', 'range'].includes(fields.request_type))
+            request_type = fields.request_type;
+        else
+            request_type = 'days'
+        //Начало обработки передаваемых параметра
         if (typeof fields.days == "undefined" || fields.days == null)
-            fields.days = 1;
-        if (!fields.days) fields.days++
-        const data = await API.getMissedCalls(fields.days);
+            fields.days = 0;
+        if (request_type === 'day') {
+            fields.to = fields.from;
+            request_type = 'days';
+        }
+        let from = typeof fields.from == "undefined" || fields.from == null ? moment().subtract(fields.days, "days").format("YYYY-MM-DD") : fields.from;
+        let to = typeof fields.to == "undefined" || fields.to == null ? moment() : moment(fields.to);
+        //т.к. берёт не включительно добавляем +1 день
+        to.add(1, "day");
+        //Получение данных
+        const data = await API.getMissedCalls(fields.days,from,to);
+        //Возвращаем день назад и преобразуем в строку
+        to = to.add(-1, "day").format("YYYY-MM-DD");
         // console.log(data);
-        let message = 'Список пропущенных вызовов: \n ---------------------------\n';
+        let message = 'Список пропущенных вызовов';
+        message+=request_type==='days'?
+            fields.days>0?`с ${from} по ${to}`:`на ${from}`
+            :`с ${from} по ${to}`;
+        message+=':\n---------------------------\n';
         const menu = [];
         // console.log(data);
 
