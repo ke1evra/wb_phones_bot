@@ -124,7 +124,7 @@ class Menu {
                         item = `${parseInt(item[1])} ₽ — ${item[0]} ${itemStatusIcons[item[2]]} ${item[2]}`
                         return item
                     })
-                    return item.items.join('\n')
+                    return item.items.join('\n')+"\n\n"
                 })() +
 
                 `Доставка: ${item.courier_del_id}, ${item.courier}\n` +
