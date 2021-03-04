@@ -107,7 +107,7 @@ class Menu {
         console.log("fields=", fields)
         const data = await API.getOrderByNumber(fields.order_number);
         // console.log(data);
-        let message = `Инфа по заказу №${fields.order_number}:\n`;
+        let message = "";
         const menu = [];
         //console.log(data.data["data1"]);
         console.log(data)
@@ -118,25 +118,25 @@ class Menu {
                 `Менеджер: ${item.manager}\n\n-------------------------\nКлиент:\n\n` +
                 `${item.client_name}\n` +
                 `${item.phone_key}${item.client_dop_phone ? ` (${item.client_dop_phone})` : ``}\n` +
-                `${item.email}\n\n-------------------------\nСостав:\n\n` +
+                `${item.email}\n-------------------------\nСостав:\n\n` +
                 (() => {
                     item.items = item.items.split('&').map(item => {
                         item = item.split('|')
                         item = `${parseInt(item[1])} ₽ — ${item[0]} ${itemStatusIcons[item[2]]} ${item[2]}`
                         return item
                     })
-                    return item.items.join('\n')+"\n\n"
+                    return item.items.join('\n') + "\n\n"
                 })() +
-                `${item.delivery_price} ₽ — Доставка\n\n`+
-                `${item.order_sum} ₽ — Стоимость заказа\n-------------------------\nДоставка:\n\n`+
-                `${item.address}\n${item.courier_del_id}, ${item.courier}\n-------------------------\nДействия:\n\n`+
+                `${item.delivery_price} ₽ — Доставка\n\n` +
+                `${item.order_sum} ₽ — Стоимость заказа\n-------------------------\nДоставка:\n\n` +
+                `${item.address}\n${item.courier_del_id}, ${item.courier}\n-------------------------\nДействия:\n\n` +
                 (() => {
                     item.actions = item.actions.split('&').map(item => {
                         item = item.split('|')
                         item = `${item[1]} — ${item[0]}\n${item[2]}`
                         return item
                     })
-                    return item.actions.join('\n\n')+'-------------------------'
+                    return item.actions.join('\n\n') + '\n-------------------------'
                 })()
             menu.push(new Button(item.client_name, 'some cb'))
         });
@@ -144,8 +144,7 @@ class Menu {
         console.log(callsLog)
         message += `\nЗвонки:\n`
         callsLog.data.map((item, index) => {
-            message += `\n----------\n${index+1}. ${item.start_day} ${item.start_time} ${callTypeIcons[item.call_type]} ${item.call_type}\n\n` +
-                `      С ${item.from_number} на ${item.to_number}\n` +
+            message += `\n----------\n${index + 1}. ${item.start_day} ${item.start_time} ${callTypeIcons[item.call_type]} ${item.call_type}\n\n` +
                 `Оператор: ${item.person}\n` +
                 `Линия: ${item.line_number}\n` +
                 `Время ответа: ${item.answer_time}\n` +
