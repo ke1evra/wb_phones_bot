@@ -37,7 +37,7 @@ class Menu {
         to.add(1, "day");
         //Получение данных
         console.log(from,to,fields.days);
-        const data = await API.getMissedCalls(fields.days,from,to);
+        const data = await API.getMissedCalls(fields.days,from,to.format("YYYY-MM-DD"));
         //Возвращаем день назад и преобразуем в строку
         to = to.add(-1, "day").format("YYYY-MM-DD");
         // console.log(data);
