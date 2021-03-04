@@ -519,11 +519,6 @@ class Menu {
 Общей длительностью ${menu.formatSecondsAsHHMMSS(statistics.calls_duration)}, 
 Средней продолжительностью: ${menu.formatSecondsAsHHMMSS((statistics.calls_duration / statistics.real_calls_count).toFixed(2))}.
 ------------------------`;
-        fields.days > 0 ? `С ${from} по ${to}` : `На ${from}`;
-        message += ` было совершено ${statistics.calls_count} звонков
-Общей длительностью ${menu.formatSecondsAsHHMMSS(statistics.calls_duration)}
-Средней продолжительностью ${menu.formatSecondsAsHHMMSS((statistics.calls_duration / statistics.real_calls_count).toFixed(2))}
----------------------------`;
         //Блок по причинам окончания
         /*
         message+=`Статистика по причинам окончаниям звонка:`;
