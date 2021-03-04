@@ -103,6 +103,7 @@ class Menu {
     async renderOrderByNumber(fields) {
         const itemStatusIcons = require('../constants/ItemStatusIcons')
         const orderStatusIcons = require('../constants/OrderStatusIcons')
+        const callTypeIcons = require('../constants/CallTypeIcons')
         console.log("fields=", fields)
         const data = await API.getOrderByNumber(fields.order_number);
         // console.log(data);
@@ -126,36 +127,32 @@ class Menu {
                     })
                     return item.items.join('\n')+"\n\n"
                 })() +
-
-                `Доставка: ${item.courier_del_id}, ${item.courier}\n` +
-                `Адрес: ${item.address}\n` +
-                `Статус: ${item.status}\n` +
-                `Комментарий заказчика: ${item.comments}\n` +
-                `Действия: ${item.actions}\n` +
-                `Предметы: ${item.items}\n` +
-                `Стоимость заказа: ${item.order_sum}\n` +
-                `   Пол: ${item.gender === 2 ? 'Ж' : item.client_name === 1 ? 'М' : null}\n` +
-                `   Телефон: ${item.phone_key}\n` +
-                `   Доп телефон: ${item.client_dop_phone}\n` +
-                `   Почта: ${item.email}\n`
+                `${item.delivery_price} ₽ — Доставка\n\n`+
+                `${item.order_sum} ₽ — Стоимость заказа\n-------------------------\nДоставка:\n\n`+
+                `${item.address}\n${item.courier_del_id}, ${item.courier}\n-------------------------\nДействия:\n\n`+
+                (() => {
+                    item.actions = item.actions.split('&').map(item => {
+                        item = item.split('|')
+                        item = `${item[1]} — ${item[0]}\n${item[2]}`
+                        return item
+                    })
+                    return item.actions.join('\n\n')+'-------------------------'
+                })()
             menu.push(new Button(item.client_name, 'some cb'))
         });
         const callsLog = await API.getCallsLogByPhoneNumber(data.data[0].phone_key);
         console.log(callsLog)
-        message += `История звонков:\n`
+        message += `\nЗвонки:\n`
         callsLog.data.map((item, index) => {
-            message += `   ${index}. ID звонка:${item.id}\n` +
-                `      Дата и время звонка: ${item.start_day} ${item.start_time}\n` +
+            message += `\n----------\n${index+1}. ${item.start_day} ${item.start_time} ${callTypeIcons[item.call_type]} ${item.call_type}\n\n` +
                 `      С ${item.from_number} на ${item.to_number}\n` +
-                `      Тип: ${item.call_type}\n` +
-                `      Оператор: ${item.person}\n` +
-                `      Линия: ${item.line_number}\n` +
-                `      Время ответа: ${item.answer_time}\n` +
-                `      Начало разговора: ${moment.unix(item.answer).format("HH:mm:ss")}\n` +
-                `      Конец разговора: ${moment.unix(item["finish"]).format("HH:mm:ss")}\n` +
-                `      Продолжительность: ${item.call_duration}\n` +
-                `      Причина завершения: ${codes[item.disconnect_reason]} (${item.disconnect_reason})\n` +
-                `-------------------------\n`
+                `Оператор: ${item.person}\n` +
+                `Линия: ${item.line_number}\n` +
+                `Время ответа: ${item.answer_time}\n` +
+                `Начало разговора: ${moment.unix(item.answer).format("HH:mm:ss")}\n` +
+                `Конец разговора: ${moment.unix(item["finish"]).format("HH:mm:ss")}\n` +
+                `Продолжительность: ${item.call_duration}\n` +
+                `Причина завершения: ${codes[item.disconnect_reason]} (${item.disconnect_reason})\n`
         })
         let options = {
             reply_markup: JSON.stringify({
