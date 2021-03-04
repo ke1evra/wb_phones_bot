@@ -36,12 +36,12 @@ class Menu {
         //т.к. берёт не включительно добавляем +1 день
         to.add(1, "day");
         //Получение данных
-        console.log(from,to,fields.days);
+        //console.log(from,to,fields.days);
         const data = await API.getMissedCalls(fields.days,from,to.format("YYYY-MM-DD"));
         //Возвращаем день назад и преобразуем в строку
         to = to.add(-1, "day").format("YYYY-MM-DD");
         // console.log(data);
-        let message = 'Список пропущенных вызовов';
+        let message = 'Список пропущенных вызовов ';
         message+=request_type==='days'?
             fields.days>0?`с ${from} по ${to}`:`на ${from}`
             :`с ${from} по ${to}`;
