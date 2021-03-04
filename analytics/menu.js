@@ -142,17 +142,20 @@ class Menu {
         });
         const callsLog = await API.getCallsLogByPhoneNumber(data.data[0].phone_key);
         console.log(callsLog)
-        message += `\nЗвонки:\n`
-        callsLog.data.map((item, index) => {
-            message += `\n----------\n${index + 1}. ${item.start_day} ${item.start_time} ${callTypeIcons[item.call_type]} ${item.call_type}\n\n` +
-                `Оператор: ${item.person}\n` +
-                `Линия: ${item.line_number}\n` +
-                `Время ответа: ${item.answer_time}\n` +
-                `Начало разговора: ${moment.unix(item.answer).format("HH:mm:ss")}\n` +
-                `Конец разговора: ${moment.unix(item["finish"]).format("HH:mm:ss")}\n` +
-                `Продолжительность: ${item.call_duration}\n` +
-                `Причина завершения: ${codes[item.disconnect_reason]} (${item.disconnect_reason})\n`
-        })
+        if (callsLog.data){
+            message += `\nЗвонки:\n`
+            callsLog.data.map((item, index) => {
+                message += `\n----------\n${index + 1}. ${item.start_day} ${item.start_time} ${callTypeIcons[item.call_type]} ${item.call_type}\n\n` +
+                    `Оператор: ${item.person}\n` +
+                    `Линия: ${item.line_number}\n` +
+                    `Время ответа: ${item.answer_time}\n` +
+                    `Начало разговора: ${moment.unix(item.answer).format("HH:mm:ss")}\n` +
+                    `Конец разговора: ${moment.unix(item["finish"]).format("HH:mm:ss")}\n` +
+                    `Продолжительность: ${item.call_duration}\n` +
+                    `${codes[item.disconnect_reason]} (${item.disconnect_reason})\n`
+            })
+            message+="-------------------------"
+        }
         let options = {
             reply_markup: JSON.stringify({
                 inline_keyboard: [
