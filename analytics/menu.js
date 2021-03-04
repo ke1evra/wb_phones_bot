@@ -48,7 +48,11 @@ class Menu {
         message+=':\n---------------------------\n';
         const menu = [];
         // console.log(data);
-
+        if (!data.data.length)
+        {
+            message = 'Нет пропущенных вызовов';
+            return message;
+        }
         data.data.map((item, index) => {
             const orderNum = `${item.order_number ? '\nНомер заказа: ' + item.order_number : ''}`;
             const clientName = `${item.client_name ? ' | ' + item.client_name : ''}`;
@@ -64,8 +68,6 @@ class Menu {
             }),
             // disable_web_page_preview: true,
         };
-        if (!data.data.length)
-            message = 'Нет пропущенных вызовов';
         return message;
     }
 
