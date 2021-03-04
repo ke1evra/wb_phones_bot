@@ -182,7 +182,7 @@ bot.on("callback_query", function (msg) {
 });
 bot.onText(/^\/([a-z]+)\s*.*/, async (msg, match) => {
     try {
-        //console.log('match=',match);
+        console.log('match=',match);
         let router_type = match[1];
         let fields = {};
         if (router_type === "order") {
