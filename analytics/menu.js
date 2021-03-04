@@ -120,7 +120,7 @@ class Menu {
                 `${item.email}\n\n-------------------------\nСостав:\n\n` +
                 (() => {
                     item.items = item.items.split('&').map(item => {
-                        item = item.split(':')
+                        item = item.split('|')
                         item = `${parseInt(item[1])} ₽ — ${item[0]} ${itemStatusIcons[item[2]]} ${item[2]}`
                         return item
                     })
