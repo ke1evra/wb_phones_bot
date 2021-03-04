@@ -187,7 +187,8 @@ bot.onText(/^\/([a-z]+)\s*.*/, async (msg, match) => {
         let fields = {};
         if (router_type === "order") {
             fields["request_type"] = "number";
-            fields["order_number"] = match[0].match(/\s*(\d+)?/)[1]
+            fields["order_number"] = match[0].match(/\/order\s*(\d+)?/)[1]
+            console.log(fields)
         } else {
             //Начинаем проверку на типы запросов
             //Запрос range
