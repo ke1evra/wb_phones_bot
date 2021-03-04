@@ -114,7 +114,7 @@ class Menu {
         data.data.map((item, index) => {
             message += `Заказ ${item.id}\n-------------------------\n\n` +
                 `Cтатус: ${orderStatusIcons[item.status]} ${item.status}\n` +
-                `Поступил: ${item.date_of_registration}, обработан через ${item.processing_time}\n` +
+                `Поступил: ${moment(item.date_of_registration).format("YYYY-MM-DD HH:mm:ss")}, обработан через ${item.processing_time}\n` +
                 `Менеджер: ${item.manager}\n\n-------------------------\nКлиент:\n\n` +
                 `${item.client_name}\n` +
                 `${item.phone_key}${item.client_dop_phone ? ` (${item.client_dop_phone})` : ``}\n` +
@@ -142,7 +142,7 @@ class Menu {
         });
         const callsLog = await API.getCallsLogByPhoneNumber(data.data[0].phone_key);
         console.log(callsLog)
-        if (callsLog.data){
+        if (callsLog.data) {
             message += `\nЗвонки:\n`
             callsLog.data.map((item, index) => {
                 message += `\n----------\n${index + 1}. ${item.start_day} ${item.start_time} ${callTypeIcons[item.call_type]} ${item.call_type}\n\n` +
@@ -154,7 +154,7 @@ class Menu {
                     `Продолжительность: ${item.call_duration}\n` +
                     `${codes[item.disconnect_reason]} (${item.disconnect_reason})\n`
             })
-            message+="-------------------------"
+            message += "-------------------------"
         }
         let options = {
             reply_markup: JSON.stringify({
