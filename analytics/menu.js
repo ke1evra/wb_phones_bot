@@ -101,6 +101,8 @@ class Menu {
     }
 
     async renderOrderByNumber(fields) {
+        const itemStatusIcons = require('../constants/ItemStatusIcons')
+        const orderStatusIcons = require('../constants/OrderStatusIcons')
         console.log("fields=", fields)
         const data = await API.getOrderByNumber(fields.order_number);
         // console.log(data);
@@ -110,38 +112,21 @@ class Menu {
         console.log(data)
         data.data.map((item, index) => {
             message += `Заказ ${item.id}\n-------------------------\n\n` +
-                `Cтатус: ` + (() => {
-                    switch (item.status) {
-                        case "Не обработан":
-                            return "⬜️"
-                        case "Забронирован":
-                            return "🟪"
-                        case "Передан на склад":
-                            return "🟦"
-                        case "Взят на сборку":
-                            return "🟦"
-                        case "Сборка заказа невозможна":
-                            return "🟥"
-                        case "Заказ собран и готов к выдаче":
-                            return "🟦"
-                        case "Проверка отказов в заказе":
-                            return "🟦"
-                        case "Проблема с проверкой отказов":
-                            return "🟥"
-                        case "Продажа":
-                            return "🟨"
-                        case "Отказ":
-                            return "🟥"
-                        case "Заказ отгружен":
-                            return "🟩"
-                        default:
-                            return "default"
-                    }
-                })() + ` ${item.status}\n` +
-                `Дата регистрации: ${item.date_of_registration}\n` +
-                `Дата обработки: ${item.date_of_processing}\n` +
-                `Менеджер: ${item.manager}\n` +
-                `Время обработки: ${item.processing_time}\n` +
+                `Cтатус: ${orderStatusIcons[item.status]} ${item.status}\n` +
+                `Поступил: ${item.date_of_registration}, обработан через ${item.processing_time}\n` +
+                `Менеджер: ${item.manager}\n\n-------------------------\nКлиент:\n\n` +
+                `${item.client_name}\n` +
+                `${item.phone_key}${item.client_dop_phone ? ` (${item.client_dop_phone})` : ``}\n` +
+                `${item.email}\n\n-------------------------\nСостав:\n\n` +
+                (() => {
+                    item.items = item.items.split('&').map(item => {
+                        item = item.split(':')
+                        item = `${parseInt(item[1])} ₽ — ${item[0]} ${itemStatusIcons[item[2]]} ${item[2]}`
+                        return item
+                    })
+                    return item.items.join('\n')
+                })() +
+
                 `Доставка: ${item.courier_del_id}, ${item.courier}\n` +
                 `Адрес: ${item.address}\n` +
                 `Статус: ${item.status}\n` +
@@ -149,8 +134,6 @@ class Menu {
                 `Действия: ${item.actions}\n` +
                 `Предметы: ${item.items}\n` +
                 `Стоимость заказа: ${item.order_sum}\n` +
-                `Инфа по клиенту:\n` +
-                `   Имя: ${item.client_name}\n` +
                 `   Пол: ${item.gender === 2 ? 'Ж' : item.client_name === 1 ? 'М' : null}\n` +
                 `   Телефон: ${item.phone_key}\n` +
                 `   Доп телефон: ${item.client_dop_phone}\n` +
