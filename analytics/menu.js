@@ -188,7 +188,7 @@ class Menu {
                                 break;
                         }
                         return result
-                    })()
+                    })()+
                     `${codes[item.disconnect_reason]} (${item.disconnect_reason})\n`
             })
             message += "-------------------------"
