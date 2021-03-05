@@ -600,8 +600,10 @@ class Menu {
         //т.к. берёт не включительно добавляем +1 день
         to.add(1, "day");
         //Получение данных
-        let calls_data=API.getCalls(fields.days,from,to.format("YYYY-MM-DD")).data;
-        let orders_data=API.getOrders(fields.days,from,to.format("YYYY-MM-DD")).data;
+        let calls_data=API.getCalls(fields.days,from,to.format("YYYY-MM-DD"));
+        let orders_data=API.getOrders(fields.days,from,to.format("YYYY-MM-DD"));
+        console.log('calls_data:',calls_data.data);
+        console.log('orders_data:',orders_data.data);
         to.add(-1, "day");
         //Обработка данных
         let statistics={};
@@ -609,13 +611,13 @@ class Menu {
         statistics['orders']=[];
         statistics['calls_count']=0;
         statistics['orders_count']=0;
-        if(calls_data!=='')
-            calls_data.forEach(call=>{
+        if(calls_data.data!=='')
+            calls_data.data.forEach(call=>{
                 menu.searchPushOrdersArrays(call.start_time.substr(0,2),statistics['calls']);
                 statistics['calls_count']++;
             });
-        if(orders_data!=='')
-            orders_data.forEach(order=>{
+        if(orders_data.data!=='')
+            orders_data.data.forEach(order=>{
                 menu.searchPushOrdersArrays(moment(order.created_at).format('HH'),statistics['orders']);
                 statistics['orders_count']++;
             });
