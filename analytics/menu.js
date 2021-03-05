@@ -580,6 +580,74 @@ class Menu {
             message = 'Нет данных по звонкам за период.';
         return message;
     }
+
+    async renderChrono(fields){
+        //Фильтр на тип запроса
+        let request_type = '';
+        if (['days', 'day', 'range'].includes(fields.request_type))
+            request_type = fields.request_type;
+        else
+            request_type = 'days'
+        //Начало обработки передаваемых параметра
+        if (typeof fields.days == "undefined" || fields.days == null)
+            fields.days = 0;
+        if (request_type === 'day') {
+            fields.to = fields.from;
+            request_type = 'days';
+        }
+        let from = typeof fields.from == "undefined" || fields.from == null ? moment().subtract(fields.days, "days").format("YYYY-MM-DD") : fields.from;
+        let to = typeof fields.to == "undefined" || fields.to == null ? moment() : moment(fields.to);
+        //т.к. берёт не включительно добавляем +1 день
+        to.add(1, "day");
+        //Получение данных
+        let calls_data=API.getCalls(fields.days,from,to.format("YYYY-MM-DD")).data;
+        let orders_data=API.getOrders(fields.days,from,to.format("YYYY-MM-DD")).data;
+        to.add(-1, "day");
+        //Обработка данных
+        let statistics={};
+        statistics['calls']=[];
+        statistics['orders']=[];
+        statistics['calls_count']=0;
+        statistics['orders_count']=0;
+        calls_data.forEach(call=>{
+            menu.searchPushOrdersArrays(call.start_time.substr(0,2),statistics['calls']);
+            statistics['calls_count']++;
+        });
+        orders_data.forEach(order=>{
+            menu.searchPushOrdersArrays(moment(order.created_at).format('HH'),statistics['orders']);
+            statistics['orders_count']++;
+        });
+        if(!statistics.calls_count&&!statistics.orders_count)
+        {
+            if(request_type==='days')
+                return `Нет данных за период ${fields.days>0?
+                `с ${from} по ${to}`
+                :`на ${to}`}`;
+            return `Нет данных за период с ${from} по ${to}`;
+        }
+        let message='Статистика по часам:\n------------------------\n';
+        if(request_type==='days')
+            message+=fields.days>0?`С ${from} по ${to}`:`На ${from}`;
+        else
+            message+=`С ${from} по ${to}`;
+        message+=' было совершено:\n';
+        message+=`${statistics['calls_count']?`${statistics['calls_count']} звонков\n`:''}`;
+        message+=`${statistics['orders_count']?`${statistics['orders_count']} заказов\n`:''}`;
+
+        if(statistics['calls_count'])
+        {
+            message+='------------------------\nЗвонки\n';
+            for(let i=0;i<statistics.calls.length;i++)
+                message+=`\n${statistics.calls[i][1]} — ${menu.renderPercentage(statistics.calls[i][0], statistics.calls[i][1] / statistics.calls_count)}`;
+        }
+        if(statistics['orders_count'])
+        {
+            message+='------------------------\nЗаказы\n';
+            for(let i=0;i<statistics.orders.length;i++)
+                message+=`\n${statistics.orders[i][1]} — ${menu.renderPercentage(statistics.orders[i][0], statistics.orders[i][1] / statistics.orders_count)}`;
+        }
+        return message;
+    }
 }
 
 const menu = new Menu();
@@ -600,7 +668,8 @@ const messages = {
     missed: menu.renderMissedCalls,
     calls: menu.renderCalls,
     expenses: menu.renderExpenses,
-    managers: menu.renderManagers
+    managers: menu.renderManagers,
+    chrono: menu.renderChrono
 };
 
 
