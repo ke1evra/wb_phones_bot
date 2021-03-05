@@ -178,19 +178,10 @@ class Menu {
                     `👤 ${item.person}\n` +
                     (() => {
                         let result
-                        switch (item.call_type) {
-                            case "Входящий":
-                                result = `➡️${item.start_time} — 🕑${moment(item.answer_time,"ss").format("HH:mm:ss")} → 🗣${moment.unix(item.answer).format("HH:mm:ss")} — 🕑${moment(item.call_duration,"ss").format("HH:mm:ss")} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
-                                break;
-                            case "Исходящий":
-                                result = `➡️${item.start_time} — 🕑${moment(item.answer_time,"ss").format("HH:mm:ss")} → 🗣${moment.unix(item.answer).format("HH:mm:ss")} — 🕑${moment(item.call_duration,"ss").format("HH:mm:ss")} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
-                                break;
-                            case "Пропущенный":
-                                result = `➡️${moment.unix(item["start"]).format("HH:mm:ss")} — 🕑${new Date(moment.unix(item["finish"]).diff(moment.unix(item["start"]),"seconds")* 1000).toISOString().substr(11, 8)} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
-                                break;
-                            case "Недозвон":
-                                result = `➡️${moment.unix(item["start"]).format("HH:mm:ss")} — 🕑${new Date(moment.unix(item["finish"]).diff(moment.unix(item["start"]),"seconds")* 1000).toISOString().substr(11, 8)} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
-                                break;
+                        if (item.call_type === "Входящий" || item.call_type === "Исходящий") {
+                            result = `➡️${item.start_time} — 🕑${new Date(item.answer_time * 1000).toISOString().substr(11, 8)} → 🗣${moment.unix(item.answer).format("HH:mm:ss")} — 🕑${new Date(item.call_duration * 1000).toISOString().substr(11, 8)} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
+                        } else if (item.call_type === "Пропущенный" || item.call_type === "Недозвон") {
+                            result = `➡️${moment.unix(item["start"]).format("HH:mm:ss")} — 🕑${new Date(moment.unix(item["finish"]).diff(moment.unix(item["start"]), "seconds") * 1000).toISOString().substr(11, 8)} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
                         }
                         return result
                     })()//+ ` (${item.disconnect_reason})`
