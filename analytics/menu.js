@@ -609,14 +609,16 @@ class Menu {
         statistics['orders']=[];
         statistics['calls_count']=0;
         statistics['orders_count']=0;
-        calls_data.forEach(call=>{
-            menu.searchPushOrdersArrays(call.start_time.substr(0,2),statistics['calls']);
-            statistics['calls_count']++;
-        });
-        orders_data.forEach(order=>{
-            menu.searchPushOrdersArrays(moment(order.created_at).format('HH'),statistics['orders']);
-            statistics['orders_count']++;
-        });
+        if(calls_data!=='')
+            calls_data.forEach(call=>{
+                menu.searchPushOrdersArrays(call.start_time.substr(0,2),statistics['calls']);
+                statistics['calls_count']++;
+            });
+        if(orders_data!=='')
+            orders_data.forEach(order=>{
+                menu.searchPushOrdersArrays(moment(order.created_at).format('HH'),statistics['orders']);
+                statistics['orders_count']++;
+            });
         if(!statistics.calls_count&&!statistics.orders_count)
         {
             if(request_type==='days')
