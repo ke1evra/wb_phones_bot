@@ -145,13 +145,25 @@ class Menu {
         if (callsLog.data) {
             message += `\nЗвонки:\n`
             callsLog.data.map((item, index) => {
-                message += `\n----------\n${index + 1}. ${item.start_day} ${item.start_time} ${callTypeIcons[item.call_type]} ${item.call_type}\n\n` +
-                    `Оператор: ${item.person}\n` +
-                    `Линия: ${item.line_number}\n` +
-                    `Время ответа: ${item.answer_time}\n` +
-                    `Начало разговора: ${moment.unix(item.answer).format("HH:mm:ss")}\n` +
-                    `Конец разговора: ${moment.unix(item["finish"]).format("HH:mm:ss")}\n` +
-                    `Продолжительность: ${item.call_duration}\n` +
+                message += `\n----------\n${index + 1}. ${item.start_day} ${item.start_time} ${callTypeIcons[item.call_type]} ${item.call_type} ${item.line_number ?` (${item.line_number})`: ``}\n\n` +
+                    `👤 ${item.person}\n` +
+                    (()=>{
+                        let result
+                        switch (item.call_type){
+                            case "Входящий":
+                                result=`➡️${item.start_time} — 🕑${item.answer_type} → 🗣${moment.unix(item.answer).format("HH:mm:ss")} — 🕑${item.call_duration} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
+                                break;
+                            case "Исходящий":
+                                result=`➡️${item.start_time} — 🕑${item.answer_type} → 🗣${moment.unix(item.answer).format("HH:mm:ss")} — 🕑${item.call_duration} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
+                                break;
+                            case "Пропущенный":
+                                result=`➡️${item.start_time} — 🕑${(moment.unix(item["finish"]).format("HH:mm:ss")).diff(moment(item.start_time,"HH:mm:ss"),"seconds")} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
+                                break;
+                            case "Недозвон":
+                                result=`➡️${item.start_time} — 🕑${(moment.unix(item["finish"]).format("HH:mm:ss")).diff(moment(item.start_time,"HH:mm:ss"),"seconds")} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
+                                break;
+                        }
+                    })()
                     `${codes[item.disconnect_reason]} (${item.disconnect_reason})\n`
             })
             message += "-------------------------"
