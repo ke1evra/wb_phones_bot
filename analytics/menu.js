@@ -600,8 +600,8 @@ class Menu {
         //т.к. берёт не включительно добавляем +1 день
         to.add(1, "day");
         //Получение данных
-        let calls_data=API.getCalls(fields.days,from,to.format("YYYY-MM-DD"));
-        let orders_data=API.getOrders(fields.days,from,to.format("YYYY-MM-DD"));
+        let calls_data=await API.getCalls(fields.days,from,to.format("YYYY-MM-DD"));
+        let orders_data=await API.getOrders(fields.days,from,to.format("YYYY-MM-DD"));
         console.log('calls_data:',calls_data.data);
         console.log('orders_data:',orders_data.data);
         to.add(-1, "day");
