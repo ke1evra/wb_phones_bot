@@ -116,7 +116,9 @@ class DataManager {
     );
   }
   async getCallsLogInRangeByPhoneNumber(
-      number= 1
+      number= 1,
+      date_from = '2021-01-01',
+      date_to = '2021-01-01'
   ){
     return await axios.get(
         `http://185.211.247.12:3000/calls/clientInRange?number=${number}&date_from=${date_from}&date_to=${date_to}`
