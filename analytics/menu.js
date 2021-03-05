@@ -602,8 +602,8 @@ class Menu {
         //Получение данных
         let calls_data=await API.getCalls(fields.days,from,to.format("YYYY-MM-DD"));
         let orders_data=await API.getOrders(fields.days,from,to.format("YYYY-MM-DD"));
-        console.log('calls_data:',calls_data.data);
-        console.log('orders_data:',orders_data.data);
+        //console.log('calls_data:',calls_data.data);
+        //console.log('orders_data:',orders_data.data);
         to.add(-1, "day");
         //Обработка данных
         let statistics={};
@@ -611,6 +611,14 @@ class Menu {
         statistics['orders']=[];
         statistics['calls_count']=0;
         statistics['orders_count']=0;
+        for(let i=0;i<24;i++)
+        {
+            let number= i.toString();
+            if(i<10)
+                number='0'+number;
+            statistics['calls'].push([number,0]);
+            statistics['orders'].push([number,0]);
+        }
         if(calls_data.data!=='')
             calls_data.data.forEach(call=>{
                 menu.searchPushOrdersArrays(call.start_time.substr(0,2),statistics['calls']);
@@ -642,13 +650,13 @@ class Menu {
         {
             message+='------------------------\nЗвонки\n';
             for(let i=0;i<statistics.calls.length;i++)
-                message+=`\n${statistics.calls[i][1]} — ${menu.renderPercentage(statistics.calls[i][0], statistics.calls[i][1] / statistics.calls_count)}`;
+                message+=`\n${statistics.calls[i][0]} — ${menu.renderPercentage('', statistics.calls[i][1] / statistics.calls_count)}`;
         }
         if(statistics['orders_count'])
         {
             message+='------------------------\nЗаказы\n';
             for(let i=0;i<statistics.orders.length;i++)
-                message+=`\n${statistics.orders[i][1]} — ${menu.renderPercentage(statistics.orders[i][0], statistics.orders[i][1] / statistics.orders_count)}`;
+                message+=`\n${statistics.orders[i][0]} — ${menu.renderPercentage('', statistics.orders[i][1] / statistics.orders_count)}`;
         }
         return message;
     }
