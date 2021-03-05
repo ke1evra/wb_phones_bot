@@ -115,11 +115,11 @@ class DataManager {
         `http://185.211.247.12:3000/orders/number?order_number=${order_number}`
     );
   }
-  async getCallsLogByPhoneNumber(
+  async getCallsLogInRangeByPhoneNumber(
       number= 1
   ){
     return await axios.get(
-        `http://185.211.247.12:3000/calls/client?number=${number}`
+        `http://185.211.247.12:3000/calls/clientInRange?number=${number}&date_from=${date_from}&date_to=${date_to}`
     );
   }
   async getCalls(

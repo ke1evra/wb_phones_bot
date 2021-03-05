@@ -164,12 +164,18 @@ class Menu {
                 })()
             menu.push(new Button(item.client_name, 'some cb'))
         });
-        const callsLog = await API.getCallsLogByPhoneNumber(data.data[0].phone_key);
+
+        const getLogs ={}
+        getLogs.number=data.data[0].phone_key
+        getLogs.from=moment(data.data[0].date_of_registration).subtract(3,"days").format("YYYY-MM-DD")
+        getLogs.to=moment(data.data[0].date_of_registration).add(3,"days").format("YYYY-MM-DD")
+
+        const callsLog = await API.getCallsLogInRangeByPhoneNumber(getLogs.number,getLogs.from,getLogs.to);
         console.log(callsLog)
         if (callsLog.data) {
             message += `\nЗвонки:\n`
             callsLog.data.map((item, index) => {
-                message += `\n----------\n${index + 1}. ${item.start_day} ${item.start_time} ${callTypeIcons[item.call_type]} ${item.call_type} ${(item.call_type ==="Входящий")|| (item.call_type ==="Пропущенный")?` (${item.line_number})`: ``}\n\n` +
+                message += `\n----------\n${index + 1}. ${item.start_day} ${item.start_time} ${callTypeIcons[item.call_type]} ${item.call_type}${(item.call_type ==="Входящий")|| (item.call_type ==="Пропущенный")?` (${item.line_number})`: ``}\n\n` +
                     `👤 ${item.person}\n` +
                     (()=>{
                         let result
