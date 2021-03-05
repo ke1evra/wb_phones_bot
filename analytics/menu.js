@@ -186,10 +186,10 @@ class Menu {
                                 result = `➡️${item.start_time} — 🕑${moment(item.answer_time,"ss").format("HH:mm:ss")} → 🗣${moment.unix(item.answer).format("HH:mm:ss")} — 🕑${moment(item.call_duration,"ss").format("HH:mm:ss")} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
                                 break;
                             case "Пропущенный":
-                                result = `➡️${item.start_time} — 🕑${moment(moment(moment.unix(item["finish"]).format("HH:mm:ss"), "HH:mm:ss").diff(moment(item.start_time, "HH:mm:ss"), "seconds")).format("HH:mm:ss")} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
+                                result = `➡️${moment.unix(item["start"]).format("HH:mm:ss")} — 🕑${new Date(moment.unix(item["finish"]).diff(moment.unix(item["start"]),"seconds")* 1000).toISOString().substr(11, 8)} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
                                 break;
                             case "Недозвон":
-                                result = `➡️${item.start_time} — 🕑${moment(moment(moment.unix(item["finish"]).format("HH:mm:ss"), "HH:mm:ss").diff(moment(item.start_time, "HH:mm:ss"), "seconds")).format("HH:mm:ss")} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
+                                result = `➡️${moment.unix(item["start"]).format("HH:mm:ss")} — 🕑${new Date(moment.unix(item["finish"]).diff(moment.unix(item["start"]),"seconds")* 1000).toISOString().substr(11, 8)} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
                                 break;
                         }
                         return result
