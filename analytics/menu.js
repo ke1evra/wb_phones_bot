@@ -187,6 +187,7 @@ class Menu {
                                 result=`➡️${item.start_time} — 🕑${moment(moment.unix(item["finish"]).format("HH:mm:ss"),"HH:mm:ss").diff(moment(item.start_time,"HH:mm:ss"),"seconds")} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
                                 break;
                         }
+                        return result
                     })()
                     `${codes[item.disconnect_reason]} (${item.disconnect_reason})\n`
             })
