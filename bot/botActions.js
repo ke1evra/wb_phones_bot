@@ -162,7 +162,8 @@ const requests = {
     'expenses': menu.expenses,
     'orders': menu.orders,
     'order': menu.order,
-    'calls': menu.calls
+    'calls': menu.calls,
+    'chrono':menu.chrono
 };
 
 bot.on("callback_query", function (msg) {
