@@ -37,19 +37,18 @@ class Menu {
         to.add(1, "day");
         //Получение данных
         //console.log(from,to,fields.days);
-        const data = await API.getMissedCalls(fields.days,from,to.format("YYYY-MM-DD"));
+        const data = await API.getMissedCalls(fields.days, from, to.format("YYYY-MM-DD"));
         //Возвращаем день назад и преобразуем в строку
         to = to.add(-1, "day").format("YYYY-MM-DD");
         // console.log(data);
         let message = 'Список пропущенных вызовов ';
-        message+=request_type==='days'?
-            fields.days>0?`с ${from} по ${to}`:`на ${from}`
-            :`с ${from} по ${to}`;
-        message+=':\n---------------------------\n';
+        message += request_type === 'days' ?
+            fields.days > 0 ? `с ${from} по ${to}` : `на ${from}`
+            : `с ${from} по ${to}`;
+        message += ':\n---------------------------\n';
         const menu = [];
         // console.log(data);
-        if (!data.data.length)
-        {
+        if (!data.data.length) {
             message = 'Нет пропущенных вызовов';
             return message;
         }
@@ -165,32 +164,32 @@ class Menu {
             menu.push(new Button(item.client_name, 'some cb'))
         });
 
-        const getLogs ={}
-        getLogs.number=data.data[0].phone_key
-        getLogs.from=moment(data.data[0].date_of_registration).subtract(3,"days").format("YYYY-MM-DD")
-        getLogs.to=moment(data.data[0].date_of_registration).add(3,"days").format("YYYY-MM-DD")
+        const getLogs = {}
+        getLogs.number = data.data[0].phone_key
+        getLogs.from = moment(data.data[0].date_of_registration).subtract(3, "days").unix()
+        getLogs.to = moment(data.data[0].date_of_registration).add(3, "days").unix()
 
-        const callsLog = await API.getCallsLogInRangeByPhoneNumber(getLogs.number,getLogs.from,getLogs.to);
+        const callsLog = await API.getCallsLogInRangeByPhoneNumber(getLogs.number, getLogs.from, getLogs.to);
         console.log(callsLog)
-        if (callsLog.data) {
+        if (callsLog.data.length) {
             message += `\nЗвонки:\n`
             callsLog.data.map((item, index) => {
-                message += `\n----------\n${index + 1}. ${item.start_day} ${item.start_time} ${callTypeIcons[item.call_type]} ${item.call_type}${(item.call_type ==="Входящий")|| (item.call_type ==="Пропущенный")?` (${item.line_number})`: ``}\n\n` +
+                message += `\n----------\n${index + 1}. ${item.start_day} ${item.start_time} ${callTypeIcons[item.call_type]} ${item.call_type}${(item.call_type === "Входящий") || (item.call_type === "Пропущенный") ? ` (${item.line_number})` : ``}\n\n` +
                     `👤 ${item.person}\n` +
-                    (()=>{
+                    (() => {
                         let result
-                        switch (item.call_type){
+                        switch (item.call_type) {
                             case "Входящий":
-                                result=`➡️${item.start_time} — 🕑${item.answer_time} → 🗣${moment.unix(item.answer).format("HH:mm:ss")} — 🕑${item.call_duration} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
+                                result = `➡️${item.start_time} — 🕑${item.answer_time} → 🗣${moment.unix(item.answer).format("HH:mm:ss")} — 🕑${item.call_duration} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
                                 break;
                             case "Исходящий":
-                                result=`➡️${item.start_time} — 🕑${item.answer_time} → 🗣${moment.unix(item.answer).format("HH:mm:ss")} — 🕑${item.call_duration} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
+                                result = `➡️${item.start_time} — 🕑${item.answer_time} → 🗣${moment.unix(item.answer).format("HH:mm:ss")} — 🕑${item.call_duration} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
                                 break;
                             case "Пропущенный":
-                                result=`➡️${item.start_time} — 🕑${moment(moment.unix(item["finish"]).format("HH:mm:ss"),"HH:mm:ss").diff(moment(item.start_time,"HH:mm:ss"),"seconds")} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
+                                result = `➡️${item.start_time} — 🕑${moment(moment.unix(item["finish"]).format("HH:mm:ss"), "HH:mm:ss").diff(moment(item.start_time, "HH:mm:ss"), "seconds")} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
                                 break;
                             case "Недозвон":
-                                result=`➡️${item.start_time} — 🕑${moment(moment.unix(item["finish"]).format("HH:mm:ss"),"HH:mm:ss").diff(moment(item.start_time,"HH:mm:ss"),"seconds")} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
+                                result = `➡️${item.start_time} — 🕑${moment(moment.unix(item["finish"]).format("HH:mm:ss"), "HH:mm:ss").diff(moment(item.start_time, "HH:mm:ss"), "seconds")} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
                                 break;
                         }
                         return result
@@ -599,7 +598,7 @@ class Menu {
         return message;
     }
 
-    async renderChrono(fields){
+    async renderChrono(fields) {
         //Фильтр на тип запроса
         let request_type = '';
         if (['days', 'day', 'range'].includes(fields.request_type))
@@ -618,63 +617,59 @@ class Menu {
         //т.к. берёт не включительно добавляем +1 день
         to.add(1, "day");
         //Получение данных
-        let calls_data=await API.getCalls(fields.days,from,to.format("YYYY-MM-DD"));
-        let orders_data=await API.getOrders(fields.days,from,to.format("YYYY-MM-DD"));
+        let calls_data = await API.getCalls(fields.days, from, to.format("YYYY-MM-DD"));
+        let orders_data = await API.getOrders(fields.days, from, to.format("YYYY-MM-DD"));
         //console.log('calls_data:',calls_data.data);
         //console.log('orders_data:',orders_data.data);
-        to=to.add(-1, "day").format("YYYY-MM-DD");
+        to = to.add(-1, "day").format("YYYY-MM-DD");
         //Обработка данных
-        let statistics={};
-        statistics['calls']=[];
-        statistics['orders']=[];
-        statistics['calls_count']=0;
-        statistics['orders_count']=0;
-        for(let i=0;i<24;i++)
-        {
-            let number= i.toString();
-            if(i<10)
-                number='0'+number;
-            statistics['calls'].push([number,0]);
-            statistics['orders'].push([number,0]);
+        let statistics = {};
+        statistics['calls'] = [];
+        statistics['orders'] = [];
+        statistics['calls_count'] = 0;
+        statistics['orders_count'] = 0;
+        for (let i = 0; i < 24; i++) {
+            let number = i.toString();
+            if (i < 10)
+                number = '0' + number;
+            statistics['calls'].push([number, 0]);
+            statistics['orders'].push([number, 0]);
         }
-        if(calls_data.data!=='')
-            calls_data.data.forEach(call=>{
-                menu.searchPushOrdersArrays(call.start_time.substr(0,2),statistics['calls']);
+        if (calls_data.data !== '')
+            calls_data.data.forEach(call => {
+                menu.searchPushOrdersArrays(call.start_time.substr(0, 2), statistics['calls']);
                 statistics['calls_count']++;
             });
-        if(orders_data.data!=='')
-            orders_data.data.forEach(order=>{
-                menu.searchPushOrdersArrays(moment(order.created_at).format('HH'),statistics['orders']);
+        if (orders_data.data !== '')
+            orders_data.data.forEach(order => {
+                menu.searchPushOrdersArrays(moment(order.created_at).format('HH'), statistics['orders']);
                 statistics['orders_count']++;
             });
-        if(!statistics.calls_count&&!statistics.orders_count)
-        {
-            if(request_type==='days')
-                return `Нет данных за период ${fields.days>0?
-                `с ${from} по ${to}`
-                :`на ${to}`}`;
+        if (!statistics.calls_count && !statistics.orders_count) {
+            if (request_type === 'days')
+                return `Нет данных за период ${fields.days > 0 ?
+                    `с ${from} по ${to}`
+                    : `на ${to}`}`;
             return `Нет данных за период с ${from} по ${to}`;
         }
-        let message='Статистика по часам:\n------------------------\n';
-        if(request_type==='days')
-            message+=fields.days>0?`С ${from} по ${to}`:`На ${from}`;
+        let message = 'Статистика по часам:\n------------------------\n';
+        if (request_type === 'days')
+            message += fields.days > 0 ? `С ${from} по ${to}` : `На ${from}`;
         else
-            message+=`С ${from} по ${to}`;
-        message+=' было совершено:\n';
-        message+=`${statistics['calls_count']?`${statistics['calls_count']} звонков\n`:''}`;
-        message+=`${statistics['orders_count']?`${statistics['orders_count']} заказов\n`:''}`;
+            message += `С ${from} по ${to}`;
+        message += ' было совершено:\n';
+        message += `${statistics['calls_count'] ? `${statistics['calls_count']} звонков\n` : ''}`;
+        message += `${statistics['orders_count'] ? `${statistics['orders_count']} заказов\n` : ''}`;
 
-        if(statistics['calls_count'])
-        {
-            message+='------------------------\nЗвонки\n';
-            for(let i=0;i<statistics.calls.length;i++)
-                message+=`\n${statistics.calls[i][0]} —${menu.renderPercentage('', statistics.calls[i][1] / statistics.calls_count)}`;
+        if (statistics['calls_count']) {
+            message += '------------------------\nЗвонки\n';
+            for (let i = 0; i < statistics.calls.length; i++)
+                message += `\n${statistics.calls[i][0]} —${menu.renderPercentage('', statistics.calls[i][1] / statistics.calls_count)}`;
         }
-        if(statistics['orders_count'])
-        {
-            message+='------------------------\nЗаказы\n';
-            for(let i=0;i<statistics.orders.length;i++)
-                message+=`\n${statistics.orders[i][0]} —${menu.renderPercentage('', statistics.orders[i][1] / statistics.orders_count)}`;
+        if (statistics['orders_count']) {
+            message += '------------------------\nЗаказы\n';
+            for (let i = 0; i < statistics.orders.length; i++)
+                message += `\n${statistics.orders[i][0]} —${menu.renderPercentage('', statistics.orders[i][1] / statistics.orders_count)}`;
         }
         return message;
     }
