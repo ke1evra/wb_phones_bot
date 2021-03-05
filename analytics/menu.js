@@ -175,10 +175,10 @@ class Menu {
                         let result
                         switch (item.call_type){
                             case "Входящий":
-                                result=`➡️${item.start_time} — 🕑${item.answer_type} → 🗣${moment.unix(item.answer).format("HH:mm:ss")} — 🕑${item.call_duration} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
+                                result=`➡️${item.start_time} — 🕑${item.answer_time} → 🗣${moment.unix(item.answer).format("HH:mm:ss")} — 🕑${item.call_duration} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
                                 break;
                             case "Исходящий":
-                                result=`➡️${item.start_time} — 🕑${item.answer_type} → 🗣${moment.unix(item.answer).format("HH:mm:ss")} — 🕑${item.call_duration} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
+                                result=`➡️${item.start_time} — 🕑${item.answer_time} → 🗣${moment.unix(item.answer).format("HH:mm:ss")} — 🕑${item.call_duration} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
                                 break;
                             case "Пропущенный":
                                 result=`➡️${item.start_time} — 🕑${moment(moment.unix(item["finish"]).format("HH:mm:ss"),"HH:mm:ss").diff(moment(item.start_time,"HH:mm:ss"),"seconds")} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
@@ -190,7 +190,7 @@ class Menu {
                         return result
                     })()//+ ` (${item.disconnect_reason})`
             })
-            message += "-------------------------"
+            message += "\n-------------------------"
         }
         let options = {
             reply_markup: JSON.stringify({
