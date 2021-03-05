@@ -169,7 +169,7 @@ class Menu {
         if (callsLog.data) {
             message += `\nЗвонки:\n`
             callsLog.data.map((item, index) => {
-                message += `\n----------\n${index + 1}. ${item.start_day} ${item.start_time} ${callTypeIcons[item.call_type]} ${item.call_type} ${item.line_number ?` (${item.line_number})`: ``}\n\n` +
+                message += `\n----------\n${index + 1}. ${item.start_day} ${item.start_time} ${callTypeIcons[item.call_type]} ${item.call_type} ${(item.call_type ==="Входящий")|| (item.call_type ==="Пропущенный")?` (${item.line_number})`: ``}\n\n` +
                     `👤 ${item.person}\n` +
                     (()=>{
                         let result
@@ -188,8 +188,7 @@ class Menu {
                                 break;
                         }
                         return result
-                    })()+
-                    `${codes[item.disconnect_reason]} (${item.disconnect_reason})\n`
+                    })()//+ ` (${item.disconnect_reason})`
             })
             message += "-------------------------"
         }
