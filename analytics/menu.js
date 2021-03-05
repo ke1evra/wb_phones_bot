@@ -604,7 +604,7 @@ class Menu {
         let orders_data=await API.getOrders(fields.days,from,to.format("YYYY-MM-DD"));
         //console.log('calls_data:',calls_data.data);
         //console.log('orders_data:',orders_data.data);
-        to.add(-1, "day");
+        to=to.add(-1, "day").format("YYYY-MM-DD");
         //Обработка данных
         let statistics={};
         statistics['calls']=[];
