@@ -181,10 +181,10 @@ class Menu {
                                 result=`➡️${item.start_time} — 🕑${item.answer_type} → 🗣${moment.unix(item.answer).format("HH:mm:ss")} — 🕑${item.call_duration} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
                                 break;
                             case "Пропущенный":
-                                result=`➡️${item.start_time} — 🕑${moment.unix(item["finish"]).diff(moment(item.start_time,"HH:mm:ss"),"seconds")} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
+                                result=`➡️${item.start_time} — 🕑${moment(moment.unix(item["finish"]).format("HH:mm:ss"),"HH:mm:ss").diff(moment(item.start_time,"HH:mm:ss"),"seconds")} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
                                 break;
                             case "Недозвон":
-                                result=`➡️${item.start_time} — 🕑${moment.unix(item["finish"]).diff(moment(item.start_time,"HH:mm:ss"),"seconds")} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
+                                result=`➡️${item.start_time} — 🕑${moment(moment.unix(item["finish"]).format("HH:mm:ss"),"HH:mm:ss").diff(moment(item.start_time,"HH:mm:ss"),"seconds")} → 🏁${moment.unix(item["finish"]).format("HH:mm:ss")}`
                                 break;
                         }
                     })()
