@@ -730,7 +730,7 @@ class Menu {
         ];
         //Вывод шапки
         let colour=0;
-        if(years_number<7)
+        if(years_number<=7)
         {
             for(let year in statistics.year_stat)
             {
@@ -742,7 +742,7 @@ class Menu {
         for(let year in statistics.year_stat)
         {
             message+=`\n${year} — ${menu.numberWithCommas(statistics.year_stat[year].order_count)} заказов на сумму: ${menu.renderPercentage(menu.numberWithCommas(statistics.year_stat[year].order_sum)+' ₽',statistics.year_stat[year].order_count/statistics.order_count,colour)}`;
-            if (years_number<7)
+            if (years_number<=7)
                 colour++;
         }
         return message
