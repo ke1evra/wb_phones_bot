@@ -655,12 +655,12 @@ class Menu {
         if (statistics['calls_count']) {
             message += '------------------------\nЗвонки\n';
             for (let i = 0; i < statistics.calls.length; i++)
-                message += `\n${statistics.calls[i][0]} —${menu.renderPercentage(statistics.calls[i][1].toString(), statistics.calls[i][1] / statistics.calls_count)}`;
+                message += `\n${statistics.calls[i][0]} — ${menu.renderPercentage(statistics.calls[i][1].toString(), statistics.calls[i][1] / statistics.calls_count)}`;
         }
         if (statistics['orders_count']) {
             message += '------------------------\nЗаказы\n';
             for (let i = 0; i < statistics.orders.length; i++)
-                message += `\n${statistics.orders[i][0]} —${menu.renderPercentage(statistics.orders[i][1].toString(), statistics.orders[i][1] / statistics.orders_count)}`;
+                message += `\n${statistics.orders[i][0]} — ${menu.renderPercentage(statistics.orders[i][1].toString(), statistics.orders[i][1] / statistics.orders_count)}`;
         }
         return message;
     }
