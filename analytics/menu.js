@@ -730,21 +730,20 @@ class Menu {
         ];
         //Вывод шапки
         let colour=0;
-        let i=0;
-        for(let year in statistics.year_stat)
+        if(years_number<7)
         {
-            if (years_number<7)
-                colour=i;
-            message+=`${colours[colour][0]} ${year}    `;
-            i++;
+            for(let year in statistics.year_stat)
+            {
+                message+=`${colours[colour][0]} ${year}    `;
+                colour++;
+            }
         }
-        i=0;
+        colour=0;
         for(let year in statistics.year_stat)
         {
+            message+=`\n${year} — ${statistics.year_stat[year].order_count} ${menu.renderPercentage(statistics.year_stat[year].order_sum.toString()+' ₽',statistics.year_stat[year].order_count/statistics.order_count,colour)}`;
             if (years_number<7)
-                colour=i;
-            message+=`\n${year} — ${statistics.year_stat[year].order_sum} ₽ ${menu.renderPercentage(statistics.year_stat[year].order_count.toString(),statistics.year_stat[year].order_count/statistics.order_count,colour)}`;
-            i++;
+                colour++;
         }
         return message
     }
