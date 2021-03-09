@@ -742,7 +742,7 @@ class Menu {
         {
             if (years_number<7)
                 colour=i;
-            message+=`\n${year} — ${statistics.year_stat[year].order_sum} ₽ ${menu.renderPercentage(statistics.year_stat[year].orders_count.toString(),statistics.year_stat[year].orders_count/statistics.order_count,colour)}`;
+            message+=`\n${year} — ${statistics.year_stat[year].order_sum} ₽ ${menu.renderPercentage(statistics.year_stat[year].orders_count.toString(),statistics.year_stat[year].order_count/statistics.order_count,colour)}`;
             i++;
         }
         return message
