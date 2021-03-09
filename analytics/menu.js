@@ -741,7 +741,7 @@ class Menu {
         colour=0;
         for(let year in statistics.year_stat)
         {
-            message+=`\n${year} — ${statistics.year_stat[year].order_count} ${menu.renderPercentage(statistics.year_stat[year].order_sum.toString()+' ₽',statistics.year_stat[year].order_count/statistics.order_count,colour)}`;
+            message+=`\n${year} — ${menu.numberWithCommas(statistics.year_stat[year].order_count)} заказов на сумму: ${menu.renderPercentage(menu.numberWithCommas(statistics.year_stat[year].order_sum)+' ₽',statistics.year_stat[year].order_count/statistics.order_count,colour)}`;
             if (years_number<7)
                 colour++;
         }
