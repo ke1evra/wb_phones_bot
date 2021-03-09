@@ -680,8 +680,8 @@ class Menu {
     {
         //Обработка типов запросов
         let request_type='general';
-        let years_number=0;
-        if(!fields.hasOwnProperty('days')||fields.days==null)
+        let years_number;
+        if(!fields.hasOwnProperty('days')||fields.days==null||fields.days===0)
             years_number=1;
         else
             years_number=fields.days;
