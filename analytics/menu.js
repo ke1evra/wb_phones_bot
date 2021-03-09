@@ -738,6 +738,7 @@ class Menu {
             message+=`${colours[colour][0]} ${year}    `;
             i++;
         }
+        i=0;
         for(let year in statistics.year_stat)
         {
             if (years_number<7)
