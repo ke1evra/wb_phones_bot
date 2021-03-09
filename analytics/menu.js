@@ -202,21 +202,33 @@ class Menu {
     }
 
     ///Функция которая возвращает ProcessBar. "title"-Строка заголовка. "value"- процент(число от 0 до 1)
-    renderPercentage(title = "", value = 0) {
+    renderPercentage(title = "", value = 0,colour_id=0) {
         try {
             if (value > 1 || value < 0) {
                 console.log(`Ошибка в функции renderPercentage: Значение "value"=${value} выходит за рамки от 0 до 1!`)
                 return "ERROR";
             }
+            //Массив цветов белый отсутствует т.к. используется для пустых.
+            let colours=[
+                ['🟩','🟢'],//зелёный
+                ['🟦','🔵'],//синий
+                ['🟥','🔴'],//красный
+                ['🟧','🟠'],//оранжевый
+                ['🟨','🟡'],//жёлтый
+                ['🟪','🟣'],//фиолетовый
+                ['⬛️','⚫️'],//чёрный
+                ['🟫','🟤']//коричневый
+            ];
+            colour_id=colour_id>7?0:colour_id;
             let msg = `${title} (${(value * 100).toFixed(2)}%)\n`;
             let counter = 1;
             while (value > 0.05) {
-                msg += '🟩';
+                msg += colours[colour_id][0];
                 counter++;
                 value -= 0.05;
             }
             if (value.toFixed(4) != 0)
-                msg += value >= 0.025 ? '🟢' : '⚪️';
+                msg += value >= 0.025 ? colours[colour_id][1] : '⚪️';
             else
                 msg += '⬜️';
             for (counter; counter < 20; counter++)
@@ -664,6 +676,77 @@ class Menu {
         }
         return message;
     }
+    async renderCompare(fields)
+    {
+        //Обработка типов запросов
+        let request_type='general';
+        let years_number=0;
+        if(!fields.hasOwnProperty('days')||fields.days==null)
+            years_number=1;
+        else
+            years_number=fields.days;
+        //Объявление границ дат
+        let from=typeof fields.from=='undefined'||fields.from==null?moment().subtract(12*years_number,'months').format("YYYY-MM-DD"):fields.from;
+        let to = typeof fields.to == "undefined" || fields.to == null ? moment().add(1,'months') : moment(fields.to).add(1,'months');
+        //получение данных
+        let data=await API.getOrdersSumByMonth(years_number,from,to.format("YYYY-MM-DD"));
+        from=moment(from).format("YYYY");
+        to=to.add(-1,'months').format("YYYY");
+        //Обработка полученных данных
+        let statistics={};
+        statistics['years']=[];
+        statistics['year_stat']={};
+        statistics['total_sum']=0;
+        statistics['order_count']=0;
+        data.data.forEach(month=>{
+            let year=moment(month.date).format('YYYY');
+            if(!statistics.years.includes(year))
+            {
+                statistics.years.push(year);
+                statistics.year_stat[year]={
+                    order_sum:0,
+                    order_count:0
+                }
+            }
+            statistics.order_count+=month["order_count"];
+            statistics.year_stat[year].order_count+=month["order_count"];
+            statistics.total_sum+=month["order_sum"];
+            statistics.year_stat[year].order_sum+=month["order_sum"];
+        });
+        //составление сообщения
+
+        let message='------------------------\nСравнение\n';
+        message+=years_number>0?`В преиод с ${from} по ${to}\n`:`На ${from}\n`;
+        //Массив цветов белый отсутствует т.к. используется для пустых.
+        let colours=[
+            ['🟩','🟢'],//зелёный
+            ['🟦','🔵'],//синий
+            ['🟥','🔴'],//красный
+            ['🟧','🟠'],//оранжевый
+            ['🟨','🟡'],//жёлтый
+            ['🟪','🟣'],//фиолетовый
+            ['⬛️','⚫️'],//чёрный
+            ['🟫','🟤']//коричневый
+        ];
+        //Вывод шапки
+        let colour=0;
+        let i=0;
+        for(let year in statistics.year_stat)
+        {
+            if (years_number<7)
+                colour=i;
+            message+=`${colours[colour][0]} ${year}    `;
+            i++;
+        }
+        for(let year in statistics.year_stat)
+        {
+            if (years_number<7)
+                colour=i;
+            message+=`\n${year} — ${statistics.year_stat[year].order_sum} ₽ ${menu.renderPercentage(statistics.year_stat[year].orders_count.toString(),statistics.year_stat[year].orders_count/statistics.order_count,colour)}`;
+            i++;
+        }
+        return message
+    }
 }
 
 const menu = new Menu();
@@ -685,7 +768,8 @@ const messages = {
     calls: menu.renderCalls,
     expenses: menu.renderExpenses,
     managers: menu.renderManagers,
-    chrono: menu.renderChrono
+    chrono: menu.renderChrono,
+    compare:menu.renderCompare
 };
 
 
