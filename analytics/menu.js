@@ -682,7 +682,7 @@ class Menu {
         //Обработка типов запросов
 
         let request_type; //По каким промежуткам считается статистика
-
+        let years_number;
         let from;
         let to;
 
