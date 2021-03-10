@@ -682,14 +682,14 @@ class Menu {
         //Обработка типов запросов
 
         let request_type; //По каким промежуткам считается статистика
-        let years_number;
+        let years_number=0;
         let from;
         let to;
 
         switch (fields.request_type)
         {
             case "range":
-                if(moment(fields.from).add(45,'days').isAfter(moment(fields.to)))
+                if(!moment(fields.from).add(45,'days').isAfter(moment(fields.to)))
                 {
                     request_type='months';
 
@@ -705,7 +705,6 @@ class Menu {
                 break;
             //days тоже входит сюда
             default:
-                let years_number;
                 request_type='years';
                 if(!fields.hasOwnProperty('days')||fields.days==null||fields.days===0)
                     years_number=1;
@@ -728,7 +727,7 @@ class Menu {
         ];
         let message='';
         console.log((`request_type: ${request_type}\n date:${from}, ${to}`));
-        if (request_type==='years') {
+        if (request_type=='years') {
             //получение данных
             let data = await API.getOrdersSumByMonth(years_number * 12, from, to.format("YYYY-MM-DD"));
             from = moment(from).format("YYYY");
@@ -754,7 +753,6 @@ class Menu {
                 statistics.year_stat[year].order_sum += month["order_sum"];
             });
             //составление сообщения
-
             let message = '------------------------\nСравнение\n';
             message += years_number > 0 ? `В преиод с ${from} по ${to}\n` : `На ${from}\n`;
 
