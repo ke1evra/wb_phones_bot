@@ -728,7 +728,7 @@ class Menu {
         let message='';
         console.log((`request_type: ${request_type}\n date:${from}, ${to}`));
         if (request_type=='years'){
-            console.log('get /compare years request')
+            console.log('get /compare years request');
             //получение данных
             let data = await API.getOrdersSumByMonth(years_number * 12, from, to.format("YYYY-MM-DD"));
             from = moment(from).format("YYYY");
@@ -754,7 +754,7 @@ class Menu {
                 statistics.year_stat[year].order_sum += month["order_sum"];
             });
             //составление сообщения
-            let message = '------------------------\nСравнение\n';
+            message = '------------------------\nСравнение\n';
             message += years_number > 0 ? `В преиод с ${from} по ${to}\n` : `На ${from}\n`;
 
             //Вывод шапки
@@ -771,6 +771,7 @@ class Menu {
                 if (years_number <= 7)
                     colour++;
             }
+            console.log('Message:',message);
         }
         else if(request_type==='months')
         {
