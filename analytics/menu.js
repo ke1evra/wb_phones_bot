@@ -727,6 +727,7 @@ class Menu {
             ['🟫', '🟤']//коричневый
         ];
         let message='';
+        console.log((`request_type: ${request_type}\n date:${from}, ${to}`));
         if (request_type==='years') {
             //получение данных
             let data = await API.getOrdersSumByMonth(years_number * 12, from, to.format("YYYY-MM-DD"));
