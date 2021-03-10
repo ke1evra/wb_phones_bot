@@ -727,7 +727,8 @@ class Menu {
         ];
         let message='';
         console.log((`request_type: ${request_type}\n date:${from}, ${to}`));
-        if (request_type=='years') {
+        if (request_type=='years'){
+            console.log('get /compare years request')
             //получение данных
             let data = await API.getOrdersSumByMonth(years_number * 12, from, to.format("YYYY-MM-DD"));
             from = moment(from).format("YYYY");
@@ -783,7 +784,7 @@ class Menu {
             statistics['total_sum'] = 0;
             statistics['order_count'] = 0;
             data.data.forEach(item=>{
-                let month = moment(item.date).format('MM:YY');
+                let month = moment(item.date).format('MMM:YYYY');
                 if (!statistics.hasOwnProperty(month)){
                     statistics.months[month] = {
                         order_sum: 0,
