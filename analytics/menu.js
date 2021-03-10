@@ -676,76 +676,150 @@ class Menu {
         }
         return message;
     }
+
     async renderCompare(fields)
     {
         //Обработка типов запросов
-        let request_type='general';
-        let years_number;
-        if(!fields.hasOwnProperty('days')||fields.days==null||fields.days===0)
-            years_number=1;
-        else
-            years_number=fields.days;
-        //Объявление границ дат
-        let from=typeof fields.from=='undefined'||fields.from==null?moment().subtract(12*years_number,'months').format("YYYY-MM-DD"):fields.from;
-        let to = typeof fields.to == "undefined" || fields.to == null ? moment().add(1,'months') : moment(fields.to).add(1,'months');
-        //получение данных
-        let data=await API.getOrdersSumByMonth(years_number,from,to.format("YYYY-MM-DD"));
-        from=moment(from).format("YYYY");
-        to=to.add(-1,'months').format("YYYY");
-        //Обработка полученных данных
-        let statistics={};
-        statistics['years']=[];
-        statistics['year_stat']={};
-        statistics['total_sum']=0;
-        statistics['order_count']=0;
-        data.data.forEach(month=>{
-            let year=moment(month.date).format('YYYY');
-            if(!statistics.years.includes(year))
-            {
-                statistics.years.push(year);
-                statistics.year_stat[year]={
-                    order_sum:0,
-                    order_count:0
+
+        let request_type; //По каким промежуткам считается статистика
+
+        let from;
+        let to;
+
+        switch (fields.request_type)
+        {
+            case "range":
+                if(moment(fields.from).add(45,'days').isAfter(moment(fields.to)))
+                {
+                    request_type='months';
+
+                    from=fields.from;
+                    to = moment(fields.to).add(1,'months');
+                }
+                else
+                {
+                    request_type = 'days';
+                    from = fields.from;
+                    to = moment(fields.to).add(1,'days');
+                }
+                break;
+            //days тоже входит сюда
+            default:
+                let years_number;
+                request_type='years';
+                if(!fields.hasOwnProperty('days')||fields.days==null||fields.days===0)
+                    years_number=1;
+                else
+                    years_number=fields.days;
+                from=typeof fields.from=='undefined' || fields.from==null ? moment().subtract(12*years_number,'months').format("YYYY-MM-DD"):fields.from;
+                to = typeof fields.to == 'undefined' || fields.to == null ? moment().add(1,'months') : moment(fields.to).add(1,'months');
+                break;
+        }
+        //Массив цветов белый отсутствует т.к. используется для пустых.
+        let colours = [
+            ['🟩', '🟢'],//зелёный
+            ['🟦', '🔵'],//синий
+            ['🟥', '🔴'],//красный
+            ['🟧', '🟠'],//оранжевый
+            ['🟨', '🟡'],//жёлтый
+            ['🟪', '🟣'],//фиолетовый
+            ['⬛️', '⚫️'],//чёрный
+            ['🟫', '🟤']//коричневый
+        ];
+        let message='';
+        if (request_type==='years') {
+            //получение данных
+            let data = await API.getOrdersSumByMonth(years_number * 12, from, to.format("YYYY-MM-DD"));
+            from = moment(from).format("YYYY");
+            to = to.add(-1, 'months').format("YYYY");
+            //Обработка полученных данных
+            let statistics = {};
+            statistics['years'] = [];
+            statistics['year_stat'] = {};
+            statistics['total_sum'] = 0;
+            statistics['order_count'] = 0;
+            data.data.forEach(month => {
+                let year = moment(month.date).format('YYYY');
+                if (!statistics.years.includes(year)) {
+                    statistics.years.push(year);
+                    statistics.year_stat[year] = {
+                        order_sum: 0,
+                        order_count: 0
+                    }
+                }
+                statistics.order_count += month["order_count"];
+                statistics.year_stat[year].order_count += month["order_count"];
+                statistics.total_sum += month["order_sum"];
+                statistics.year_stat[year].order_sum += month["order_sum"];
+            });
+            //составление сообщения
+
+            let message = '------------------------\nСравнение\n';
+            message += years_number > 0 ? `В преиод с ${from} по ${to}\n` : `На ${from}\n`;
+
+            //Вывод шапки
+            let colour = 0;
+            if (years_number <= 7) {
+                for (let year in statistics.year_stat) {
+                    message += `${colours[colour][0]} ${year}    `;
+                    colour++;
                 }
             }
-            statistics.order_count+=month["order_count"];
-            statistics.year_stat[year].order_count+=month["order_count"];
-            statistics.total_sum+=month["order_sum"];
-            statistics.year_stat[year].order_sum+=month["order_sum"];
-        });
-        //составление сообщения
-
-        let message='------------------------\nСравнение\n';
-        message+=years_number>0?`В преиод с ${from} по ${to}\n`:`На ${from}\n`;
-        //Массив цветов белый отсутствует т.к. используется для пустых.
-        let colours=[
-            ['🟩','🟢'],//зелёный
-            ['🟦','🔵'],//синий
-            ['🟥','🔴'],//красный
-            ['🟧','🟠'],//оранжевый
-            ['🟨','🟡'],//жёлтый
-            ['🟪','🟣'],//фиолетовый
-            ['⬛️','⚫️'],//чёрный
-            ['🟫','🟤']//коричневый
-        ];
-        //Вывод шапки
-        let colour=0;
-        if(years_number<=7)
-        {
-            for(let year in statistics.year_stat)
-            {
-                message+=`${colours[colour][0]} ${year}    `;
-                colour++;
+            colour = 0;
+            for (let year in statistics.year_stat) {
+                message += `\n${year} — ${menu.numberWithCommas(statistics.year_stat[year].order_count)} заказов на сумму: ${menu.renderPercentage(menu.numberWithCommas(statistics.year_stat[year].order_sum) + ' ₽', statistics.year_stat[year].order_count / statistics.order_count, colour)}`;
+                if (years_number <= 7)
+                    colour++;
             }
         }
-        colour=0;
-        for(let year in statistics.year_stat)
+        else if(request_type==='months')
         {
-            message+=`\n${year} — ${menu.numberWithCommas(statistics.year_stat[year].order_count)} заказов на сумму: ${menu.renderPercentage(menu.numberWithCommas(statistics.year_stat[year].order_sum)+' ₽',statistics.year_stat[year].order_count/statistics.order_count,colour)}`;
-            if (years_number<=7)
-                colour++;
+            //Получение данных
+            const data=await API.getOrdersSumByMonth(null,from,to.format("YYYY-MM-DD"));
+            to = to.add(-1, 'months').format("YYYY-MM-DD");
+            //Обработка
+            let statistics=[];
+            statistics['months_count']=0;
+            statistics['months'] = {};
+            statistics['total_sum'] = 0;
+            statistics['order_count'] = 0;
+            data.data.forEach(item=>{
+                let month = moment(item.date).format('MM:YY');
+                if (!statistics.hasOwnProperty(month)){
+                    statistics.months[month] = {
+                        order_sum: 0,
+                        order_count: 0
+                    }
+                    statistics.months_count++;
+                }
+                statistics.order_count += item["order_count"];
+                statistics.months[month].order_count += item["order_count"];
+                statistics.total_sum += item["order_sum"];
+                statistics.months[month].order_sum += item["order_sum"];
+            });
+            //Формирование сообщения
+            message += '------------------------\nСравнение\n';
+            message += `В преиод с ${from} по ${to}\n`;
+            //Вывод шапки
+            let colour = 0;
+            if (statistics.months_count <= 7) {
+                for (let month in statistics.months) {
+                    message += `${colours[colour][0]} ${month}    `;
+                    colour++;
+                }
+            }
+            colour = 0;
+            for (let month in statistics.months) {
+                message += `\n${month} — ${menu.numberWithCommas(statistics.months[month].order_count)} заказов на сумму: ${menu.renderPercentage(menu.numberWithCommas(statistics.months[month].order_sum) + ' ₽', statistics.months[month].order_count / statistics.order_count, colour)}`;
+                if (statistics.months_count <= 7)
+                    colour++;
+            }
         }
-        return message
+        else
+        {
+
+        }
+        return message;
     }
 }
 
