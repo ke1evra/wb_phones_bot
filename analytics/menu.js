@@ -818,9 +818,8 @@ class Menu {
             statistics['months'] = {};
             statistics['total_sum'] = 0;
             statistics['order_count'] = 0;
-            //По дням
-            for(let i=0;i<data_days.length;i++)
-                data_days[i].forEach(item => {
+            //По дням до периода по месяцам
+            data_days[0].forEach(item => {
                 let month = moment(item.date).format('MMM YYYY');
                 if (!statistics.months.hasOwnProperty(month)) {
                     statistics.months[month] = {
@@ -836,6 +835,21 @@ class Menu {
             });
             //По месяцам
             data_months.forEach(item => {
+                let month = moment(item.date).format('MMM YYYY');
+                if (!statistics.months.hasOwnProperty(month)) {
+                    statistics.months[month] = {
+                        order_sum: 0,
+                        order_count: 0
+                    }
+                    statistics.months_count++;
+                }
+                statistics.order_count += item["order_count"];
+                statistics.months[month].order_count += item["order_count"];
+                statistics.total_sum += item["order_sum"];
+                statistics.months[month].order_sum += item["order_sum"];
+            });
+            //По дням
+            data_days[1].forEach(item => {
                 let month = moment(item.date).format('MMM YYYY');
                 if (!statistics.months.hasOwnProperty(month)) {
                     statistics.months[month] = {
