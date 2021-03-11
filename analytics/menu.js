@@ -725,6 +725,7 @@ class Menu {
                 if(!moment(fields.from).add(24, 'months').isAfter(moment(fields.to)))
                 {
                     request_type = 'years';
+                    years_number=-1;//Флаг того, что был дан промежуток
                     from = fields.from;
                     to = fields.to;
                 }
@@ -831,7 +832,7 @@ class Menu {
                 statistics.year_stat[year].order_sum += day["order_sum"];
             });
             //составление сообщения
-            message += years_number > 0 ? `В преиод с ${from} по ${to}\n` : `На ${from}\n`;
+            message += years_number > 0 && years_number!==-1? `В преиод с ${from} по ${to}\n` : `На ${from}\n`;
 
             //Вывод шапки
             let colour = 0;
