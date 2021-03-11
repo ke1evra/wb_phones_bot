@@ -144,13 +144,23 @@ class Menu {
 
         console.log(messageData)
 
-        message = `Заказ ${data.data[0].id}\n-------------------------\n\n` +
+        message =
+            `Заказ ${data.data[0].id}\n` +
+            `-------------------------\n\n` +
+
             `Cтатус: ${orderStatusIcons[data.data[0].status]} ${data.data[0].status}\n` +
             `Поступил: ${moment(data.data[0].date_of_registration).format("YYYY-MM-DD HH:mm:ss")}, обработан через ${data.data[0].processing_time}\n` +
-            `Менеджер: ${data.data[0].manager}\n\n-------------------------\nКлиент:\n\n` +
+            `Менеджер: ${data.data[0].manager}\n\n` +
+
+            `-------------------------\n` +
+            `Клиент:\n\n` +
+
             `${data.data[0].client_name}\n` +
             `${data.data[0].phone_key}${data.data[0].client_dop_phone ? ` (${data.data[0].client_dop_phone})` : ``}\n` +
-            `${data.data[0].email}\n-------------------------\nСостав:\n\n` +
+            `${data.data[0].email}\n` +
+            `-------------------------\n` +
+            `Состав:\n\n` +
+
             /*(() => {
                 data.data[0].data.data[0]s = data.data[0].data.data[0]s.split('&').map(data.data[0] => {
                     data.data[0] = data.data[0].split('|')
@@ -159,9 +169,21 @@ class Menu {
                 })
                 return data.data[0].data.data[0]s.join('\n') + "\n\n"
             })() +*/
-            `${data.data[0].delivery_price} ₽ — Доставка\n\n` +
-            `${data.data[0].order_sum} ₽ — Стоимость заказа\n-------------------------\nДоставка:\n\n` +
-            `${data.data[0].address}\n${data.data[0].courier_del_id}, ${data.data[0].courier}\n-------------------------\nДействия:\n`
+
+            `${data.data[0].order_sum} ₽ — Стоимость заказа\n` +
+            `${data.data[0].delivery_price} ₽ — Доставка\n` +
+            `-------------------------\n` +
+            (() => {
+                if (data.data[0].address || data.data[0].courier_del_id || data.data[0].courier) {
+                    return `Доставка:\n\n` +
+
+                        `${data.data[0].address ? `${data.data[0].address}\n` : ''}` +
+                        `${data.data[0].courier_del_id ? `${data.data[0].courier_del_id}, ` : ''}${data.data[0].courier ? `${data.data[0].courier}` : ''}\n` +
+                        `-------------------------\n`
+                }
+            })() +
+
+            `Действия:\n`
 
         for (let action of messageData.actions) {
             message += `\n${action[1]} — ${action[0] !== "null" ? action[0] : "Система"}\n${action[2]}\n`
