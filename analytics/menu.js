@@ -723,7 +723,7 @@ class Menu {
                 else*/ if (!moment(fields.from).add(45, 'days').isAfter(moment(fields.to))) {
                     request_type = 'months';
                     from = fields.from;
-                    to = moment(fields.to).add(1, 'months');
+                    to = fields.to
                 } else {
                     request_type = 'days';
                     from = fields.from;
@@ -801,21 +801,14 @@ class Menu {
             //Делим процесс на 2 этапа для скорости 1)по месяцам 2)по дням
             let data_days=[];
             let data_months=[];
-            if(moment(from).endOf('month').isAfter(to))
-            {
-                data_days=await API.getOrdersSumByDay(null,from,to.format("YYYY-MM-DD"));
-                to = to.add(-1, 'months').format("YYYY-MM-DD");
-            }
-            else
-            {
-                to = to.add(-1, 'months').format("YYYY-MM-DD");
-                //c from до конца месяца
-                data_days.concat((await API.getOrdersSumByDay(null,from,moment(from).endOf('month').add(1,'day').format("YYYY-MM-DD"))).data);
-                //с след месяца после from по месяц до to
-                data_months=(await API.getOrdersSumByMonth(null, moment(from).add(1,'month').startOf('month').format("YYYY-MM-DD"), moment(to).startOf('month').format("YYYY-MM-DD")).data);
-                //последний месяц до to
-                data_days.concat((await API.getOrdersSumByDay(null,moment(to).startOf('month').format("YYYY-MM-DD"),moment(to).add(1,"day").format("YYYY-MM-DD"))).data);
-            }
+            //c from до конца месяца
+            data_days.concat((await API.getOrdersSumByDay(null,from,moment(from).endOf('month').add(1,'day').format("YYYY-MM-DD"))).data);
+            //с след месяца после from по месяц до to
+            data_months=(await API.getOrdersSumByMonth(null, moment(from).add(1,'month').startOf('month').format("YYYY-MM-DD"), moment(to).startOf('month').format("YYYY-MM-DD")).data);
+            //последний месяц до to
+            data_days.concat((await API.getOrdersSumByDay(null,moment(to).startOf('month').format("YYYY-MM-DD"),moment(to).add(1,"day").format("YYYY-MM-DD"))).data);
+            console.log(`data_days:${data_days}`);
+            console.log(`data_month:${data_months}`);
             //Обработка
             let statistics = [];
             statistics['months_count'] = 0;
