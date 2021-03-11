@@ -134,10 +134,10 @@ class Menu {
         const menu = [];
         //console.log(data.data["data1"]);
         console.log(data)
-        let messageData={}
-        messageData.actions=[]
+        let messageData = {}
+        messageData.actions = []
         data.data.map((item, index) => {
-            item=item.actions.split('|')
+            item = item.actions.split('|')
             messageData.actions.push(item)
             menu.push(new Button(item.client_name, 'some cb'))
         });
@@ -163,8 +163,8 @@ class Menu {
             `${data.data[0].order_sum} ₽ — Стоимость заказа\n-------------------------\nДоставка:\n\n` +
             `${data.data[0].address}\n${data.data[0].courier_del_id}, ${data.data[0].courier}\n-------------------------\nДействия:\n`
 
-        for (let action of messageData.actions){
-            message+= `\n${action[1]} — ${action[0]!=="null"?item[0]:"Система"}\n${action[2]}\n`
+        for (let action of messageData.actions) {
+            message += `\n${action[1]} — ${action[0] !== "null" ? action[0] : "Система"}\n${action[2]}\n`
         }
 
         const getLogs = {}
@@ -205,24 +205,24 @@ class Menu {
     }
 
     ///Функция которая возвращает ProcessBar. "title"-Строка заголовка. "value"- процент(число от 0 до 1)
-    renderPercentage(title = "", value = 0,colour_id=0) {
+    renderPercentage(title = "", value = 0, colour_id = 0) {
         try {
             if (value > 1 || value < 0) {
                 console.log(`Ошибка в функции renderPercentage: Значение "value"=${value} выходит за рамки от 0 до 1!`)
                 return "ERROR";
             }
             //Массив цветов белый отсутствует т.к. используется для пустых.
-            let colours=[
-                ['🟩','🟢'],//зелёный
-                ['🟦','🔵'],//синий
-                ['🟥','🔴'],//красный
-                ['🟧','🟠'],//оранжевый
-                ['🟨','🟡'],//жёлтый
-                ['🟪','🟣'],//фиолетовый
-                ['⬛️','⚫️'],//чёрный
-                ['🟫','🟤']//коричневый
+            let colours = [
+                ['🟩', '🟢'],//зелёный
+                ['🟦', '🔵'],//синий
+                ['🟥', '🔴'],//красный
+                ['🟧', '🟠'],//оранжевый
+                ['🟨', '🟡'],//жёлтый
+                ['🟪', '🟣'],//фиолетовый
+                ['⬛️', '⚫️'],//чёрный
+                ['🟫', '🟤']//коричневый
             ];
-            colour_id=colour_id>7?0:colour_id;
+            colour_id = colour_id > 7 ? 0 : colour_id;
             let msg = `${title} (${(value * 100).toFixed(2)}%)\n`;
             let counter = 1;
             while (value > 0.05) {
@@ -680,41 +680,36 @@ class Menu {
         return message;
     }
 
-    async renderCompare(fields)
-    {
+    async renderCompare(fields) {
         //Обработка типов запросов
 
         let request_type; //По каким промежуткам считается статистика
-        let years_number=0;
+        let years_number = 0;
         let from;
         let to;
 
-        switch (fields.request_type)
-        {
+        switch (fields.request_type) {
             case "range":
-                if(!moment(fields.from).add(45,'days').isAfter(moment(fields.to)))
-                {
-                    request_type='months';
+                if (!moment(fields.from).add(45, 'days').isAfter(moment(fields.to))) {
+                    request_type = 'months';
 
-                    from=fields.from;
-                    to = moment(fields.to).add(1,'months');
-                }
-                else
-                {
+                    from = fields.from;
+                    to = moment(fields.to).add(1, 'months');
+                } else {
                     request_type = 'days';
                     from = fields.from;
-                    to = moment(fields.to).add(1,'days');
+                    to = moment(fields.to).add(1, 'days');
                 }
                 break;
             //days тоже входит сюда
             default:
-                request_type='years';
-                if(!fields.hasOwnProperty('days')||fields.days==null||fields.days===0)
-                    years_number=1;
+                request_type = 'years';
+                if (!fields.hasOwnProperty('days') || fields.days == null || fields.days === 0)
+                    years_number = 1;
                 else
-                    years_number=fields.days;
-                from=typeof fields.from=='undefined' || fields.from==null ? moment().subtract(12*years_number,'months').format("YYYY-MM-DD"):fields.from;
-                to = typeof fields.to == 'undefined' || fields.to == null ? moment().add(1,'months') : moment(fields.to).add(1,'months');
+                    years_number = fields.days;
+                from = typeof fields.from == 'undefined' || fields.from == null ? moment().subtract(12 * years_number, 'months').format("YYYY-MM-DD") : fields.from;
+                to = typeof fields.to == 'undefined' || fields.to == null ? moment().add(1, 'months') : moment(fields.to).add(1, 'months');
                 break;
         }
         //Массив цветов белый отсутствует т.к. используется для пустых.
@@ -728,8 +723,8 @@ class Menu {
             ['⬛️', '⚫️'],//чёрный
             ['🟫', '🟤']//коричневый
         ];
-        let message='';
-        if (request_type=='years'){
+        let message = '';
+        if (request_type == 'years') {
             //получение данных
             let data = await API.getOrdersSumByMonth(years_number * 12, from, to.format("YYYY-MM-DD"));
             from = moment(from).format("YYYY");
@@ -772,21 +767,19 @@ class Menu {
                 if (years_number <= 7)
                     colour++;
             }
-        }
-        else if(request_type==='months')
-        {
+        } else if (request_type === 'months') {
             //Получение данных
-            const data=await API.getOrdersSumByMonth(null,from,to.format("YYYY-MM-DD"));
+            const data = await API.getOrdersSumByMonth(null, from, to.format("YYYY-MM-DD"));
             to = to.add(-1, 'months').format("YYYY-MM-DD");
             //Обработка
-            let statistics=[];
-            statistics['months_count']=0;
+            let statistics = [];
+            statistics['months_count'] = 0;
             statistics['months'] = {};
             statistics['total_sum'] = 0;
             statistics['order_count'] = 0;
-            data.data.forEach(item=>{
+            data.data.forEach(item => {
                 let month = moment(item.date).format('MMM YYYY');
-                if (!statistics.hasOwnProperty(month)){
+                if (!statistics.hasOwnProperty(month)) {
                     statistics.months[month] = {
                         order_sum: 0,
                         order_count: 0
@@ -815,9 +808,7 @@ class Menu {
                 if (statistics.months_count <= 7)
                     colour++;
             }
-        }
-        else
-        {
+        } else {
 
         }
         return message;
@@ -844,7 +835,7 @@ const messages = {
     expenses: menu.renderExpenses,
     managers: menu.renderManagers,
     chrono: menu.renderChrono,
-    compare:menu.renderCompare
+    compare: menu.renderCompare
 };
 
 
