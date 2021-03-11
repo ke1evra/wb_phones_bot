@@ -714,9 +714,14 @@ class Menu {
 
         switch (fields.request_type) {
             case "range":
+                if(!moment(fields.from).add(24, 'months').isAfter(moment(fields.to)))
+                {
+                    request_type = 'years';
+                    from = fields.from;
+                    to = moment(fields.to).add(1, 'months');
+                }
                 if (!moment(fields.from).add(45, 'days').isAfter(moment(fields.to))) {
                     request_type = 'months';
-
                     from = fields.from;
                     to = moment(fields.to).add(1, 'months');
                 } else {
@@ -747,8 +752,8 @@ class Menu {
             ['⬛️', '⚫️'],//чёрный
             ['🟫', '🟤']//коричневый
         ];
-        let message = '';
-        if (request_type == 'years') {
+        let message = '------------------------\nСравнение\n';
+        if (request_type === 'years') {
             //получение данных
             let data = await API.getOrdersSumByMonth(years_number * 12, from, to.format("YYYY-MM-DD"));
             from = moment(from).format("YYYY");
@@ -774,7 +779,6 @@ class Menu {
                 statistics.year_stat[year].order_sum += month["order_sum"];
             });
             //составление сообщения
-            message = '------------------------\nСравнение\n';
             message += years_number > 0 ? `В преиод с ${from} по ${to}\n` : `На ${from}\n`;
 
             //Вывод шапки
@@ -803,7 +807,7 @@ class Menu {
             statistics['order_count'] = 0;
             data.data.forEach(item => {
                 let month = moment(item.date).format('MMM YYYY');
-                if (!statistics.hasOwnProperty(month)) {
+                if (!statistics.months.hasOwnProperty(month)) {
                     statistics.months[month] = {
                         order_sum: 0,
                         order_count: 0
@@ -816,7 +820,6 @@ class Menu {
                 statistics.months[month].order_sum += item["order_sum"];
             });
             //Формирование сообщения
-            message += '------------------------\nСравнение\n';
             message += `В преиод с ${from} по ${to}\n`;
             //Вывод шапки
             let colour = 0;
@@ -833,9 +836,45 @@ class Menu {
                     colour++;
             }
         } else {
-            const data=await API.getOrdersData(from,to.format("YYYY-MM-DD"));
-            to = to.add(-1, 'months').format("YYYY-MM-DD");
+            const data=await API.getOrdersSumByDay(null,from,to.format("YYYY-MM-DD"));
+            to = to.add(-1, 'days').format("YYYY-MM-DD");
             console.log(data.data);
+            //Обработка
+            let statistics = [];
+            statistics['days_count'] = 0;
+            statistics['days'] = {};
+            statistics['total_sum'] = 0;
+            statistics['order_count'] = 0;
+            data.data.forEach(item => {
+                let day = moment(item.date).format("MM-DD");
+                if (!statistics.days.hasOwnProperty(day)){
+                    statistics.days[day] = {
+                        order_sum: 0,
+                        order_count: 0
+                    }
+                    statistics.days_count++;
+                }
+                statistics.order_count += item["order_count"];
+                statistics.days[day].order_count += item["order_count"];
+                statistics.total_sum += item["order_sum"];
+                statistics.days[day].order_sum += item["order_sum"];
+            });
+            //Формирование сообщения
+            message += `В преиод с ${from} по ${to}\n`;
+            //Вывод шапки
+            let colour = 0;
+            if (statistics.days_count <= 7) {
+                for (let day in statistics.days) {
+                    message += `${colours[colour][0]} ${day}    `;
+                    colour++;
+                }
+            }
+            colour = 0;
+            for (let day in statistics.days) {
+                message += `\n${day} — ${menu.numberWithCommas(statistics.days[day].order_count)} заказов на сумму: ${menu.renderPercentage(menu.numberWithCommas(statistics.days[day].order_sum) + ' ₽', statistics.days[day].order_count / statistics.order_count, colour)}`;
+                if (statistics.days_count <= 7)
+                    colour++;
+            }
         }
         return message;
     }

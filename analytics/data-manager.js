@@ -116,6 +116,18 @@ class DataManager {
         );
     }
 
+    async getOrdersSumByDay(
+        days = 0,
+        from = moment().subtract(days, "days").format("YYYY-MM-DD"),
+        to = moment().add(1, "day").format("YYYY-MM-DD"),
+        shop_id=1
+    )
+    {
+        return await axios.get(
+            `http://185.211.247.12:3000/orders/day/sum?date_from=${from}&date_to=${to}&shop=${shop_id}`
+        );
+    }
+
     async getOrders(
         days = 0,
         from = moment().subtract(days, "days").format("YYYY-MM-DD"),
