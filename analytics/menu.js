@@ -182,12 +182,16 @@ class Menu {
                         `-------------------------\n`
                 }
             })() +
+            (() => {
+                if (messageData.actions.length) {
+                    message += `Действия:\n`
+                    for (let action of messageData.actions) {
+                        message += `\n${action[1]} — ${action[0] !== "null" ? action[0] : "Система"}\n${action[2]}\n`
+                    }
+                    message += `-------------------------\n`
+                }
+            })()
 
-            `Действия:\n`
-
-        for (let action of messageData.actions) {
-            message += `\n${action[1]} — ${action[0] !== "null" ? action[0] : "Система"}\n${action[2]}\n`
-        }
 
         const getLogs = {}
         getLogs.number = data.data[0].phone_key
