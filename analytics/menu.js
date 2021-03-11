@@ -810,8 +810,8 @@ class Menu {
             //последний месяц до to
             data=await API.getOrdersSumByDay(null,moment(to).startOf('month').format("YYYY-MM-DD"),moment(to).add(1,"day").format("YYYY-MM-DD"));
             data_days.push(data.data);
-            console.log(`data_days:${data_days}`);
-            console.log(`data_month:${data_months}`);
+            //console.log(`data_days:${data_days}`);
+            //console.log(`data_month:${data_months}`);
             //Обработка
             let statistics = [];
             statistics['months_count'] = 0;
@@ -820,6 +820,7 @@ class Menu {
             statistics['order_count'] = 0;
             //По дням
             data_days.forEach(item => {
+                console.log(`item:${item}`);
                 let month = moment(item.date).format('MMM YYYY');
                 if (!statistics.months.hasOwnProperty(month)) {
                     statistics.months[month] = {
