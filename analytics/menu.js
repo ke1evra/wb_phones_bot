@@ -142,7 +142,7 @@ class Menu {
             menu.push(new Button(item.client_name, 'some cb'))
         });
 
-        console.log(messageData)
+        //console.log(messageData)
 
         message =
             `Заказ ${data.data[0].id}\n` +
@@ -199,7 +199,7 @@ class Menu {
         const callsLog = await API.getCallsLogInRangeByPhoneNumber(getLogs.number, getLogs.from, getLogs.to);
         console.log(callsLog)
         if (callsLog.data.length) {
-            message += `\nЗвонки:\n`
+            message += `Звонки:\n`
             callsLog.data.map((item, index) => {
                 message += `\n----------\n${index + 1}. ${item.start_day} ${item.start_time} ${callTypeIcons[item.call_type]} ${item.call_type}${(item.call_type === "Входящий") || (item.call_type === "Пропущенный") ? ` (${item.line_number})` : ``}\n\n` +
                     `👤 ${item.person}\n` +
