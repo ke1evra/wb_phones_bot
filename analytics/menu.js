@@ -832,7 +832,10 @@ class Menu {
                 statistics.year_stat[year].order_sum += day["order_sum"];
             });
             //составление сообщения
-            message += years_number > 0 || years_number===-1? `В преиод с ${from} по ${to}\n` : `На ${from}\n`;
+            if(years_number===-1)
+                message+=`В преиод с ${from} по ${to}\n`;
+            else
+                message += years_number > 0? `В преиод с ${from.substr(0,4)} по ${to.substr(0,4)}\n` : `На ${from.substr(0,4)}\n`;
 
             //Вывод шапки
             let colour = 0;
