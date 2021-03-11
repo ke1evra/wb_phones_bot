@@ -819,8 +819,8 @@ class Menu {
             statistics['total_sum'] = 0;
             statistics['order_count'] = 0;
             //По дням
-            data_days.forEach(item => {
-                console.log(`item:${item}`);
+            for(let i=0;i<data_days.length;i++)
+                data_days[i].forEach(item => {
                 let month = moment(item.date).format('MMM YYYY');
                 if (!statistics.months.hasOwnProperty(month)) {
                     statistics.months[month] = {
