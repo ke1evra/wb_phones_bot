@@ -753,6 +753,7 @@ class Menu {
             ['🟫', '🟤']//коричневый
         ];
         let message = '------------------------\nСравнение\n';
+        console.log(`request_type:${request_type} from:${from} to:${to}`);
         if (request_type === 'years') {
             //получение данных
             let data = await API.getOrdersSumByMonth(years_number * 12, from, to.format("YYYY-MM-DD"));
@@ -838,7 +839,6 @@ class Menu {
         } else {
             const data=await API.getOrdersSumByDay(null,from,to.format("YYYY-MM-DD"));
             to = to.add(-1, 'days').format("YYYY-MM-DD");
-            console.log(data.data);
             //Обработка
             let statistics = [];
             statistics['days_count'] = 0;
