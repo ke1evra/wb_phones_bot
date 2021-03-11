@@ -104,6 +104,17 @@ class DataManager {
             `http://185.211.247.12:3000/orders/cnt?date_from=${from}&date_to=${to}`
         );
     }
+    async getOrdersSumByMonth(
+        months = 0,
+        from = moment().subtract(months, "months").format("YYYY-MM-DD"),
+        to = moment().add(1, "day").format("YYYY-MM-DD"),
+        shop_id=1
+    )
+    {
+        return await axios.get(
+            `http://185.211.247.12:3000/orders/month/sum?date_from=${from}&date_to=${to}&shop=${shop_id}`
+        );
+    }
 
     async getOrders(
         days = 0,

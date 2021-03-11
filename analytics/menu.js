@@ -209,21 +209,33 @@ class Menu {
     }
 
     ///Функция которая возвращает ProcessBar. "title"-Строка заголовка. "value"- процент(число от 0 до 1)
-    renderPercentage(title = "", value = 0) {
+    renderPercentage(title = "", value = 0,colour_id=0) {
         try {
             if (value > 1 || value < 0) {
                 console.log(`Ошибка в функции renderPercentage: Значение "value"=${value} выходит за рамки от 0 до 1!`)
                 return "ERROR";
             }
+            //Массив цветов белый отсутствует т.к. используется для пустых.
+            let colours=[
+                ['🟩','🟢'],//зелёный
+                ['🟦','🔵'],//синий
+                ['🟥','🔴'],//красный
+                ['🟧','🟠'],//оранжевый
+                ['🟨','🟡'],//жёлтый
+                ['🟪','🟣'],//фиолетовый
+                ['⬛️','⚫️'],//чёрный
+                ['🟫','🟤']//коричневый
+            ];
+            colour_id=colour_id>7?0:colour_id;
             let msg = `${title} (${(value * 100).toFixed(2)}%)\n`;
             let counter = 1;
             while (value > 0.05) {
-                msg += '🟩';
+                msg += colours[colour_id][0];
                 counter++;
                 value -= 0.05;
             }
             if (value.toFixed(4) != 0)
-                msg += value >= 0.025 ? '🟢' : '⚪️';
+                msg += value >= 0.025 ? colours[colour_id][1] : '⚪️';
             else
                 msg += '⬜️';
             for (counter; counter < 20; counter++)
@@ -662,12 +674,155 @@ class Menu {
         if (statistics['calls_count']) {
             message += '------------------------\nЗвонки\n';
             for (let i = 0; i < statistics.calls.length; i++)
-                message += `\n${statistics.calls[i][0]} —${menu.renderPercentage('', statistics.calls[i][1] / statistics.calls_count)}`;
+                message += `\n${statistics.calls[i][0]} — ${menu.renderPercentage(statistics.calls[i][1].toString(), statistics.calls[i][1] / statistics.calls_count)}`;
         }
         if (statistics['orders_count']) {
             message += '------------------------\nЗаказы\n';
             for (let i = 0; i < statistics.orders.length; i++)
-                message += `\n${statistics.orders[i][0]} —${menu.renderPercentage('', statistics.orders[i][1] / statistics.orders_count)}`;
+                message += `\n${statistics.orders[i][0]} — ${menu.renderPercentage(statistics.orders[i][1].toString(), statistics.orders[i][1] / statistics.orders_count)}`;
+        }
+        return message;
+    }
+
+    async renderCompare(fields)
+    {
+        //Обработка типов запросов
+
+        let request_type; //По каким промежуткам считается статистика
+        let years_number=0;
+        let from;
+        let to;
+
+        switch (fields.request_type)
+        {
+            case "range":
+                if(!moment(fields.from).add(45,'days').isAfter(moment(fields.to)))
+                {
+                    request_type='months';
+
+                    from=fields.from;
+                    to = moment(fields.to).add(1,'months');
+                }
+                else
+                {
+                    request_type = 'days';
+                    from = fields.from;
+                    to = moment(fields.to).add(1,'days');
+                }
+                break;
+            //days тоже входит сюда
+            default:
+                request_type='years';
+                if(!fields.hasOwnProperty('days')||fields.days==null||fields.days===0)
+                    years_number=1;
+                else
+                    years_number=fields.days;
+                from=typeof fields.from=='undefined' || fields.from==null ? moment().subtract(12*years_number,'months').format("YYYY-MM-DD"):fields.from;
+                to = typeof fields.to == 'undefined' || fields.to == null ? moment().add(1,'months') : moment(fields.to).add(1,'months');
+                break;
+        }
+        //Массив цветов белый отсутствует т.к. используется для пустых.
+        let colours = [
+            ['🟩', '🟢'],//зелёный
+            ['🟦', '🔵'],//синий
+            ['🟥', '🔴'],//красный
+            ['🟧', '🟠'],//оранжевый
+            ['🟨', '🟡'],//жёлтый
+            ['🟪', '🟣'],//фиолетовый
+            ['⬛️', '⚫️'],//чёрный
+            ['🟫', '🟤']//коричневый
+        ];
+        let message='';
+        if (request_type=='years'){
+            //получение данных
+            let data = await API.getOrdersSumByMonth(years_number * 12, from, to.format("YYYY-MM-DD"));
+            from = moment(from).format("YYYY");
+            to = to.add(-1, 'months').format("YYYY");
+            //Обработка полученных данных
+            let statistics = {};
+            statistics['years'] = [];
+            statistics['year_stat'] = {};
+            statistics['total_sum'] = 0;
+            statistics['order_count'] = 0;
+            data.data.forEach(month => {
+                let year = moment(month.date).format('YYYY');
+                if (!statistics.years.includes(year)) {
+                    statistics.years.push(year);
+                    statistics.year_stat[year] = {
+                        order_sum: 0,
+                        order_count: 0
+                    }
+                }
+                statistics.order_count += month["order_count"];
+                statistics.year_stat[year].order_count += month["order_count"];
+                statistics.total_sum += month["order_sum"];
+                statistics.year_stat[year].order_sum += month["order_sum"];
+            });
+            //составление сообщения
+            message = '------------------------\nСравнение\n';
+            message += years_number > 0 ? `В преиод с ${from} по ${to}\n` : `На ${from}\n`;
+
+            //Вывод шапки
+            let colour = 0;
+            if (years_number <= 7) {
+                for (let year in statistics.year_stat) {
+                    message += `${colours[colour][0]} ${year}    `;
+                    colour++;
+                }
+            }
+            colour = 0;
+            for (let year in statistics.year_stat) {
+                message += `\n${year} — ${menu.numberWithCommas(statistics.year_stat[year].order_count)} заказов на сумму: ${menu.renderPercentage(menu.numberWithCommas(statistics.year_stat[year].order_sum) + ' ₽', statistics.year_stat[year].order_count / statistics.order_count, colour)}`;
+                if (years_number <= 7)
+                    colour++;
+            }
+        }
+        else if(request_type==='months')
+        {
+            //Получение данных
+            const data=await API.getOrdersSumByMonth(null,from,to.format("YYYY-MM-DD"));
+            to = to.add(-1, 'months').format("YYYY-MM-DD");
+            //Обработка
+            let statistics=[];
+            statistics['months_count']=0;
+            statistics['months'] = {};
+            statistics['total_sum'] = 0;
+            statistics['order_count'] = 0;
+            data.data.forEach(item=>{
+                let month = moment(item.date).format('MMM YYYY');
+                if (!statistics.hasOwnProperty(month)){
+                    statistics.months[month] = {
+                        order_sum: 0,
+                        order_count: 0
+                    }
+                    statistics.months_count++;
+                }
+                statistics.order_count += item["order_count"];
+                statistics.months[month].order_count += item["order_count"];
+                statistics.total_sum += item["order_sum"];
+                statistics.months[month].order_sum += item["order_sum"];
+            });
+            //Формирование сообщения
+            message += '------------------------\nСравнение\n';
+            message += `В преиод с ${from} по ${to}\n`;
+            //Вывод шапки
+            let colour = 0;
+            if (statistics.months_count <= 7) {
+                for (let month in statistics.months) {
+                    message += `${colours[colour][0]} ${month}    `;
+                    colour++;
+                }
+            }
+            colour = 0;
+            for (let month in statistics.months) {
+                message += `\n${month} — ${menu.numberWithCommas(statistics.months[month].order_count)} заказов на сумму: ${menu.renderPercentage(menu.numberWithCommas(statistics.months[month].order_sum) + ' ₽', statistics.months[month].order_count / statistics.order_count, colour)}`;
+                if (statistics.months_count <= 7)
+                    colour++;
+            }
+        }
+        else
+        {
+
         }
         return message;
     }
@@ -692,7 +847,8 @@ const messages = {
     calls: menu.renderCalls,
     expenses: menu.renderExpenses,
     managers: menu.renderManagers,
-    chrono: menu.renderChrono
+    chrono: menu.renderChrono,
+    compare:menu.renderCompare
 };
 
 

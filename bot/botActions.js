@@ -163,7 +163,8 @@ const requests = {
     'orders': menu.orders,
     'order': menu.order,
     'calls': menu.calls,
-    'chrono':menu.chrono
+    'chrono':menu.chrono,
+    'compare':menu.compare
 };
 
 bot.on("callback_query", function (msg) {
