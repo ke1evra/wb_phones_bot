@@ -833,7 +833,7 @@ class Menu {
                     colour++;
             }
         } else {
-            const data=await API.getOrdersDataByDay(from,to.format("YYYY-MM-DD"));
+            const data=await API.getOrdersData(from,to.format("YYYY-MM-DD"));
             to = to.add(-1, 'months').format("YYYY-MM-DD");
             console.log(data.data);
         }
