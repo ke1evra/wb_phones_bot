@@ -720,7 +720,7 @@ class Menu {
                     from = fields.from;
                     to = moment(fields.to).add(1, 'months');
                 }
-                if (!moment(fields.from).add(45, 'days').isAfter(moment(fields.to))) {
+                else if (!moment(fields.from).add(45, 'days').isAfter(moment(fields.to))) {
                     request_type = 'months';
                     from = fields.from;
                     to = moment(fields.to).add(1, 'months');
