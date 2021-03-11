@@ -181,16 +181,14 @@ class Menu {
                         `${data.data[0].courier_del_id ? `${data.data[0].courier_del_id}` : ''}${data.data[0].courier && data.data[0].courier_del_id ? ', ' : ''}${data.data[0].courier ? `${data.data[0].courier}` : ''}\n` +
                         `-------------------------\n`
                 }
-            })() +
-            (() => {
-                if (messageData.actions.length) {
-                    message += `Действия:\n`
-                    for (let action of messageData.actions) {
-                        message += `\n${action[1]} — ${action[0] !== "null" ? action[0] : "Система"}\n${action[2]}\n`
-                    }
-                    message += `-------------------------\n`
-                }
             })()
+        if (messageData.actions.length) {
+            message += `Действия:\n`
+            for (let action of messageData.actions) {
+                message += `\n${action[1]} — ${action[0] !== "null" ? action[0] : "Система"}\n${action[2]}\n`
+            }
+            message += `-------------------------\n`
+        }
 
 
         const getLogs = {}
