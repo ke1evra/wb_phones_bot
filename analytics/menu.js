@@ -161,11 +161,11 @@ class Menu {
             })() +*/
             `${data.data[0].delivery_price} ₽ — Доставка\n\n` +
             `${data.data[0].order_sum} ₽ — Стоимость заказа\n-------------------------\nДоставка:\n\n` +
-            `${data.data[0].address}\n${data.data[0].courier_del_id}, ${data.data[0].courier}\n-------------------------\nДействия:\n`+
-            messageData.actions.forEach(item=>{
-                return `\n${item[1]} — ${item[0]!=="null"?item[0]:"Система"}\n${item[2]}\n`
-            })
+            `${data.data[0].address}\n${data.data[0].courier_del_id}, ${data.data[0].courier}\n-------------------------\nДействия:\n`
 
+        for (let action of messageData.actions){
+            message+= `\n${action[1]} — ${action[0]!=="null"?item[0]:"Система"}\n${action[2]}\n`
+        }
 
         const getLogs = {}
         getLogs.number = data.data[0].phone_key
