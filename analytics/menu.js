@@ -178,7 +178,7 @@ class Menu {
                     return `Доставка:\n\n` +
 
                         `${data.data[0].address ? `${data.data[0].address}\n` : ''}` +
-                        `${data.data[0].courier_del_id ? `${data.data[0].courier_del_id}, ` : ''}${data.data[0].courier ? `${data.data[0].courier}` : ''}\n` +
+                        `${data.data[0].courier_del_id ? `${data.data[0].courier_del_id}` : ''}${data.data[0].courier && data.data[0].courier_del_id ? ', ' : ''}${data.data[0].courier ? `${data.data[0].courier}` : ''}\n` +
                         `-------------------------\n`
                 }
             })() +
