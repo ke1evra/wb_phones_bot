@@ -803,13 +803,13 @@ class Menu {
             let data_months=[];
             //c from до конца месяца
             let data=await API.getOrdersSumByDay(null,from,moment(from).endOf('month').add(1,'day').format("YYYY-MM-DD"));
-            data_days.concat(data.data);
+            data_days.push(data.data);
             //с след месяца после from по месяц до to
             data=await API.getOrdersSumByMonth(null, moment(from).add(1,'month').startOf('month').format("YYYY-MM-DD"), moment(to).startOf('month').format("YYYY-MM-DD"));
             data_months=data.data;
             //последний месяц до to
             data=await API.getOrdersSumByDay(null,moment(to).startOf('month').format("YYYY-MM-DD"),moment(to).add(1,"day").format("YYYY-MM-DD"));
-            data_days.concat(data.data);
+            data_days.push(data.data);
             console.log(`data_days:${data_days}`);
             console.log(`data_month:${data_months}`);
             //Обработка
