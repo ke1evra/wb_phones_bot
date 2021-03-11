@@ -134,35 +134,42 @@ class Menu {
         const menu = [];
         //console.log(data.data["data1"]);
         console.log(data)
+        let messageData={}
+        messageData.actions=[]
         data.data.map((item, index) => {
-            message += `Заказ ${item.id}\n-------------------------\n\n` +
-                `Cтатус: ${orderStatusIcons[item.status]} ${item.status}\n` +
-                `Поступил: ${moment(item.date_of_registration).format("YYYY-MM-DD HH:mm:ss")}, обработан через ${item.processing_time}\n` +
-                `Менеджер: ${item.manager}\n\n-------------------------\nКлиент:\n\n` +
-                `${item.client_name}\n` +
-                `${item.phone_key}${item.client_dop_phone ? ` (${item.client_dop_phone})` : ``}\n` +
-                `${item.email}\n-------------------------\nСостав:\n\n` +
-                (() => {
-                    item.items = item.items.split('&').map(item => {
-                        item = item.split('|')
-                        item = `${parseInt(item[1])} ₽ — ${item[0]} ${itemStatusIcons[item[2]]} ${item[2]}`
-                        return item
-                    })
-                    return item.items.join('\n') + "\n\n"
-                })() +
-                `${item.delivery_price} ₽ — Доставка\n\n` +
-                `${item.order_sum} ₽ — Стоимость заказа\n-------------------------\nДоставка:\n\n` +
-                `${item.address}\n${item.courier_del_id}, ${item.courier}\n-------------------------\nДействия:\n\n` +
-                (() => {
-                    item.actions = item.actions.split('&').map(item => {
-                        item = item.split('|')
-                        item = `${item[1]} — ${item[0]}\n${item[2]}`
-                        return item
-                    })
-                    return item.actions.join('\n\n') + '\n-------------------------'
-                })()
+            item.actions.split('|')
+            messageData.actions.push(item.actions)
             menu.push(new Button(item.client_name, 'some cb'))
         });
+
+        console.log(messageData)
+
+        message = `Заказ ${data.data[0].id}\n-------------------------\n\n` +
+            `Cтатус: ${orderStatusIcons[item.status]} ${data.data[0].status}\n` +
+            `Поступил: ${moment(data.data[0].date_of_registration).format("YYYY-MM-DD HH:mm:ss")}, обработан через ${data.data[0].processing_time}\n` +
+            `Менеджер: ${data.data[0].manager}\n\n-------------------------\nКлиент:\n\n` +
+            `${data.data[0].client_name}\n` +
+            `${data.data[0].phone_key}${data.data[0].client_dop_phone ? ` (${data.data[0].client_dop_phone})` : ``}\n` +
+            `${data.data[0].email}\n-------------------------\nСостав:\n\n` +
+            /*(() => {
+                data.data[0].data.data[0]s = data.data[0].data.data[0]s.split('&').map(data.data[0] => {
+                    data.data[0] = data.data[0].split('|')
+                    data.data[0] = `${parseInt(data.data[0][1])} ₽ — ${data.data[0][0]} ${data.data[0]StatusIcons[data.data[0][2]]} ${data.data[0][2]}`
+                    return data.data[0]
+                })
+                return data.data[0].data.data[0]s.join('\n') + "\n\n"
+            })() +*/
+            `${data.data[0].delivery_price} ₽ — Доставка\n\n` +
+            `${data.data[0].order_sum} ₽ — Стоимость заказа\n-------------------------\nДоставка:\n\n` +
+            `${data.data[0].address}\n${data.data[0].courier_del_id}, ${data.data[0].courier}\n-------------------------\nДействия:\n\n` +
+            (() => {
+                data.data[0].actions = data.data[0].actions.split('&').map(item => {
+                    item = item.split('|')
+                    item = `${item[1]} — ${item[0]}\n${item[2]}`
+                    return item
+                })
+                return data.data[0].actions.join('\n\n') + '\n-------------------------'
+            })()
 
         const getLogs = {}
         getLogs.number = data.data[0].phone_key
