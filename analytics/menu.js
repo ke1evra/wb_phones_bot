@@ -753,6 +753,7 @@ class Menu {
             ['🟫', '🟤']//коричневый
         ];
         let message = '------------------------\nСравнение\n';
+        console.log(`request_type:${request_type} from:${from} to:${to}`);
         if (request_type === 'years') {
             //получение данных
             let data = await API.getOrdersSumByMonth(years_number * 12, from, to.format("YYYY-MM-DD"));
