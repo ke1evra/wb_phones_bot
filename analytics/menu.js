@@ -714,13 +714,13 @@ class Menu {
 
         switch (fields.request_type) {
             case "range":
-                if(!moment(fields.from).add(24, 'months').isAfter(moment(fields.to)))
+                /*if(!moment(fields.from).add(24, 'months').isAfter(moment(fields.to)))
                 {
                     request_type = 'years';
                     from = fields.from;
                     to = moment(fields.to).add(1, 'months');
                 }
-                else if (!moment(fields.from).add(45, 'days').isAfter(moment(fields.to))) {
+                else*/ if (!moment(fields.from).add(45, 'days').isAfter(moment(fields.to))) {
                     request_type = 'months';
                     from = fields.from;
                     to = moment(fields.to).add(1, 'months');
@@ -753,7 +753,6 @@ class Menu {
             ['🟫', '🟤']//коричневый
         ];
         let message = '------------------------\nСравнение\n';
-        console.log(`request_type:${request_type} from:${from} to:${to}`);
         if (request_type === 'years') {
             //получение данных
             let data = await API.getOrdersSumByMonth(years_number * 12, from, to.format("YYYY-MM-DD"));
@@ -798,15 +797,47 @@ class Menu {
             }
         } else if (request_type === 'months') {
             //Получение данных
-            const data = await API.getOrdersSumByMonth(null, from, to.format("YYYY-MM-DD"));
-            to = to.add(-1, 'months').format("YYYY-MM-DD");
+            //Делим процесс на 2 этапа для скорости 1)по месяцам 2)по дням
+            let data_days=[];
+            let data_months=[];
+            if(moment(from).endOf('month').isAfter(to))
+            {
+                data_days=await API.getOrdersSumByDay(null,from,to.format("YYYY-MM-DD"));
+                to = to.add(-1, 'months').format("YYYY-MM-DD");
+            }
+            else
+            {
+                to = to.add(-1, 'months').format("YYYY-MM-DD");
+                //c from до конца месяца
+                data_days.concat((await API.getOrdersSumByDay(null,from,moment(from).endOf('month').add(1,'day').format("YYYY-MM-DD"))).data);
+                //с след месяца после from по месяц до to
+                data_months=(await API.getOrdersSumByMonth(null, moment(from).add(1,'month').startOf('month').format("YYYY-MM-DD"), moment(to).startOf('month').format("YYYY-MM-DD")).data);
+                //последний месяц до to
+                data_days.concat((await API.getOrdersSumByDay(null,moment(to).startOf('month').format("YYYY-MM-DD"),moment(to).add(1,"day").format("YYYY-MM-DD"))).data);
+            }
             //Обработка
             let statistics = [];
             statistics['months_count'] = 0;
             statistics['months'] = {};
             statistics['total_sum'] = 0;
             statistics['order_count'] = 0;
-            data.data.forEach(item => {
+            //По дням
+            data_days.forEach(item => {
+                let month = moment(item.date).format('MMM YYYY');
+                if (!statistics.months.hasOwnProperty(month)) {
+                    statistics.months[month] = {
+                        order_sum: 0,
+                        order_count: 0
+                    }
+                    statistics.months_count++;
+                }
+                statistics.order_count += item["order_count"];
+                statistics.months[month].order_count += item["order_count"];
+                statistics.total_sum += item["order_sum"];
+                statistics.months[month].order_sum += item["order_sum"];
+            });
+            //По месяцам
+            data_months.forEach(item => {
                 let month = moment(item.date).format('MMM YYYY');
                 if (!statistics.months.hasOwnProperty(month)) {
                     statistics.months[month] = {
