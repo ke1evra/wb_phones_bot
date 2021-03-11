@@ -137,15 +137,15 @@ class Menu {
         let messageData={}
         messageData.actions=[]
         data.data.map((item, index) => {
-            item.actions.split('|')
-            messageData.actions.push(item.actions)
+            item=item.actions.split('|')
+            messageData.actions.push(item)
             menu.push(new Button(item.client_name, 'some cb'))
         });
 
         console.log(messageData)
 
         message = `Заказ ${data.data[0].id}\n-------------------------\n\n` +
-            `Cтатус: ${orderStatusIcons[item.status]} ${data.data[0].status}\n` +
+            `Cтатус: ${orderStatusIcons[data.data[0].status]} ${data.data[0].status}\n` +
             `Поступил: ${moment(data.data[0].date_of_registration).format("YYYY-MM-DD HH:mm:ss")}, обработан через ${data.data[0].processing_time}\n` +
             `Менеджер: ${data.data[0].manager}\n\n-------------------------\nКлиент:\n\n` +
             `${data.data[0].client_name}\n` +
@@ -161,15 +161,8 @@ class Menu {
             })() +*/
             `${data.data[0].delivery_price} ₽ — Доставка\n\n` +
             `${data.data[0].order_sum} ₽ — Стоимость заказа\n-------------------------\nДоставка:\n\n` +
-            `${data.data[0].address}\n${data.data[0].courier_del_id}, ${data.data[0].courier}\n-------------------------\nДействия:\n\n` +
-            (() => {
-                data.data[0].actions = data.data[0].actions.split('&').map(item => {
-                    item = item.split('|')
-                    item = `${item[1]} — ${item[0]}\n${item[2]}`
-                    return item
-                })
-                return data.data[0].actions.join('\n\n') + '\n-------------------------'
-            })()
+            `${data.data[0].address}\n${data.data[0].courier_del_id}, ${data.data[0].courier}\n-------------------------\nДействия:\n\n`
+
 
         const getLogs = {}
         getLogs.number = data.data[0].phone_key
