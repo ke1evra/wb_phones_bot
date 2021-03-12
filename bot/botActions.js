@@ -226,7 +226,7 @@ setInterval(async () => {
 }, 60 * 60 * 1000);
 //вывод статистики
 setInterval(async () => {
-    if(moment().format('dddd')==='Friday'&&moment().format('HH')==='15')
+    if(moment().format('dddd')==='Friday'&&moment().format('HH')==='16')
     {
         await methods.sendMessageByType('missed',
             {chat:{id:chats.reports}},
