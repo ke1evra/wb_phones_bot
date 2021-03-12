@@ -224,5 +224,59 @@ setInterval(async () => {
         await methods.sendMessageByType('missed');
     }
 }, 60 * 60 * 1000);
+//вывод статистики
+setInterval(async () => {
+    if(moment().format('dddd')==='Friday'&&moment().format('HH')==='15')
+    {
+        await methods.sendMessageByType('missed',
+            {chat:{id:chats.reports}},
+            {
+                request_type:'range',
+                from:moment().subtract(1,'week').startOf('day').format('YYYY-MM-DD'),
+                to:moment().endOf('day').format('YYYY-MM-DD')
+            }
+        );
+        await methods.sendMessageByType('orders',
+            {chat:{id:chats.reports}},
+            {
+                request_type:'range',
+                from:moment().subtract(1,'week').format('YYYY-MM-DD'),
+                to:moment().endOf('day').format('YYYY-MM-DD')
+            }
+        );
+        await methods.sendMessageByType('calls',
+            {chat:{id:chats.reports}},
+            {
+                request_type:'range',
+                from:moment().subtract(1,'week').format('YYYY-MM-DD'),
+                to:moment().endOf('day').format('YYYY-MM-DD')
+            }
+        );
+        await methods.sendMessageByType('managers',
+            {chat:{id:chats.reports}},
+            {
+                request_type:'range',
+                from:moment().subtract(1,'week').format('YYYY-MM-DD'),
+                to:moment().endOf('day').format('YYYY-MM-DD')
+            }
+        );
+        await methods.sendMessageByType('chrono',
+            {chat:{id:chats.reports}},
+            {
+                request_type:'range',
+                from:moment().subtract(1,'week').format('YYYY-MM-DD'),
+                to:moment().endOf('day').format('YYYY-MM-DD')
+            }
+        );
+        await methods.sendMessageByType('compare',
+            {chat:{id:chats.reports}},
+            {
+                request_type:'range',
+                from:moment().subtract(1,'week').format('YYYY-MM-DD'),
+                to:moment().endOf('day').format('YYYY-MM-DD')
+            }
+        );
+    }
+}, 60 * 60 * 1000);
 
 module.exports = methods;
