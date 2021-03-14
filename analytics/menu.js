@@ -137,13 +137,11 @@ class Menu {
         let messageData = {}
         messageData.actions = []
         messageData.items = []
-        data.data.map((item, index) => {
-
-            item = item.actions.split('|')
-            if (!messageData.actions.includes(item))
-                messageData.actions.push(item)
-            if (!messageData.items.includes(item))
-                messageData.items.push(item)
+        data.data.forEach((item, index) => {
+            if (!messageData.actions.includes(item.actions))
+                messageData.actions.push(item.actions)
+            if (!messageData.items.includes(item.items))
+                messageData.items.push(item.items)
             menu.push(new Button(item.client_name, 'some cb'))
         });
 
