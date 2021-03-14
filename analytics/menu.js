@@ -170,7 +170,7 @@ class Menu {
             message += `Состав:\n\n`
             for (let item of messageData.items) {
                 item = item.split('|')
-                message += `${parseInt(item[1])} ₽ (${parseInt(item[4])}) — ${item[0]} ${item[3]} (${item[5]}) ${itemStatusIcons[item[3]]} ${item[3]}\n`
+                message += `${parseInt(item[1])} ₽ (${parseInt(item[4])}) — ${item[0]} ${item[3]} (${item[5]}) ${itemStatusIcons[item[2]]} ${item[2]}\n`
             }
             message += `-------------------------\n`
         }
