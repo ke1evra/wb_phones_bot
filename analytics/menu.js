@@ -187,7 +187,8 @@ class Menu {
             })()
         if (messageData.actions.length) {
             message += `Действия:\n`
-            for (let action of messageData.actions.split('|')) {
+            for (let action of messageData.actions) {
+                action=action.split('|')
                 message += `\n${action[1]} — ${action[0] !== "null" ? action[0] : "Система"}\n${action[2]}\n`
             }
             message += `-------------------------\n`
