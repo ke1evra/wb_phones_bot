@@ -161,34 +161,31 @@ class Menu {
             `${data.data[0].client_name}\n` +
             `${data.data[0].phone_key}${data.data[0].client_dop_phone ? ` (${data.data[0].client_dop_phone})` : ``}\n` +
             `${data.data[0].email}\n` +
-            `-------------------------\n` +
-            `Состав:\n\n` +
+            `-------------------------\n`
 
-            /*(() => {
-                data.data[0].data.data[0]s = data.data[0].data.data[0]s.split('&').map(data.data[0] => {
-                    data.data[0] = data.data[0].split('|')
-                    data.data[0] = `${parseInt(data.data[0][1])} ₽ — ${data.data[0][0]} ${data.data[0]StatusIcons[data.data[0][2]]} ${data.data[0][2]}`
-                    return data.data[0]
-                })
-                return data.data[0].data.data[0]s.join('\n') + "\n\n"
-            })() +*/
-
+        if (messageData.items.length) {
+            message += `Состав:\n`
+            for (let item of messageData.items) {
+                item = item.split('|')
+                message += `\n${item[1]} ₽ (${item[4]}) — ${item[0]} ${item[3]} ${item[5]}${item[5]==="Без размера"? ` (${item[6]})`:''}\n`
+            }
+            message += `-------------------------\n`
+        }
+        message +=
             `${data.data[0].order_sum} ₽ — Стоимость заказа\n` +
             `${data.data[0].delivery_price} ₽ — Доставка\n` +
-            `-------------------------\n` +
-            (() => {
-                if (data.data[0].address || data.data[0].courier_del_id || data.data[0].courier) {
-                    return `Доставка:\n\n` +
+            `-------------------------\n`
+        if (data.data[0].address || data.data[0].courier_del_id || data.data[0].courier) {
+            message += `Доставка:\n\n` +
 
-                        `${data.data[0].address ? `${data.data[0].address}\n` : ''}` +
-                        `${data.data[0].courier_del_id ? `${data.data[0].courier_del_id}` : ''}${data.data[0].courier && data.data[0].courier_del_id ? ', ' : ''}${data.data[0].courier ? `${data.data[0].courier}` : ''}\n` +
-                        `-------------------------\n`
-                }
-            })()
+                `${data.data[0].address ? `${data.data[0].address}\n` : ''}` +
+                `${data.data[0].courier_del_id ? `${data.data[0].courier_del_id}` : ''}${data.data[0].courier && data.data[0].courier_del_id ? ', ' : ''}${data.data[0].courier ? `${data.data[0].courier}` : ''}\n` +
+                `-------------------------\n`
+        }
         if (messageData.actions.length) {
             message += `Действия:\n`
             for (let action of messageData.actions) {
-                action=action.split('|')
+                action = action.split('|')
                 message += `\n${action[1]} — ${action[0] !== "null" ? action[0] : "Система"}\n${action[2]}\n`
             }
             message += `-------------------------\n`
@@ -707,8 +704,7 @@ class Menu {
                     message += `\n${statistics.orders[i][0]} — ${menu.renderPercentage(statistics.orders[i][1].toString(), statistics.orders[i][1] / statistics.orders_count)}`;
             }
             return message;
-        }
-        catch (e) {
+        } catch (e) {
             console.log(`Ошибка в функции renderCompare: ${e}`);
             return "Ошибка в выполнении запроса!";
         }
@@ -721,26 +717,21 @@ class Menu {
         let years_number = 0;
         let from;
         let to;
-        let data_days=[];
-        let data_months=[];
+        let data_days = [];
+        let data_months = [];
         let data;
         switch (fields.request_type) {
             case "range":
-                if(!moment(fields.from).add(24, 'months').isAfter(moment(fields.to)))
-                {
+                if (!moment(fields.from).add(24, 'months').isAfter(moment(fields.to))) {
                     request_type = 'years';
-                    years_number=-1;//Флаг того, что был дан промежуток
+                    years_number = -1;//Флаг того, что был дан промежуток
                     from = fields.from;
                     to = fields.to;
-                }
-                else if (!moment(fields.from).add(45, 'days').isAfter(moment(fields.to)))
-                {
+                } else if (!moment(fields.from).add(45, 'days').isAfter(moment(fields.to))) {
                     request_type = 'months';
                     from = fields.from;
                     to = fields.to
-                }
-                else
-                    {
+                } else {
                     request_type = 'days';
                     from = fields.from;
                     to = moment(fields.to).add(1, 'days');
@@ -773,16 +764,16 @@ class Menu {
         if (request_type === 'years') {
             //получение данных
             //Делим процесс на 2 этапа для скорости 1)по месяцам 2)по дням
-            data_days=[];
-            data_months=[];
+            data_days = [];
+            data_months = [];
             //c from до конца месяца
-            data=await API.getOrdersSumByDay(null,from,moment(from).endOf('month').add(1,'day').format("YYYY-MM-DD"));
+            data = await API.getOrdersSumByDay(null, from, moment(from).endOf('month').add(1, 'day').format("YYYY-MM-DD"));
             data_days.push(data.data);
             //с след месяца после from по месяц до to
-            data=await API.getOrdersSumByMonth(null, moment(from).add(1,'month').startOf('month').format("YYYY-MM-DD"), moment(to).startOf('month').format("YYYY-MM-DD"));
-            data_months=data.data;
+            data = await API.getOrdersSumByMonth(null, moment(from).add(1, 'month').startOf('month').format("YYYY-MM-DD"), moment(to).startOf('month').format("YYYY-MM-DD"));
+            data_months = data.data;
             //последний месяц до to
-            data=await API.getOrdersSumByDay(null,moment(to).startOf('month').format("YYYY-MM-DD"),moment(to).add(1,"day").format("YYYY-MM-DD"));
+            data = await API.getOrdersSumByDay(null, moment(to).startOf('month').format("YYYY-MM-DD"), moment(to).add(1, "day").format("YYYY-MM-DD"));
             data_days.push(data.data);
             //Обработка полученных данных
             let statistics = {};
@@ -836,10 +827,10 @@ class Menu {
                 statistics.year_stat[year].order_sum += day["order_sum"];
             });
             //составление сообщения
-            if(years_number===-1)
-                message+=`В преиод с ${from} по ${to}\n`;
+            if (years_number === -1)
+                message += `В преиод с ${from} по ${to}\n`;
             else
-                message += years_number > 0? `В преиод с ${from.substr(0,4)} по ${to.substr(0,4)}\n` : `На ${from.substr(0,4)}\n`;
+                message += years_number > 0 ? `В преиод с ${from.substr(0, 4)} по ${to.substr(0, 4)}\n` : `На ${from.substr(0, 4)}\n`;
 
             //Вывод шапки
             let colour = 0;
@@ -855,20 +846,19 @@ class Menu {
                 if (years_number <= 7)
                     colour++;
             }
-        }
-        else if (request_type === 'months') {
+        } else if (request_type === 'months') {
             //Получение данных
             //Делим процесс на 2 этапа для скорости 1)по месяцам 2)по дням
-            data_days=[];
-            data_months=[];
+            data_days = [];
+            data_months = [];
             //c from до конца месяца
-            data=await API.getOrdersSumByDay(null,from,moment(from).endOf('month').add(1,'day').format("YYYY-MM-DD"));
+            data = await API.getOrdersSumByDay(null, from, moment(from).endOf('month').add(1, 'day').format("YYYY-MM-DD"));
             data_days.push(data.data);
             //с след месяца после from по месяц до to
-            data=await API.getOrdersSumByMonth(null, moment(from).add(1,'month').startOf('month').format("YYYY-MM-DD"), moment(to).startOf('month').format("YYYY-MM-DD"));
-            data_months=data.data;
+            data = await API.getOrdersSumByMonth(null, moment(from).add(1, 'month').startOf('month').format("YYYY-MM-DD"), moment(to).startOf('month').format("YYYY-MM-DD"));
+            data_months = data.data;
             //последний месяц до to
-            data=await API.getOrdersSumByDay(null,moment(to).startOf('month').format("YYYY-MM-DD"),moment(to).add(1,"day").format("YYYY-MM-DD"));
+            data = await API.getOrdersSumByDay(null, moment(to).startOf('month').format("YYYY-MM-DD"), moment(to).add(1, "day").format("YYYY-MM-DD"));
             data_days.push(data.data);
             //console.log(`data_days:${data_days}`);
             //console.log(`data_month:${data_months}`);
@@ -939,9 +929,8 @@ class Menu {
                 if (statistics.months_count <= 7)
                     colour++;
             }
-        }
-        else {
-            const data=await API.getOrdersSumByDay(null,from,to.format("YYYY-MM-DD"));
+        } else {
+            const data = await API.getOrdersSumByDay(null, from, to.format("YYYY-MM-DD"));
             to = to.add(-1, 'days').format("YYYY-MM-DD");
             //Обработка
             let statistics = [];
@@ -951,7 +940,7 @@ class Menu {
             statistics['order_count'] = 0;
             data.data.forEach(item => {
                 let day = moment(item.date).format("MM-DD");
-                if (!statistics.days.hasOwnProperty(day)){
+                if (!statistics.days.hasOwnProperty(day)) {
                     statistics.days[day] = {
                         order_sum: 0,
                         order_count: 0
