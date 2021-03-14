@@ -167,7 +167,7 @@ class Menu {
             message += `Состав:\n`
             for (let item of messageData.items) {
                 item = item.split('|')
-                message += `\n${item[1]} ₽ (${item[4]}) — ${item[0]} ${item[3]} ${item[5]}${item[5]==="Без размера"? ` (${item[6]})`:''}\n`
+                message += `\n${item[1]} ₽ (${item[4].toFixed(0)}) — ${item[0]} ${item[3]} ${item[5]}${item[5]==="Без размера"? ` (${item[6]})`:''}\n`
             }
             message += `-------------------------\n`
         }
