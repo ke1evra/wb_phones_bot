@@ -634,79 +634,85 @@ class Menu {
     }
 
     async renderChrono(fields) {
-        //Фильтр на тип запроса
-        let request_type = '';
-        if (['days', 'day', 'range'].includes(fields.request_type))
-            request_type = fields.request_type;
-        else
-            request_type = 'days'
-        //Начало обработки передаваемых параметра
-        if (typeof fields.days == "undefined" || fields.days == null)
-            fields.days = 0;
-        if (request_type === 'day') {
-            fields.to = fields.from;
-            request_type = 'days';
-        }
-        let from = typeof fields.from == "undefined" || fields.from == null ? moment().subtract(fields.days, "days").format("YYYY-MM-DD") : fields.from;
-        let to = typeof fields.to == "undefined" || fields.to == null ? moment() : moment(fields.to);
-        //т.к. берёт не включительно добавляем +1 день
-        to.add(1, "day");
-        //Получение данных
-        let calls_data = await API.getCalls(fields.days, from, to.format("YYYY-MM-DD"));
-        let orders_data = await API.getOrders(fields.days, from, to.format("YYYY-MM-DD"));
-        //console.log('calls_data:',calls_data.data);
-        //console.log('orders_data:',orders_data.data);
-        to = to.add(-1, "day").format("YYYY-MM-DD");
-        //Обработка данных
-        let statistics = {};
-        statistics['calls'] = [];
-        statistics['orders'] = [];
-        statistics['calls_count'] = 0;
-        statistics['orders_count'] = 0;
-        for (let i = 0; i < 24; i++) {
-            let number = i.toString();
-            if (i < 10)
-                number = '0' + number;
-            statistics['calls'].push([number, 0]);
-            statistics['orders'].push([number, 0]);
-        }
-        if (calls_data.data !== '')
-            calls_data.data.forEach(call => {
-                menu.searchPushOrdersArrays(call.start_time.substr(0, 2), statistics['calls']);
-                statistics['calls_count']++;
-            });
-        if (orders_data.data !== '')
-            orders_data.data.forEach(order => {
-                menu.searchPushOrdersArrays(moment(order.created_at).format('HH'), statistics['orders']);
-                statistics['orders_count']++;
-            });
-        if (!statistics.calls_count && !statistics.orders_count) {
+        try {
+            //Фильтр на тип запроса
+            let request_type = '';
+            if (['days', 'day', 'range'].includes(fields.request_type))
+                request_type = fields.request_type;
+            else
+                request_type = 'days'
+            //Начало обработки передаваемых параметра
+            if (typeof fields.days == "undefined" || fields.days == null)
+                fields.days = 0;
+            if (request_type === 'day') {
+                fields.to = fields.from;
+                request_type = 'days';
+            }
+            let from = typeof fields.from == "undefined" || fields.from == null ? moment().subtract(fields.days, "days").format("YYYY-MM-DD") : fields.from;
+            let to = typeof fields.to == "undefined" || fields.to == null ? moment() : moment(fields.to);
+            //т.к. берёт не включительно добавляем +1 день
+            to.add(1, "day");
+            //Получение данных
+            let calls_data = await API.getCalls(fields.days, from, to.format("YYYY-MM-DD"));
+            let orders_data = await API.getOrders(fields.days, from, to.format("YYYY-MM-DD"));
+            //console.log('calls_data:',calls_data.data);
+            //console.log('orders_data:',orders_data.data);
+            to = to.add(-1, "day").format("YYYY-MM-DD");
+            //Обработка данных
+            let statistics = {};
+            statistics['calls'] = [];
+            statistics['orders'] = [];
+            statistics['calls_count'] = 0;
+            statistics['orders_count'] = 0;
+            for (let i = 0; i < 24; i++) {
+                let number = i.toString();
+                if (i < 10)
+                    number = '0' + number;
+                statistics['calls'].push([number, 0]);
+                statistics['orders'].push([number, 0]);
+            }
+            if (calls_data.data !== '')
+                calls_data.data.forEach(call => {
+                    menu.searchPushOrdersArrays(call.start_time.substr(0, 2), statistics['calls']);
+                    statistics['calls_count']++;
+                });
+            if (orders_data.data !== '')
+                orders_data.data.forEach(order => {
+                    menu.searchPushOrdersArrays(moment(order.created_at).format('HH'), statistics['orders']);
+                    statistics['orders_count']++;
+                });
+            if (!statistics.calls_count && !statistics.orders_count) {
+                if (request_type === 'days')
+                    return `Нет данных за период ${fields.days > 0 ?
+                        `с ${from} по ${to}`
+                        : `на ${to}`}`;
+                return `Нет данных за период с ${from} по ${to}`;
+            }
+            let message = 'Статистика по часам:\n------------------------\n';
             if (request_type === 'days')
-                return `Нет данных за период ${fields.days > 0 ?
-                    `с ${from} по ${to}`
-                    : `на ${to}`}`;
-            return `Нет данных за период с ${from} по ${to}`;
-        }
-        let message = 'Статистика по часам:\n------------------------\n';
-        if (request_type === 'days')
-            message += fields.days > 0 ? `С ${from} по ${to}` : `На ${from}`;
-        else
-            message += `С ${from} по ${to}`;
-        message += ' было совершено:\n';
-        message += `${statistics['calls_count'] ? `${statistics['calls_count']} звонков\n` : ''}`;
-        message += `${statistics['orders_count'] ? `${statistics['orders_count']} заказов\n` : ''}`;
+                message += fields.days > 0 ? `С ${from} по ${to}` : `На ${from}`;
+            else
+                message += `С ${from} по ${to}`;
+            message += ' было совершено:\n';
+            message += `${statistics['calls_count'] ? `${statistics['calls_count']} звонков\n` : ''}`;
+            message += `${statistics['orders_count'] ? `${statistics['orders_count']} заказов\n` : ''}`;
 
-        if (statistics['calls_count']) {
-            message += '------------------------\nЗвонки\n';
-            for (let i = 0; i < statistics.calls.length; i++)
-                message += `\n${statistics.calls[i][0]} — ${menu.renderPercentage(statistics.calls[i][1].toString(), statistics.calls[i][1] / statistics.calls_count)}`;
+            if (statistics['calls_count']) {
+                message += '------------------------\nЗвонки\n';
+                for (let i = 0; i < statistics.calls.length; i++)
+                    message += `\n${statistics.calls[i][0]} — ${menu.renderPercentage(statistics.calls[i][1].toString(), statistics.calls[i][1] / statistics.calls_count)}`;
+            }
+            if (statistics['orders_count']) {
+                message += '------------------------\nЗаказы\n';
+                for (let i = 0; i < statistics.orders.length; i++)
+                    message += `\n${statistics.orders[i][0]} — ${menu.renderPercentage(statistics.orders[i][1].toString(), statistics.orders[i][1] / statistics.orders_count)}`;
+            }
+            return message;
         }
-        if (statistics['orders_count']) {
-            message += '------------------------\nЗаказы\n';
-            for (let i = 0; i < statistics.orders.length; i++)
-                message += `\n${statistics.orders[i][0]} — ${menu.renderPercentage(statistics.orders[i][1].toString(), statistics.orders[i][1] / statistics.orders_count)}`;
+        catch (e) {
+            console.log(`Ошибка в функции renderCompare: ${e}`);
+            return "Ошибка в выполнении запроса!";
         }
-        return message;
     }
 
     async renderCompare(fields) {
@@ -716,15 +722,26 @@ class Menu {
         let years_number = 0;
         let from;
         let to;
-
+        let data_days=[];
+        let data_months=[];
+        let data;
         switch (fields.request_type) {
             case "range":
-                if (!moment(fields.from).add(45, 'days').isAfter(moment(fields.to))) {
-                    request_type = 'months';
-
+                if(!moment(fields.from).add(24, 'months').isAfter(moment(fields.to)))
+                {
+                    request_type = 'years';
+                    years_number=-1;//Флаг того, что был дан промежуток
                     from = fields.from;
-                    to = moment(fields.to).add(1, 'months');
-                } else {
+                    to = fields.to;
+                }
+                else if (!moment(fields.from).add(45, 'days').isAfter(moment(fields.to)))
+                {
+                    request_type = 'months';
+                    from = fields.from;
+                    to = fields.to
+                }
+                else
+                    {
                     request_type = 'days';
                     from = fields.from;
                     to = moment(fields.to).add(1, 'days');
@@ -738,7 +755,7 @@ class Menu {
                 else
                     years_number = fields.days;
                 from = typeof fields.from == 'undefined' || fields.from == null ? moment().subtract(12 * years_number, 'months').format("YYYY-MM-DD") : fields.from;
-                to = typeof fields.to == 'undefined' || fields.to == null ? moment().add(1, 'months') : moment(fields.to).add(1, 'months');
+                to = typeof fields.to == 'undefined' || fields.to == null ? moment().format("YYYY-MM-DD") : fields.to;
                 break;
         }
         //Массив цветов белый отсутствует т.к. используется для пустых.
@@ -752,19 +769,45 @@ class Menu {
             ['⬛️', '⚫️'],//чёрный
             ['🟫', '🟤']//коричневый
         ];
-        let message = '';
-        if (request_type == 'years') {
+        let message = '------------------------\nСравнение\n';
+        //console.log(`request_type:${request_type} from:${from} to:${to}`);
+        if (request_type === 'years') {
             //получение данных
-            let data = await API.getOrdersSumByMonth(years_number * 12, from, to.format("YYYY-MM-DD"));
-            from = moment(from).format("YYYY");
-            to = to.add(-1, 'months').format("YYYY");
+            //Делим процесс на 2 этапа для скорости 1)по месяцам 2)по дням
+            data_days=[];
+            data_months=[];
+            //c from до конца месяца
+            data=await API.getOrdersSumByDay(null,from,moment(from).endOf('month').add(1,'day').format("YYYY-MM-DD"));
+            data_days.push(data.data);
+            //с след месяца после from по месяц до to
+            data=await API.getOrdersSumByMonth(null, moment(from).add(1,'month').startOf('month').format("YYYY-MM-DD"), moment(to).startOf('month').format("YYYY-MM-DD"));
+            data_months=data.data;
+            //последний месяц до to
+            data=await API.getOrdersSumByDay(null,moment(to).startOf('month').format("YYYY-MM-DD"),moment(to).add(1,"day").format("YYYY-MM-DD"));
+            data_days.push(data.data);
             //Обработка полученных данных
             let statistics = {};
             statistics['years'] = [];
             statistics['year_stat'] = {};
             statistics['total_sum'] = 0;
             statistics['order_count'] = 0;
-            data.data.forEach(month => {
+            //по дням
+            data_days[0].forEach(day => {
+                let year = moment(day.date).format('YYYY');
+                if (!statistics.years.includes(year)) {
+                    statistics.years.push(year);
+                    statistics.year_stat[year] = {
+                        order_sum: 0,
+                        order_count: 0
+                    }
+                }
+                statistics.order_count += day["order_count"];
+                statistics.year_stat[year].order_count += day["order_count"];
+                statistics.total_sum += day["order_sum"];
+                statistics.year_stat[year].order_sum += day["order_sum"];
+            });
+            //по месяцам
+            data_months.forEach(month => {
                 let year = moment(month.date).format('YYYY');
                 if (!statistics.years.includes(year)) {
                     statistics.years.push(year);
@@ -778,9 +821,26 @@ class Menu {
                 statistics.total_sum += month["order_sum"];
                 statistics.year_stat[year].order_sum += month["order_sum"];
             });
+            //по дням после
+            data_days[1].forEach(day => {
+                let year = moment(day.date).format('YYYY');
+                if (!statistics.years.includes(year)) {
+                    statistics.years.push(year);
+                    statistics.year_stat[year] = {
+                        order_sum: 0,
+                        order_count: 0
+                    }
+                }
+                statistics.order_count += day["order_count"];
+                statistics.year_stat[year].order_count += day["order_count"];
+                statistics.total_sum += day["order_sum"];
+                statistics.year_stat[year].order_sum += day["order_sum"];
+            });
             //составление сообщения
-            message = '------------------------\nСравнение\n';
-            message += years_number > 0 ? `В преиод с ${from} по ${to}\n` : `На ${from}\n`;
+            if(years_number===-1)
+                message+=`В преиод с ${from} по ${to}\n`;
+            else
+                message += years_number > 0? `В преиод с ${from.substr(0,4)} по ${to.substr(0,4)}\n` : `На ${from.substr(0,4)}\n`;
 
             //Вывод шапки
             let colour = 0;
@@ -796,19 +856,63 @@ class Menu {
                 if (years_number <= 7)
                     colour++;
             }
-        } else if (request_type === 'months') {
+        }
+        else if (request_type === 'months') {
             //Получение данных
-            const data = await API.getOrdersSumByMonth(null, from, to.format("YYYY-MM-DD"));
-            to = to.add(-1, 'months').format("YYYY-MM-DD");
+            //Делим процесс на 2 этапа для скорости 1)по месяцам 2)по дням
+            data_days=[];
+            data_months=[];
+            //c from до конца месяца
+            data=await API.getOrdersSumByDay(null,from,moment(from).endOf('month').add(1,'day').format("YYYY-MM-DD"));
+            data_days.push(data.data);
+            //с след месяца после from по месяц до to
+            data=await API.getOrdersSumByMonth(null, moment(from).add(1,'month').startOf('month').format("YYYY-MM-DD"), moment(to).startOf('month').format("YYYY-MM-DD"));
+            data_months=data.data;
+            //последний месяц до to
+            data=await API.getOrdersSumByDay(null,moment(to).startOf('month').format("YYYY-MM-DD"),moment(to).add(1,"day").format("YYYY-MM-DD"));
+            data_days.push(data.data);
+            //console.log(`data_days:${data_days}`);
+            //console.log(`data_month:${data_months}`);
             //Обработка
             let statistics = [];
             statistics['months_count'] = 0;
             statistics['months'] = {};
             statistics['total_sum'] = 0;
             statistics['order_count'] = 0;
-            data.data.forEach(item => {
+            //По дням до периода по месяцам
+            data_days[0].forEach(item => {
                 let month = moment(item.date).format('MMM YYYY');
-                if (!statistics.hasOwnProperty(month)) {
+                if (!statistics.months.hasOwnProperty(month)) {
+                    statistics.months[month] = {
+                        order_sum: 0,
+                        order_count: 0
+                    }
+                    statistics.months_count++;
+                }
+                statistics.order_count += item["order_count"];
+                statistics.months[month].order_count += item["order_count"];
+                statistics.total_sum += item["order_sum"];
+                statistics.months[month].order_sum += item["order_sum"];
+            });
+            //По месяцам
+            data_months.forEach(item => {
+                let month = moment(item.date).format('MMM YYYY');
+                if (!statistics.months.hasOwnProperty(month)) {
+                    statistics.months[month] = {
+                        order_sum: 0,
+                        order_count: 0
+                    }
+                    statistics.months_count++;
+                }
+                statistics.order_count += item["order_count"];
+                statistics.months[month].order_count += item["order_count"];
+                statistics.total_sum += item["order_sum"];
+                statistics.months[month].order_sum += item["order_sum"];
+            });
+            //По дням
+            data_days[1].forEach(item => {
+                let month = moment(item.date).format('MMM YYYY');
+                if (!statistics.months.hasOwnProperty(month)) {
                     statistics.months[month] = {
                         order_sum: 0,
                         order_count: 0
@@ -821,7 +925,6 @@ class Menu {
                 statistics.months[month].order_sum += item["order_sum"];
             });
             //Формирование сообщения
-            message += '------------------------\nСравнение\n';
             message += `В преиод с ${from} по ${to}\n`;
             //Вывод шапки
             let colour = 0;
@@ -837,8 +940,46 @@ class Menu {
                 if (statistics.months_count <= 7)
                     colour++;
             }
-        } else {
-
+        }
+        else {
+            const data=await API.getOrdersSumByDay(null,from,to.format("YYYY-MM-DD"));
+            to = to.add(-1, 'days').format("YYYY-MM-DD");
+            //Обработка
+            let statistics = [];
+            statistics['days_count'] = 0;
+            statistics['days'] = {};
+            statistics['total_sum'] = 0;
+            statistics['order_count'] = 0;
+            data.data.forEach(item => {
+                let day = moment(item.date).format("MM-DD");
+                if (!statistics.days.hasOwnProperty(day)){
+                    statistics.days[day] = {
+                        order_sum: 0,
+                        order_count: 0
+                    }
+                    statistics.days_count++;
+                }
+                statistics.order_count += item["order_count"];
+                statistics.days[day].order_count += item["order_count"];
+                statistics.total_sum += item["order_sum"];
+                statistics.days[day].order_sum += item["order_sum"];
+            });
+            //Формирование сообщения
+            message += `В преиод с ${from} по ${to}\n`;
+            //Вывод шапки
+            let colour = 0;
+            if (statistics.days_count <= 7) {
+                for (let day in statistics.days) {
+                    message += `${colours[colour][0]} ${day}    `;
+                    colour++;
+                }
+            }
+            colour = 0;
+            for (let day in statistics.days) {
+                message += `\n${day} — ${menu.numberWithCommas(statistics.days[day].order_count)} заказов на сумму: ${menu.renderPercentage(menu.numberWithCommas(statistics.days[day].order_sum) + ' ₽', statistics.days[day].order_count / statistics.order_count, colour)}`;
+                if (statistics.days_count <= 7)
+                    colour++;
+            }
         }
         return message;
     }
