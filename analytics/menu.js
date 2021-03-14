@@ -155,19 +155,22 @@ class Menu {
             `Поступил: ${moment(data.data[0].date_of_registration).format("YYYY-MM-DD HH:mm:ss")}, обработан через ${data.data[0].processing_time}\n` +
             `Менеджер: ${data.data[0].manager}\n\n` +
 
-            `-------------------------\n` +
-            `Клиент:\n\n` +
-
-            `${data.data[0].client_name}\n` +
-            `${data.data[0].phone_key}${data.data[0].client_dop_phone ? ` (${data.data[0].client_dop_phone})` : ``}\n` +
-            `${data.data[0].email}\n` +
             `-------------------------\n`
+        if (data.data[0].client_name || data.data[0].phone_key || data.data[0].email) {
+            message += `Клиент:\n\n` +
+
+                `${data.data[0].client_name ? `${data.data[0].client_name}\n` : ''}` +
+                `${data.data[0].phone_key ? `${data.data[0].phone_key}${data.data[0].client_dop_phone ? ` (${data.data[0].client_dop_phone})\n` : '\n'}` : ''}` +
+                `${data.data[0].email ? `${data.data[0].email}\n` : ''}` +
+                `-------------------------\n`
+        }
+
 
         if (messageData.items.length) {
-            message += `Состав:\n`
+            message += `Состав:\n\n`
             for (let item of messageData.items) {
                 item = item.split('|')
-                message += `\n${item[1]} ₽ (${parseInt(item[4])}) — ${item[0]} ${item[3]} ${item[5]}${item[5]==="Без размера"? ` (${item[6]})`:''}\n`
+                message += `${parseInt(item[1])} ₽ (${parseInt(item[4])}) — ${item[0]} ${item[3]} (${item[5]}) ${itemStatusIcons[item[3]]} ${item[3]}\n`
             }
             message += `-------------------------\n`
         }
