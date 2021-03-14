@@ -136,16 +136,21 @@ class Menu {
         console.log(data)
         let messageData = {}
         messageData.actions = []
+        messageData.items = []
         data.data.map((item, index) => {
+
             item = item.actions.split('|')
-            messageData.actions.push(item)
+            if (!messageData.actions.includes(item))
+                messageData.actions.push(item)
+            if (!messageData.items.includes(item))
+                messageData.items.push(item)
             menu.push(new Button(item.client_name, 'some cb'))
         });
 
-        //console.log(messageData)
+        console.log(messageData)
 
         message =
-            `Заказ ${data.data[0].id}\n` +
+            `Заказ ${data.data[0].order_number}\n` +
             `-------------------------\n\n` +
 
             `Cтатус: ${orderStatusIcons[data.data[0].status]} ${data.data[0].status}\n` +
