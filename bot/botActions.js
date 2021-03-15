@@ -164,7 +164,8 @@ const requests = {
     'order': menu.order,
     'calls': menu.calls,
     'chrono':menu.chrono,
-    'compare':menu.compare
+    'compare':menu.compare,
+    'help':menu.help
 };
 
 bot.on("callback_query", function (msg) {
@@ -191,7 +192,12 @@ bot.onText(/^\/([a-z]+)\s*.*/, async (msg, match) => {
             fields["request_type"] = "number";
             fields["order_number"] = match[0].match(/\/order\s*(\d+)?/)[1]
             console.log(fields)
-        } else {
+        } else if(router_type==='help'){
+            let a=match[0].match(/^\/help\s*(\S*)/)[1];
+            console.log(a);
+            fields['request_type']=a[1];
+        }
+        else {
             //Начинаем проверку на типы запросов
             //Запрос range
             if (/\s*range\s(\d{4}-\d{2}-\d{2})\s*(\d{4}-\d{2}-\d{2})/.test(match[0])) {
