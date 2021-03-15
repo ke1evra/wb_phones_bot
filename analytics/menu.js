@@ -172,12 +172,17 @@ class Menu {
                 item = item.split('|')
                 message += `${parseInt(item[1])} ₽ (${parseInt(item[4])}) — ${item[0]} ${item[3]} (${item[5]}) ${itemStatusIcons[item[2]]} ${item[2]}\n`
             }
-            message += `-------------------------\n`
+            message += `\n`
         }
-        message +=
-            `${data.data[0].order_sum} ₽ — Стоимость заказа\n` +
-            `${data.data[0].delivery_price} ₽ — Доставка\n` +
-            `-------------------------\n`
+        if (data.data[0].order_sum || data.data[0].delivery_price || data.data[0].dop_trata) {
+            message +=
+                `${data.data[0].dop_trata?`${data.data[0].dop_trata} ₽ — Дополнительная трата\n`:''}`+
+                `${data.data[0].order_sum?`${data.data[0].order_sum} ₽ — Стоимость заказа\n`:''}`+
+                `${data.data[0].delivery_price?`${data.data[0].delivery_price} ₽ — Доставка\n`:''}` +
+                `${data.data[0].delivery_price&&data.data[0].order_sum?`${+data.data[0].delivery_price+data.data[0].order_sum} ₽ — Стоимость заказа с доставкой\n`:''}` +
+                `-------------------------\n`
+        }
+
         if (data.data[0].address || data.data[0].courier_del_id || data.data[0].courier) {
             message += `Доставка:\n\n` +
 
