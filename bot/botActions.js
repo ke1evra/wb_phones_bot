@@ -193,8 +193,7 @@ bot.onText(/^\/([a-z]+)\s*.*/, async (msg, match) => {
             fields["order_number"] = match[0].match(/\/order\s*(\d+)?/)[1]
             console.log(fields)
         } else if(router_type==='help'){
-            let a=match[0].match(/^\/help\s*(\S*)/)[1];
-            console.log(a);
+            let a=match[0].match(/^\/help\s*(\S*)/);
             fields['request_type']=a[1];
         }
         else {
