@@ -229,59 +229,59 @@ setInterval(async () => {
         await methods.sendMessageByType('missed');
     }
 }, 60 * 60 * 1000);
-//вывод статистики
+//вывод статистики по Понедельникам
 setInterval(async () => {
-    if(moment().format('dddd')==='пятница'&&moment().format('HH')==='16')
-    {
-        await methods.sendMessageByType('missed',
-            {chat:{id:chats.reports}},
-            {
-                request_type:'range',
-                from:moment().subtract(1,'week').startOf('day').format('YYYY-MM-DD'),
-                to:moment().endOf('day').format('YYYY-MM-DD')
-            }
-        );
-        await methods.sendMessageByType('orders',
-            {chat:{id:chats.reports}},
-            {
-                request_type:'range',
-                from:moment().subtract(1,'week').format('YYYY-MM-DD'),
-                to:moment().endOf('day').format('YYYY-MM-DD')
-            }
-        );
-        await methods.sendMessageByType('calls',
-            {chat:{id:chats.reports}},
-            {
-                request_type:'range',
-                from:moment().subtract(1,'week').format('YYYY-MM-DD'),
-                to:moment().endOf('day').format('YYYY-MM-DD')
-            }
-        );
-        await methods.sendMessageByType('managers',
-            {chat:{id:chats.reports}},
-            {
-                request_type:'range',
-                from:moment().subtract(1,'week').format('YYYY-MM-DD'),
-                to:moment().endOf('day').format('YYYY-MM-DD')
-            }
-        );
-        await methods.sendMessageByType('chrono',
-            {chat:{id:chats.reports}},
-            {
-                request_type:'range',
-                from:moment().subtract(1,'week').format('YYYY-MM-DD'),
-                to:moment().endOf('day').format('YYYY-MM-DD')
-            }
-        );
-        await methods.sendMessageByType('compare',
-            {chat:{id:chats.reports}},
-            {
-                request_type:'range',
-                from:moment().subtract(1,'week').format('YYYY-MM-DD'),
-                to:moment().endOf('day').format('YYYY-MM-DD')
-            }
-        );
+    //По месяцам
+    if(moment().format('DD HH-mm-ss')==='01 00-00-01'){
+        let fields= {
+            request_type:'range',
+            from: moment().subtract(1, 'month').startOf('day').format('YYYY-MM-DD'),
+            to: moment().subtract(1, 'day').endOf('day').format('YYYY-MM-DD'),
+        };
+        await methods.sendMessageByType('missed',{chat:{id:chats.reports_month}},fields);
+        await methods.sendMessageByType('orders',{chat:{id:chats.reports_month}},fields);
+        await methods.sendMessageByType('calls',{chat:{id:chats.reports_month}},fields);
+        await methods.sendMessageByType('managers',{chat:{id:chats.reports_month}},fields);
+        await methods.sendMessageByType('chrono',{chat:{id:chats.reports_month}},fields);
+        await methods.sendMessageByType('compare',{chat:{id:chats.reports_month}},fields);
     }
-}, 60 * 60 * 1000);
+    //По неделям
+    if(moment().format('dddd')==='понедельник'&&moment().format('HH-mm-ss')==='00-00-01')
+    {
+        let fields= {
+            request_type:'range',
+            from: moment().subtract(1, 'week').startOf('day').format('YYYY-MM-DD'),
+            to: moment().subtract(1, 'day').endOf('day').format('YYYY-MM-DD'),
+        };
+        await methods.sendMessageByType('missed',{chat:{id:chats.reports_week}},fields);
+        await methods.sendMessageByType('orders',{chat:{id:chats.reports_week}},fields);
+        await methods.sendMessageByType('calls',{chat:{id:chats.reports_week}},fields);
+        await methods.sendMessageByType('managers',{chat:{id:chats.reports_week}},fields);
+        await methods.sendMessageByType('chrono',{chat:{id:chats.reports_week}},fields);
+        await methods.sendMessageByType('compare',{chat:{id:chats.reports_week}},fields);
+    }
+    //По дням
+    if(moment().format('HH-mm-ss')==='00-00-01')
+    {
+        let fields= {
+            request_type:'day',
+            from:moment().subtract(1,"day").startOf('day').format('YYYY-MM-DD')
+        };
+        await methods.sendMessageByType('missed',{chat:{id:chats.reports_day}},fields);
+        await methods.sendMessageByType('orders',{chat:{id:chats.reports_day}},fields);
+        await methods.sendMessageByType('calls',{chat:{id:chats.reports_day}},fields);
+        await methods.sendMessageByType('managers',{chat:{id:chats.reports_day}},fields);
+        await methods.sendMessageByType('chrono',{chat:{id:chats.reports_day}},fields);
+    }
+    //По часам
+    if(moment().format('mm-ss')==='00-01'){
+        let fields={
+            requests_type:'days',
+            days:0
+        };
+        await methods.sendMessageByType('orders',{chat:{id:chats.reports_hour}},fields);
+        await methods.sendMessageByType('calls',{chat:{id:chats.reports_hour}},fields);
+    }
+}, 1000);
 
 module.exports = methods;
