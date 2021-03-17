@@ -442,7 +442,7 @@ class Menu {
                     break;
             }
             message += `:\n ---------------------------\n`;
-            message += `Всего заказов поступило ${menu.numberWithCommas(orderTotalCount)} на сумму ${menu.numberWithCommas(orderTotalSum)}.${proceed_time > 0 ? ` Среднее время обработки заказов - ${menu.formatSecondsAsHHMMSS((proceed_time / proceed_count).toFixed())}` : ''}, из них:\n`
+            message += `Всего заказов поступило ${menu.numberWithCommas(orderTotalCount)} на сумму ${menu.numberWithCommas(orderTotalSum)}${proceed_time > 0 ? `. Среднее время обработки заказов - ${menu.formatSecondsAsHHMMSS((proceed_time / proceed_count).toFixed())},` : ','} из них:\n`
             for (let i = 0; i < ordersTypesCount.length; i++) {
                 message += `\n${ordersTypesCount[i][1]} - `;
                 message += menu.renderPercentage(ordersTypesCount[i][0], ordersTypesCount[i][1] / orderTotalCount);
