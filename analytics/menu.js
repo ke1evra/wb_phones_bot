@@ -667,7 +667,7 @@ class Menu {
                 if(fields.from===fields.to)
                     message+=`На ${fields.from} с ${fields.time_from} по ${fields.time_to}`;
                 else
-                    message+=`С ${fields.from} ${fields.time_from} по ${fields.to} ${fields.time_to}`;
+                    message+=`С ${fields.from} ${fields.time_from} по ${to} ${fields.time_to}`;
                 break;
             default:
                 break;
