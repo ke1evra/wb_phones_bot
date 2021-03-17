@@ -361,6 +361,7 @@ class Menu {
             fields.to = fields.to == null || typeof fields.to == "undefined" ? moment() : moment(fields.to);
             //т.к. берёт не включительно добавляем +1 день
             fields.to.add(1, "day");
+            console.log(fields);
             //По типам заказов
             const ordersCountData = await API.getOrdersCount(fields.days, fields.from, fields.to.format("YYYY-MM-DD"));
             let orderTotalSum = 0;
