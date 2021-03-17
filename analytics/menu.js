@@ -462,11 +462,14 @@ class Menu {
                 message += menu.renderPercentage(managers[i][0], managers[i][1] / orderTotalCount);
                 message += '\n';
             }
-            message += `----------------------\nСтатистика по курьерам:\n`;
-            for (let i = 0; i < couriers.length; i++) {
-                message += `\n${couriers[i][1]} - `;
-                message += menu.renderPercentage(couriers[i][0], couriers[i][1] / orderTotalCount);
-                message += '\n';
+            if(couriers.length)
+            {
+                message += `----------------------\nСтатистика по курьерам:\n`;
+                for (let i = 0; i < couriers.length; i++) {
+                    message += `\n${couriers[i][1]} - `;
+                    message += menu.renderPercentage(couriers[i][0], couriers[i][1] / orderTotalCount);
+                    message += '\n';
+                }
             }
             message += `----------------------\nСтатистика по городам:\n`;
             for (let i = 0; i < 5; i++) {
