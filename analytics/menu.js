@@ -473,7 +473,7 @@ class Menu {
                 }
             }
             message += `----------------------\nСтатистика по городам:\n`;
-            for (let i = 0; i < 5; i++) {
+            for (let i = 0; i < Math.min(cities.length,5); i++) {
                 message += `\n${cities[i][1]} - `;
                 message += menu.renderPercentage(cities[i][0], cities[i][1] / orderTotalCount);
                 message += '\n';
