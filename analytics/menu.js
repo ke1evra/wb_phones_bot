@@ -361,7 +361,6 @@ class Menu {
             fields.to = fields.to == null || typeof fields.to == "undefined" ? moment() : moment(fields.to);
             //т.к. берёт не включительно добавляем +1 день
             fields.to.add(1, "day");
-            console.log(fields);
             //По типам заказов
             let orderTotalSum = 0;
             let orderTotalCount = 0;
