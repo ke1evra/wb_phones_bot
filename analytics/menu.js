@@ -478,9 +478,12 @@ class Menu {
                 message += menu.renderPercentage(cities[i][0], cities[i][1] / orderTotalCount);
                 message += '\n';
             }
-            message += `\n${other_cities} - `;
-            message += menu.renderPercentage("Другие", other_cities / orderTotalCount);
-            message += '\n';
+            if(other_cities!=null&&other_cities>0)
+            {
+                message += `\n${other_cities} - `;
+                message += menu.renderPercentage("Другие", other_cities / orderTotalCount);
+                message += '\n';
+            }
             //По самовывозу
             message += `----------------------\nСтатистика по самовывозу:\n`;
             if (samovivoz > orderTotalCount / 2) {
