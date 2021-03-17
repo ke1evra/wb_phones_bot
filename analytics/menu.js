@@ -102,7 +102,7 @@ class Menu {
             fields.days = 1;
         if (!fields.days) fields.days++
         const data = await API.getManagers(fields.days);
-        console.log(data.data.data1);
+        //console.log(data.data.data1);
         //console.log(data.data.incomingByNumber);
         let message = 'Менеджеры:\n';
         const menu = [];
@@ -115,9 +115,9 @@ class Menu {
             } else {
                 messageData[numberToManager[item.person]]=0
             }
-            console.log(messageData)
             menu.push(new Button(item.client_name, 'some cb'))
         });
+        console.log(messageData)
         let options = {
             reply_markup: JSON.stringify({
                 inline_keyboard: [
