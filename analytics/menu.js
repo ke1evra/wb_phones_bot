@@ -176,18 +176,27 @@ class Menu {
         }
         if (data.data[0].order_sum || data.data[0].delivery_price || data.data[0].dop_trata) {
             message +=
-                `${data.data[0].dop_trata?`${data.data[0].dop_trata} ₽ — Дополнительная трата\n`:''}`+
-                `${data.data[0].order_sum?`${data.data[0].order_sum} ₽ — Стоимость заказа\n`:''}`+
-                `${data.data[0].delivery_price?`${data.data[0].delivery_price} ₽ — Доставка\n`:''}` +
-                `${data.data[0].delivery_price&&data.data[0].order_sum?`${+data.data[0].delivery_price+data.data[0].order_sum} ₽ — Стоимость заказа с доставкой\n`:''}` +
+                `${data.data[0].dop_trata ? `${data.data[0].dop_trata} ₽ — Дополнительная трата\n` : ''}` +
+                `${data.data[0].order_sum ? `${data.data[0].order_sum} ₽ — Стоимость заказа\n` : ''}` +
+                `${data.data[0].delivery_price ? `${data.data[0].delivery_price} ₽ — Доставка\n` : ''}` +
+                `${data.data[0].delivery_price && data.data[0].order_sum ? `${+data.data[0].delivery_price + data.data[0].order_sum} ₽ — Стоимость заказа с доставкой\n` : ''}` +
                 `-------------------------\n`
         }
 
-        if (data.data[0].address || data.data[0].courier_del_id || data.data[0].courier) {
-            message += `Доставка:\n\n` +
+        if (data.data[0].address || data.data[0].courier_del_id || data.data[0].courier || data.data[0].location_name) {
+            message += `Доставка:\n\n`
+            if (data.data[0].location_name && data.data[0].address){
+                if (data.data[0].address.includes(data.data[0].location_name)){
+                    message += `${data.data[0].address}\n`
+                } else {
+                    message+= `${data.data[0].location_name}, ${data.data[0].address}\n`
+                }
+            } else {
+                message+=`${data.data[0].address?`${data.data[0].address}\n`:''}`
+                message+=`${data.data[0].location_name?`${data.data[0].location_name}\n`:''}`
+            }
 
-                `${data.data[0].address ? `${data.data[0].address}\n` : ''}` +
-                `${data.data[0].courier_del_id ? `${data.data[0].courier_del_id}` : ''}${data.data[0].courier && data.data[0].courier_del_id ? ', ' : ''}${data.data[0].courier ? `${data.data[0].courier}` : ''}\n` +
+            message += `${data.data[0].courier_del_id ? `${data.data[0].courier_del_id}` : ''}${data.data[0].courier && data.data[0].courier_del_id ? ', ' : ''}${data.data[0].courier ? `${data.data[0].courier}` : ''}\n` +
                 `-------------------------\n`
         }
         if (messageData.actions.length) {
