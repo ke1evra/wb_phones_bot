@@ -101,7 +101,8 @@ class Menu {
             fields.days = 1;
         if (!fields.days) fields.days++
         const data = await API.getManagers(fields.days);
-        console.log(data);
+        console.log(data.data.data1);
+        console.log(data.data.incomingByNumber);
         let message = 'Менеджеры:\n';
         const menu = [];
         //console.log(data.data["data1"]);
