@@ -349,8 +349,13 @@ class Menu {
                 //Далее всё будет как в запросе days=0
                 request_type = 'days';
             }
-            if (request_type === 'number') {
-
+            if (request_type === 'hours') {
+                fields.days = fields.days == null || typeof fields.days == "undefined" ? fields.days = 0 : fields.days;
+                fields.hours = fields.hours == null || typeof fields.hours == "undefined" ? fields.hours=1:fields.hours;
+                fields.from = moment().subtract(fields.hours,'hours');
+                fields.hour_from=fields.from.format('HH');
+                fields.hour_to=moment().format('HH');
+                fields.from=fields.from.format("YYYY-MM-DD");
             }
             fields.from = fields.from == null || typeof fields.from == "undefined" ? moment().subtract(fields.days, "days").format("YYYY-MM-DD") : fields.from;
             fields.to = fields.to == null || typeof fields.to == "undefined" ? moment() : moment(fields.to);
@@ -380,6 +385,9 @@ class Menu {
             let cities = [];
             ordersData.data.forEach((item) => {
                 //Преобразование затраченного времени
+                if(request_type==='hours')
+                    if(moment(item.created_at).isAfter(fields.hour_to)||moment(item.created_at).isBefore(fields.hour_from))
+                        return
                 if (item.proceed_time != null && item.proceed_time > 0) {
                     //let created_at=moment(item.created_at.substr(0,19).replace('T',' ')).format('YYYY-MM-DD HH:mm:ss');
                     if (moment(item.created_at).format('HH') > 9 && moment(item.created_at).format('HH') < 20) {
@@ -411,9 +419,25 @@ class Menu {
             for (let i = 5; i < cities.length; i++)
                 other_cities += cities[i][1];
             //Начало составления сообщения
-            let message = request_type === 'days' ?
-                `Статистика по заказам ${fields.days > 0 ? `с ${fields.from}` : `на ${fields.from}`}`
-                : `Статистика по заказам на период с ${fields.from} по ${fields.to}`;
+            let message='';
+            switch (request_type) {
+                case 'days':
+                    message+=`Статистика по заказам ${fields.days > 0 ? `с ${fields.from}` : `на ${fields.from}`}`
+                    break;
+                case 'range':
+                    if(fields.from!==fields.to)
+                        message+=`Статистика по заказам на период с ${fields.from} по ${fields.to}`;
+                    else
+                        message+=`Статистика по заказам на период на ${fields.from}`;
+                    break;
+                case "hour":
+                    message+=`Статистика по заказам на ${fields.from} с ${fields.hour_from+':00'} по ${fields.hour_to+':00'}`;
+                    break;
+                default:
+                    message+=`Статистика по заказам`
+                    break;
+            }
+
             message += `:\n ---------------------------\n`;
 
             message += `Всего заказов поступило ${menu.numberWithCommas(orderTotalCount)} на сумму ${menu.numberWithCommas(orderTotalSum)}.${proceed_time > 0 ? ` Среднее время обработки заказов - ${menu.formatSecondsAsHHMMSS((proceed_time / proceed_count).toFixed())}` : ''}, из них:\n`
