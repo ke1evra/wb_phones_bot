@@ -363,15 +363,9 @@ class Menu {
             fields.to.add(1, "day");
             console.log(fields);
             //По типам заказов
-            const ordersCountData = await API.getOrdersCount(fields.days, fields.from, fields.to.format("YYYY-MM-DD"));
             let orderTotalSum = 0;
             let orderTotalCount = 0;
             let ordersTypesCount = [];
-            ordersCountData.data.forEach((item) => {
-                orderTotalCount += item.order_count;
-                orderTotalSum += item.order_sum;
-                ordersTypesCount.push([item.order_status, item.order_count]);
-            });
             //По конкретным заказам
             const ordersData = await API.getOrders(fields.days, fields.from, fields.to.format("YYYY-MM-DD"));
             //После запроса возвращаем "to" как было
@@ -387,8 +381,12 @@ class Menu {
             ordersData.data.forEach((item) => {
                 //Преобразование затраченного времени
                 if(request_type==='hours')
+                {
                     if(moment(item.created_at).format('HH')<fields.hour_from||moment(item.created_at).format('HH')>fields.hour_to)
                         return
+                }
+                orderTotalCount++;
+                orderTotalSum+=item.order_sum;
                 if (item.proceed_time != null && item.proceed_time > 0) {
                     //let created_at=moment(item.created_at.substr(0,19).replace('T',' ')).format('YYYY-MM-DD HH:mm:ss');
                     if (moment(item.created_at).format('HH') > 9 && moment(item.created_at).format('HH') < 20) {
@@ -402,7 +400,9 @@ class Menu {
                     menu.searchPushOrdersArrays(item.otkaz_title, otkaz_reasons);
                 }
                 samovivoz += item.samovivoz == "нет" ? 0 : 1;
-                if (item.name != null)
+                if(item.order_status_title !== null)
+                    menu.searchPushOrdersArrays(item.order_status_title, ordersTypesCount);
+                if (item.name !== null)
                     menu.searchPushOrdersArrays(item.name, managers);
                 if (item.courier !== null)
                     menu.searchPushOrdersArrays(item.courier, couriers);
@@ -431,7 +431,7 @@ class Menu {
                     else
                         message+=`Статистика по заказам на период на ${fields.from}`;
                     break;
-                case "hour":
+                case "hours":
                     message+=`Статистика по заказам на ${fields.from} с ${fields.hour_from+':00'} по ${fields.hour_to+':00'}`;
                     break;
                 default:
