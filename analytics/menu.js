@@ -353,8 +353,8 @@ class Menu {
                 fields.days = fields.days == null || typeof fields.days == "undefined" ? fields.days = 0 : fields.days;
                 fields.hours = fields.hours == null || typeof fields.hours == "undefined" ? fields.hours=1:fields.hours;
                 fields.from = moment().subtract(fields.hours,'hours');
-                fields.hour_from=fields.from.format('HH');
-                fields.hour_to=moment().format('HH');
+                fields.time_from=fields.from.format('HH:mm');
+                fields.time_to=moment().format('HH:mm');
                 fields.from=fields.from.format("YYYY-MM-DD");
             }
             fields.from = fields.from == null || typeof fields.from == "undefined" ? moment().subtract(fields.days, "days").format("YYYY-MM-DD") : fields.from;
@@ -432,7 +432,7 @@ class Menu {
                         message+=`Статистика по заказам на период на ${fields.from}`;
                     break;
                 case "hours":
-                    message+=`Статистика по заказам на ${fields.from} с ${fields.hour_from+':00'} по ${fields.hour_to+':00'}`;
+                    message+=`Статистика по заказам на ${fields.from} с ${fields.time_from} по ${fields.time_to}`;
                     break;
                 default:
                     message+=`Статистика по заказам`
