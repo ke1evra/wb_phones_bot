@@ -97,18 +97,25 @@ class Menu {
     }
 
     async renderManagers(fields) {
+        const numberToManager = require('../constants/vks_numbers')
         if (typeof fields.days == "undefined" || fields.days == null)
             fields.days = 1;
         if (!fields.days) fields.days++
         const data = await API.getManagers(fields.days);
         console.log(data.data.data1);
-        console.log(data.data.incomingByNumber);
+        //console.log(data.data.incomingByNumber);
         let message = 'Менеджеры:\n';
         const menu = [];
         //console.log(data.data["data1"]);
-
+        let messageData = {}
         data.data["data1"].map((item, index) => {
-            message += `${index + 1}. ${item.call_type === 'inComing' ? `Входящий` : 'Исходящий'} вызов на номер ${item.to_number} (${item.person}) с номера ${item.from_number}\n${item.startFix} - ${item.endFix} (${item["start"]} - ${item["end"]})\nПричина окончания: ${codes[item.disconnect_reason]} (${item.disconnect_reason})\n---------------------------\n`;
+            //message += `${index + 1}. ${item.call_type === 'inComing' ? `Входящий` : 'Исходящий'} вызов на номер ${item.to_number} (${item.person}) с номера ${item.from_number}\n${item.startFix} - ${item.endFix} (${item["start"]} - ${item["end"]})\nПричина окончания: ${codes[item.disconnect_reason]} (${item.disconnect_reason})\n---------------------------\n`;
+            if (messageData[numberToManager[item.person]]){
+                messageData[numberToManager[item.person]]++
+            } else {
+                messageData[numberToManager[item.person]]=0
+            }
+            console.log(messageData)
             menu.push(new Button(item.client_name, 'some cb'))
         });
         let options = {
