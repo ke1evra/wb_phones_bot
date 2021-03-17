@@ -387,7 +387,7 @@ class Menu {
             ordersData.data.forEach((item) => {
                 //Преобразование затраченного времени
                 if(request_type==='hours')
-                    if(moment(item.created_at).isAfter(fields.hour_to)||moment(item.created_at).isBefore(fields.hour_from))
+                    if(moment(item.created_at).format('HH')<fields.hour_from||moment(item.created_at).format('HH')>fields.hour_to)
                         return
                 if (item.proceed_time != null && item.proceed_time > 0) {
                     //let created_at=moment(item.created_at.substr(0,19).replace('T',' ')).format('YYYY-MM-DD HH:mm:ss');
