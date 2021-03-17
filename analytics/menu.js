@@ -447,11 +447,14 @@ class Menu {
                 message += menu.renderPercentage(ordersTypesCount[i][0], ordersTypesCount[i][1] / orderTotalCount);
                 message += '\n';
             }
-            message += `----------------------\nСтатистика по причинам отказов\nВсего отказов ${otkaz_count}, из них:\n`;
-            for (let i = 0; i < otkaz_reasons.length; i++) {
-                message += `\n${otkaz_reasons[i][1]} - `;
-                message += menu.renderPercentage(otkaz_reasons[i][0], otkaz_reasons[i][1] / otkaz_count);
-                message += '\n';
+            if(otkaz_reasons.length)
+            {
+                message += `----------------------\nСтатистика по причинам отказов\nВсего отказов ${otkaz_count}, из них:\n`;
+                for (let i = 0; i < otkaz_reasons.length; i++) {
+                    message += `\n${otkaz_reasons[i][1]} - `;
+                    message += menu.renderPercentage(otkaz_reasons[i][0], otkaz_reasons[i][1] / otkaz_count);
+                    message += '\n';
+                }
             }
             message += `----------------------\nСтатистика по менджерам:\n`;
             for (let i = 0; i < managers.length; i++) {
