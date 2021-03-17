@@ -285,7 +285,7 @@ setInterval(async () => {
     //По часам
     if(moment().format('mm-ss')==='00-01'){
         let fields={
-            requests_type:'hours',
+            request_type:'hours',
             days:0,
             hours:1
         };
