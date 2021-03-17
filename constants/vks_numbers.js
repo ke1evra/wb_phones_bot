@@ -68,5 +68,5 @@ module.exports = {
     "sip:fomenko@vpbx400090386.mangosip.ru": "Фоменко Ирина",
     "sip:barabanov@vpbx400090386.mangosip.ru": "Барабанов Павел",
     'sip:volkova@vpbx400090386.mangosip.ru': 'Волкова Юля',
-
+    "sip:prispeshkin.leonid@vpbx400090386.mangosip.ru": "Леонид Приспешкин"
 };
