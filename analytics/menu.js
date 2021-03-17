@@ -457,11 +457,14 @@ class Menu {
                     message += '\n';
                 }
             }
-            message += `----------------------\nСтатистика по менджерам:\n`;
-            for (let i = 0; i < managers.length; i++) {
-                message += `\n${managers[i][1]} - `;
-                message += menu.renderPercentage(managers[i][0], managers[i][1] / orderTotalCount);
-                message += '\n';
+            if(managers.length)
+            {
+                message += `----------------------\nСтатистика по менджерам:\n`;
+                for (let i = 0; i < managers.length; i++) {
+                    message += `\n${managers[i][1]} - `;
+                    message += menu.renderPercentage(managers[i][0], managers[i][1] / orderTotalCount);
+                    message += '\n';
+                }
             }
             if(couriers.length)
             {
@@ -472,17 +475,20 @@ class Menu {
                     message += '\n';
                 }
             }
-            message += `----------------------\nСтатистика по городам:\n`;
-            for (let i = 0; i < Math.min(cities.length,5); i++) {
-                message += `\n${cities[i][1]} - `;
-                message += menu.renderPercentage(cities[i][0], cities[i][1] / orderTotalCount);
-                message += '\n';
-            }
-            if(other_cities!=null&&other_cities>0)
+            if(cities.length)
             {
-                message += `\n${other_cities} - `;
-                message += menu.renderPercentage("Другие", other_cities / orderTotalCount);
-                message += '\n';
+                message += `----------------------\nСтатистика по городам:\n`;
+                for (let i = 0; i < Math.min(cities.length,5); i++) {
+                    message += `\n${cities[i][1]} - `;
+                    message += menu.renderPercentage(cities[i][0], cities[i][1] / orderTotalCount);
+                    message += '\n';
+                }
+                if(other_cities!=null&&other_cities>0)
+                {
+                    message += `\n${other_cities} - `;
+                    message += menu.renderPercentage("Другие", other_cities / orderTotalCount);
+                    message += '\n';
+                }
             }
             //По самовывозу
             message += `----------------------\nСтатистика по самовывозу:\n`;
@@ -502,7 +508,7 @@ class Menu {
                 message += '\n';
             }
 
-            if (!ordersData.data.length)
+            if (!orderTotalCount)
                 message = `Нет заказов за период с ${fields.from} по ${fields.to}.`;
             return message;
         } catch (e) {
