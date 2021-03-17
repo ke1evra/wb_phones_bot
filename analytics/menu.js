@@ -492,7 +492,7 @@ class Menu {
                 message += '\n';
             }
 
-            if (!ordersCountData.data.length)
+            if (!ordersData.data.length)
                 message = `Нет заказов за период с ${fields.from} по ${fields.to}.`;
             return message;
         } catch (e) {
