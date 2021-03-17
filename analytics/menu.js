@@ -432,13 +432,12 @@ class Menu {
                         message+=`Статистика по заказам на период на ${fields.from}`;
                     break;
                 case "hours":
-                    message+=`Статистика по заказам на ${fields.from} с ${fields.time_from} по ${fields.time_to}`;
+                    message+=`Статистика по заказам ${fields.from===fields.to?`на ${fields.from} с ${fields.time_from} по ${fields.time_to}`:`с ${fields.from} ${fields.time_from} по ${fields.to} ${fields.time_to}`}`;
                     break;
                 default:
                     message+=`Статистика по заказам`
                     break;
             }
-
             message += `:\n ---------------------------\n`;
 
             message += `Всего заказов поступило ${menu.numberWithCommas(orderTotalCount)} на сумму ${menu.numberWithCommas(orderTotalSum)}.${proceed_time > 0 ? ` Среднее время обработки заказов - ${menu.formatSecondsAsHHMMSS((proceed_time / proceed_count).toFixed())}` : ''}, из них:\n`
