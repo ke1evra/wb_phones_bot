@@ -416,9 +416,9 @@ class Menu {
             menu.sortOrdersArrays(otkaz_reasons);
             menu.sortOrdersArrays(ordersTypesCount);
             //rework cities
+            let other_cities = 0;
             if(cities.length>5)
             {
-                let other_cities = 0;
                 for (let i = 5; i < cities.length; i++)
                     other_cities += cities[i][1];
             }
