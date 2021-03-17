@@ -520,7 +520,7 @@ class Menu {
     async renderCalls(fields) {
         //Фильтр на тип запроса
         let request_type = '';
-        if (['days', 'day', 'range'].includes(fields.request_type))
+        if (['days', 'day', 'range','hours'].includes(fields.request_type))
             request_type = fields.request_type;
         else
             request_type = 'days'
@@ -530,6 +530,15 @@ class Menu {
         if (request_type === 'day') {
             fields.to = fields.from;
             request_type = 'days';
+        }
+        if(request_type === 'hours')
+        {
+            fields.from=typeof fields.from == "undefined" || fields.from == null ? moment().subtract(fields.hours, "hours").format("YYYY-MM-DD") : fields.from;
+            fields.to = typeof fields.to == "undefined" || fields.to == null ? moment() : moment(fields.to);
+            fields.time_from=moment().subtract(fields.hours,'hours').format('HH:mm');
+            fields.time_from_unix=moment().subtract(fields.hours,'hours').unix();
+            fields.time_to=moment().format('HH:mm');
+            fields.time_to_unix=moment().unix();
         }
         let from = typeof fields.from == "undefined" || fields.from == null ? moment().subtract(fields.days, "days").format("YYYY-MM-DD") : fields.from;
         let to = typeof fields.to == "undefined" || fields.to == null ? moment() : moment(fields.to);
@@ -577,6 +586,11 @@ class Menu {
         statistics['Пропущенный']['time_before_finish'] = 0;
 
         data.data.forEach((call) => {
+            if(request_type==='hours')
+            {
+                if(call.start<fields.time_from_unix||call.start>fields.time_to_unix)
+                    return
+            }
             statistics['calls_count']++;
             if (call.call_duration !== '') {
                 statistics['calls_duration'] += parseFloat(call.call_duration);
@@ -641,9 +655,23 @@ class Menu {
         menu.sortOrdersArrays(statistics['Входящий'].managers);
         menu.sortOrdersArrays(statistics['Исходящий'].managers);
         //формирование сообщения
-        message += request_type === 'range' ?
-            `С ${from} по ${to}`
-            : fields.days > 0 ? `С ${from} по ${to}` : `На ${from}`;
+        switch (request_type)
+        {
+            case 'range':
+                message+=`С ${from} по ${to}`;
+                break;
+            case 'days':
+                message +=fields.days > 0 ? `С ${from} по ${to}` : `На ${from}`;
+                break;
+            case 'hours':
+                if(fields.from===fields.to)
+                    message+=`На ${fields.from} с ${fields.time_from} по ${fields.time_to}`;
+                else
+                    message+=`С ${fields.from} ${fields.time_from} по ${fields.to} ${fields.time_to}`;
+                break;
+            default:
+                break;
+        }
         message += ` было совершено: ${statistics.calls_count} звонков,
 Общей длительностью ${menu.formatSecondsAsHHMMSS(statistics.calls_duration)}, 
 Средней продолжительностью: ${menu.formatSecondsAsHHMMSS((statistics.calls_duration / statistics.real_calls_count).toFixed(2))}.
@@ -655,33 +683,37 @@ class Menu {
             message += `\n    ${codes[reason]}: ${statistics.disconnect_reasons.total[reason]},`
         }
         */
-        let call_types = ['Входящий', 'Исходящий', 'Недозвон', 'Пропущенный'];
-        for (let i in call_types) {
-            if (statistics[call_types[i]].calls_count === 0) continue;
-            message += `\n${call_types[i]}:\n`;
-            message += `\n${statistics[call_types[i]].calls_count} — ${menu.renderPercentage("", statistics[call_types[i]].calls_count / statistics.calls_count)},`;
-            message += '\n'
-            if (['Входящий', 'Исходящий'].includes(call_types[i])) {
-                message += `\n${menu.formatSecondsAsHHMMSS(statistics[call_types[i]].calls_duration)} — Суммарная длительность`;
-                message += `\n${menu.formatSecondsAsHHMMSS((statistics[call_types[i]].calls_duration / statistics[call_types[i]].calls_count).toFixed(2))} — Средняя длительность`;
-                message += `\n${menu.formatSecondsAsHHMMSS((statistics[call_types[i]].time_before_answer / statistics[call_types[i]].calls_count).toFixed(2))} — Среднее время до ответа`;
+        if(statistics.calls_count)
+        {
+            let call_types = ['Входящий', 'Исходящий', 'Недозвон', 'Пропущенный'];
+            for (let i in call_types) {
+                if (statistics[call_types[i]].calls_count === 0) continue;
+                message += `\n${call_types[i]}:\n`;
+                message += `\n${statistics[call_types[i]].calls_count} — ${menu.renderPercentage("", statistics[call_types[i]].calls_count / statistics.calls_count)},`;
+                message += '\n'
+                if (['Входящий', 'Исходящий'].includes(call_types[i])) {
+                    message += `\n${menu.formatSecondsAsHHMMSS(statistics[call_types[i]].calls_duration)} — Суммарная длительность`;
+                    message += `\n${menu.formatSecondsAsHHMMSS((statistics[call_types[i]].calls_duration / statistics[call_types[i]].calls_count).toFixed(2))} — Средняя длительность`;
+                    message += `\n${menu.formatSecondsAsHHMMSS((statistics[call_types[i]].time_before_answer / statistics[call_types[i]].calls_count).toFixed(2))} — Среднее время до ответа`;
 
-                message += '\n';
-                for (let j = 0; j < statistics[call_types[i]].managers.length; j++)
-                    message += `\n${statistics[call_types[i]].managers[j][1]} — ${menu.renderPercentage(statistics[call_types[i]].managers[j][0], statistics[call_types[i]].managers[j][1] / statistics[call_types[i]].calls_count)}`
-            } else
-                message += `\n${menu.formatSecondsAsHHMMSS((statistics[call_types[i]].time_before_finish / statistics[call_types[i]].calls_count).toFixed(2))} — Среднее время до сброса звонка`;
-            //Блок по причинам окончания звонков
-            /*
-            message += `\n   По причинам окончания:`;
-            for (let reason in statistics.disconnect_reasons[call_types[i]]) {
-                message += `\n     ${codes[reason]}: ${statistics.disconnect_reasons[call_types[i]][reason]}`;
+                    message += '\n';
+                    for (let j = 0; j < statistics[call_types[i]].managers.length; j++)
+                        message += `\n${statistics[call_types[i]].managers[j][1]} — ${menu.renderPercentage(statistics[call_types[i]].managers[j][0], statistics[call_types[i]].managers[j][1] / statistics[call_types[i]].calls_count)}`
+                } else
+                    message += `\n${menu.formatSecondsAsHHMMSS((statistics[call_types[i]].time_before_finish / statistics[call_types[i]].calls_count).toFixed(2))} — Среднее время до сброса звонка`;
+                //Блок по причинам окончания звонков
+                /*
+                message += `\n   По причинам окончания:`;
+                for (let reason in statistics.disconnect_reasons[call_types[i]]) {
+                    message += `\n     ${codes[reason]}: ${statistics.disconnect_reasons[call_types[i]][reason]}`;
+                }
+                 */
+                message += '\n---------------------------'
             }
-             */
-            message += '\n---------------------------'
         }
+
         //managers
-        if (!data.data.length)
+        if (!statistics.calls_count)
             message = 'Нет данных по звонкам за период.';
         return message;
     }
