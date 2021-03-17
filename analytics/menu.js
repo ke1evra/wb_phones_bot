@@ -382,7 +382,7 @@ class Menu {
                 //Преобразование затраченного времени
                 if(request_type==='hours')
                 {
-                    if(moment(item.created_at).format('HH')<fields.hour_from||moment(item.created_at).format('HH')>fields.hour_to)
+                    if(moment(item.created_at).format('HH:mm')<fields.time_from||moment(item.created_at).format('HH:mm')>fields.time_to)
                         return
                 }
                 orderTotalCount++;
