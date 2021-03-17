@@ -409,7 +409,6 @@ class Menu {
                 if (item.city !== null)
                     menu.searchPushOrdersArrays(item.city, cities);
             });
-            console.log('Половину прошли')
             //Сортировка
             menu.sortOrdersArrays(managers);
             menu.sortOrdersArrays(couriers);
@@ -417,9 +416,12 @@ class Menu {
             menu.sortOrdersArrays(otkaz_reasons);
             menu.sortOrdersArrays(ordersTypesCount);
             //rework cities
-            let other_cities = 0;
-            for (let i = 5; i < cities.length; i++)
-                other_cities += cities[i][1];
+            if(cities.length>5)
+            {
+                let other_cities = 0;
+                for (let i = 5; i < cities.length; i++)
+                    other_cities += cities[i][1];
+            }
             //Начало составления сообщения
             let message='';
             switch (request_type) {
@@ -440,7 +442,6 @@ class Menu {
                     break;
             }
             message += `:\n ---------------------------\n`;
-
             message += `Всего заказов поступило ${menu.numberWithCommas(orderTotalCount)} на сумму ${menu.numberWithCommas(orderTotalSum)}.${proceed_time > 0 ? ` Среднее время обработки заказов - ${menu.formatSecondsAsHHMMSS((proceed_time / proceed_count).toFixed())}` : ''}, из них:\n`
             for (let i = 0; i < ordersTypesCount.length; i++) {
                 message += `\n${ordersTypesCount[i][1]} - `;
