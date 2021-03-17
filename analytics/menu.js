@@ -110,10 +110,10 @@ class Menu {
         let messageData = {}
         data.data["data1"].map((item, index) => {
             //message += `${index + 1}. ${item.call_type === 'inComing' ? `Входящий` : 'Исходящий'} вызов на номер ${item.to_number} (${item.person}) с номера ${item.from_number}\n${item.startFix} - ${item.endFix} (${item["start"]} - ${item["end"]})\nПричина окончания: ${codes[item.disconnect_reason]} (${item.disconnect_reason})\n---------------------------\n`;
-            if (typeof messageData[numberToManager[item.person]] === "number"){
-                messageData[numberToManager[item.person]]++
+            if (typeof messageData[item.person] === "number"){
+                messageData[item.person]++
             } else {
-                messageData[numberToManager[item.person]]=0
+                messageData[item.person]=0
             }
             menu.push(new Button(item.client_name, 'some cb'))
         });
