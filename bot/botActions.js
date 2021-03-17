@@ -215,7 +215,8 @@ bot.onText(/^\/([a-z]+)\s*.*/, async (msg, match) => {
             else if(/\s*hours\s*(\d+)?/.test(match[0])){
                 fields["request_type"] = "hours";
                 let hour = match[0].match(/\s*hours\s*(\d+)?/);
-                fields["hours"] = hour[1] ? hour[1] : 0;
+                console.log(hour);
+                fields["hours"] = hour[1] ? hour[1] : 1;
             }
             else if (/^\/[a-z]+\s*(\d+)?/.test(match[0])) {
                 fields["request_type"] = "days";
