@@ -285,8 +285,9 @@ setInterval(async () => {
     //По часам
     if(moment().format('mm-ss')==='00-01'){
         let fields={
-            requests_type:'hour',
-            days:0
+            requests_type:'hours',
+            days:0,
+            hours:1
         };
         await methods.sendMsg(chats.reports_hour,`Отчёт на ${moment().format('YYYY-MM-DD')} с ${moment().subtract(1,'hour').format('HH:mm')} по ${moment().format('HH:mm')}`);
         await methods.sendMessageByType('orders',{chat:{id:chats.reports_hour}},fields);
