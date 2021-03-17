@@ -409,6 +409,7 @@ class Menu {
                 if (item.city !== null)
                     menu.searchPushOrdersArrays(item.city, cities);
             });
+            console.log('Половину прошли')
             //Сортировка
             menu.sortOrdersArrays(managers);
             menu.sortOrdersArrays(couriers);
@@ -435,7 +436,7 @@ class Menu {
                     message+=`Статистика по заказам ${fields.from===fields.to?`на ${fields.from} с ${fields.time_from} по ${fields.time_to}`:`с ${fields.from} ${fields.time_from} по ${fields.to} ${fields.time_to}`}`;
                     break;
                 default:
-                    message+=`Статистика по заказам`
+                    message+=`Статистика по заказам`;
                     break;
             }
             message += `:\n ---------------------------\n`;
