@@ -214,8 +214,6 @@ class Menu {
 
         let messageData = {}
 
-        messageData['days'] = fields.days
-
         messageData['all_managers'] = {}
         messageData['all_managers']['basic_info'] = {}
         messageData['all_managers']['basic_info']['total_calls_count'] = 0
@@ -306,6 +304,12 @@ class Menu {
 
             menu.push(new Button(item.client_name, 'some cb'))
         });
+        messageData.map((manager, index) => {
+            if (index > 0){
+                manager['basic_info']['calls_count_percent']=manager['basic_info']['total_calls_count']*100/messageData['all_managers']['total_calls_count']
+                manager['basic_info']['in_calls_time_percent']=manager['basic_info']['in_calls_time']*100/messageData['all_managers']['in_calls_time']
+            }
+        })
         console.log(messageData)
         let options = {
             reply_markup: JSON.stringify({
