@@ -108,13 +108,44 @@ class Menu {
         const menu = [];
         //console.log(data.data["data1"]);
         let messageData = {}
+        messageData['days'] = fields.days
         data.data["data1"].map((item, index) => {
-            //message += `${index + 1}. ${item.call_type === 'inComing' ? `Входящий` : 'Исходящий'} вызов на номер ${item.to_number} (${item.person}) с номера ${item.from_number}\n${item.startFix} - ${item.endFix} (${item["start"]} - ${item["end"]})\nПричина окончания: ${codes[item.disconnect_reason]} (${item.disconnect_reason})\n---------------------------\n`;
-            if (typeof messageData[numberToManager[item.person]] === "number"){
-                messageData[numberToManager[item.person]]++
-            } else {
-                messageData[numberToManager[item.person]]=0
+            if (!messageData[numberToManager[item.person]]) {
+                messageData[numberToManager[item.person]] = {}
+
+                messageData[numberToManager[item.person]]['basic_info'] = {}
+                messageData[numberToManager[item.person]]['basic_info']['total_calls_count'] = 0
+
+                messageData[numberToManager[item.person]]['incoming_calls_info'] = {}
+                messageData[numberToManager[item.person]]['incoming_calls_info']['calls_count'] = 0
+
+                messageData[numberToManager[item.person]]['failed_incoming_calls_info'] = {}
+                messageData[numberToManager[item.person]]['failed_incoming_calls_info']['calls_count'] = 0
+
+                messageData[numberToManager[item.person]]['outcoming_calls_info'] = {}
+                messageData[numberToManager[item.person]]['outcoming_calls_info']['calls_count'] = 0
+
+                messageData[numberToManager[item.person]]['failed_outcoming_calls_info'] = {}
+                messageData[numberToManager[item.person]]['failed_outcoming_calls_info']['calls_count'] = 0
+
             }
+            messageData[numberToManager[item.person]]['basic_info']['total_calls']++
+            switch (item.call_type) {
+                case "inComing":
+                    messageData[numberToManager[item.person]]['incoming_calls_info']['calls_count']++
+                    break
+                case "outComing":
+                    messageData[numberToManager[item.person]]['outcoming_calls_info']['calls_count']++
+                    break
+                case "inComingFail":
+                    messageData[numberToManager[item.person]]['failed_incoming_calls_info']['calls_count']++
+                    break
+                case "outComingFail":
+                    messageData[numberToManager[item.person]]['failed_outcoming_calls_info']['calls_count']++
+                    break
+
+            }
+
             menu.push(new Button(item.client_name, 'some cb'))
         });
         console.log(messageData)
@@ -193,15 +224,15 @@ class Menu {
 
         if (data.data[0].address || data.data[0].courier_del_id || data.data[0].courier || data.data[0].location_name) {
             message += `Доставка:\n\n`
-            if (data.data[0].location_name && data.data[0].address){
-                if (data.data[0].address.includes(data.data[0].location_name)){
+            if (data.data[0].location_name && data.data[0].address) {
+                if (data.data[0].address.includes(data.data[0].location_name)) {
                     message += `${data.data[0].address}\n`
                 } else {
-                    message+= `${data.data[0].location_name}, ${data.data[0].address}\n`
+                    message += `${data.data[0].location_name}, ${data.data[0].address}\n`
                 }
             } else {
-                message+=`${data.data[0].address?`${data.data[0].address}\n`:''}`
-                message+=`${data.data[0].location_name?`${data.data[0].location_name}\n`:''}`
+                message += `${data.data[0].address ? `${data.data[0].address}\n` : ''}`
+                message += `${data.data[0].location_name ? `${data.data[0].location_name}\n` : ''}`
             }
 
             message += `${data.data[0].courier_del_id ? `${data.data[0].courier_del_id}` : ''}${data.data[0].courier && data.data[0].courier_del_id ? ', ' : ''}${data.data[0].courier ? `${data.data[0].courier}` : ''}\n` +
@@ -359,11 +390,11 @@ class Menu {
             }
             if (request_type === 'hours') {
                 fields.days = fields.days == null || typeof fields.days == "undefined" ? fields.days = 0 : fields.days;
-                fields.hours = fields.hours == null || typeof fields.hours == "undefined" ? fields.hours=1:fields.hours;
-                fields.from = moment().subtract(fields.hours,'hours');
-                fields.time_from=fields.from.format('HH:mm');
-                fields.time_to=moment().format('HH:mm');
-                fields.from=fields.from.format("YYYY-MM-DD");
+                fields.hours = fields.hours == null || typeof fields.hours == "undefined" ? fields.hours = 1 : fields.hours;
+                fields.from = moment().subtract(fields.hours, 'hours');
+                fields.time_from = fields.from.format('HH:mm');
+                fields.time_to = moment().format('HH:mm');
+                fields.from = fields.from.format("YYYY-MM-DD");
             }
             fields.from = fields.from == null || typeof fields.from == "undefined" ? moment().subtract(fields.days, "days").format("YYYY-MM-DD") : fields.from;
             fields.to = fields.to == null || typeof fields.to == "undefined" ? moment() : moment(fields.to);
@@ -387,13 +418,12 @@ class Menu {
             let cities = [];
             ordersData.data.forEach((item) => {
                 //Преобразование затраченного времени
-                if(request_type==='hours')
-                {
-                    if(moment(item.created_at).format('HH:mm')<fields.time_from||moment(item.created_at).format('HH:mm')>fields.time_to)
+                if (request_type === 'hours') {
+                    if (moment(item.created_at).format('HH:mm') < fields.time_from || moment(item.created_at).format('HH:mm') > fields.time_to)
                         return
                 }
                 orderTotalCount++;
-                orderTotalSum+=item.order_sum;
+                orderTotalSum += item.order_sum;
                 if (item.proceed_time != null && item.proceed_time > 0) {
                     //let created_at=moment(item.created_at.substr(0,19).replace('T',' ')).format('YYYY-MM-DD HH:mm:ss');
                     if (moment(item.created_at).format('HH') > 9 && moment(item.created_at).format('HH') < 20) {
@@ -407,7 +437,7 @@ class Menu {
                     menu.searchPushOrdersArrays(item.otkaz_title, otkaz_reasons);
                 }
                 samovivoz += item.samovivoz == "нет" ? 0 : 1;
-                if(item.order_status_title !== null)
+                if (item.order_status_title !== null)
                     menu.searchPushOrdersArrays(item.order_status_title, ordersTypesCount);
                 if (item.name !== null)
                     menu.searchPushOrdersArrays(item.name, managers);
@@ -424,28 +454,27 @@ class Menu {
             menu.sortOrdersArrays(ordersTypesCount);
             //rework cities
             let other_cities = 0;
-            if(cities.length>5)
-            {
+            if (cities.length > 5) {
                 for (let i = 5; i < cities.length; i++)
                     other_cities += cities[i][1];
             }
             //Начало составления сообщения
-            let message='';
+            let message = '';
             switch (request_type) {
                 case 'days':
-                    message+=`Статистика по заказам ${fields.days > 0 ? `с ${fields.from}` : `на ${fields.from}`}`
+                    message += `Статистика по заказам ${fields.days > 0 ? `с ${fields.from}` : `на ${fields.from}`}`
                     break;
                 case 'range':
-                    if(fields.from!==fields.to)
-                        message+=`Статистика по заказам на период с ${fields.from} по ${fields.to}`;
+                    if (fields.from !== fields.to)
+                        message += `Статистика по заказам на период с ${fields.from} по ${fields.to}`;
                     else
-                        message+=`Статистика по заказам на период на ${fields.from}`;
+                        message += `Статистика по заказам на период на ${fields.from}`;
                     break;
                 case "hours":
-                    message+=`Статистика по заказам ${fields.from===fields.to?`на ${fields.from} с ${fields.time_from} по ${fields.time_to}`:`с ${fields.from} ${fields.time_from} по ${fields.to} ${fields.time_to}`}`;
+                    message += `Статистика по заказам ${fields.from === fields.to ? `на ${fields.from} с ${fields.time_from} по ${fields.time_to}` : `с ${fields.from} ${fields.time_from} по ${fields.to} ${fields.time_to}`}`;
                     break;
                 default:
-                    message+=`Статистика по заказам`;
+                    message += `Статистика по заказам`;
                     break;
             }
             message += `:\n ---------------------------\n`;
@@ -455,8 +484,7 @@ class Menu {
                 message += menu.renderPercentage(ordersTypesCount[i][0], ordersTypesCount[i][1] / orderTotalCount);
                 message += '\n';
             }
-            if(otkaz_reasons.length)
-            {
+            if (otkaz_reasons.length) {
                 message += `----------------------\nСтатистика по причинам отказов\nВсего отказов ${otkaz_count}, из них:\n`;
                 for (let i = 0; i < otkaz_reasons.length; i++) {
                     message += `\n${otkaz_reasons[i][1]} - `;
@@ -464,8 +492,7 @@ class Menu {
                     message += '\n';
                 }
             }
-            if(managers.length)
-            {
+            if (managers.length) {
                 message += `----------------------\nСтатистика по менджерам:\n`;
                 for (let i = 0; i < managers.length; i++) {
                     message += `\n${managers[i][1]} - `;
@@ -473,8 +500,7 @@ class Menu {
                     message += '\n';
                 }
             }
-            if(couriers.length)
-            {
+            if (couriers.length) {
                 message += `----------------------\nСтатистика по курьерам:\n`;
                 for (let i = 0; i < couriers.length; i++) {
                     message += `\n${couriers[i][1]} - `;
@@ -482,16 +508,14 @@ class Menu {
                     message += '\n';
                 }
             }
-            if(cities.length)
-            {
+            if (cities.length) {
                 message += `----------------------\nСтатистика по городам:\n`;
-                for (let i = 0; i < Math.min(cities.length,5); i++) {
+                for (let i = 0; i < Math.min(cities.length, 5); i++) {
                     message += `\n${cities[i][1]} - `;
                     message += menu.renderPercentage(cities[i][0], cities[i][1] / orderTotalCount);
                     message += '\n';
                 }
-                if(other_cities!=null&&other_cities>0)
-                {
+                if (other_cities != null && other_cities > 0) {
                     message += `\n${other_cities} - `;
                     message += menu.renderPercentage("Другие", other_cities / orderTotalCount);
                     message += '\n';
@@ -528,7 +552,7 @@ class Menu {
     async renderCalls(fields) {
         //Фильтр на тип запроса
         let request_type = '';
-        if (['days', 'day', 'range','hours'].includes(fields.request_type))
+        if (['days', 'day', 'range', 'hours'].includes(fields.request_type))
             request_type = fields.request_type;
         else
             request_type = 'days'
@@ -539,14 +563,13 @@ class Menu {
             fields.to = fields.from;
             request_type = 'days';
         }
-        if(request_type === 'hours')
-        {
-            fields.from=typeof fields.from == "undefined" || fields.from == null ? moment().subtract(fields.hours, "hours").format("YYYY-MM-DD") : fields.from;
+        if (request_type === 'hours') {
+            fields.from = typeof fields.from == "undefined" || fields.from == null ? moment().subtract(fields.hours, "hours").format("YYYY-MM-DD") : fields.from;
             fields.to = typeof fields.to == "undefined" || fields.to == null ? moment() : moment(fields.to);
-            fields.time_from=moment().subtract(fields.hours,'hours').format('HH:mm');
-            fields.time_from_unix=moment().subtract(fields.hours,'hours').unix();
-            fields.time_to=moment().format('HH:mm');
-            fields.time_to_unix=moment().unix();
+            fields.time_from = moment().subtract(fields.hours, 'hours').format('HH:mm');
+            fields.time_from_unix = moment().subtract(fields.hours, 'hours').unix();
+            fields.time_to = moment().format('HH:mm');
+            fields.time_to_unix = moment().unix();
         }
         let from = typeof fields.from == "undefined" || fields.from == null ? moment().subtract(fields.days, "days").format("YYYY-MM-DD") : fields.from;
         let to = typeof fields.to == "undefined" || fields.to == null ? moment() : moment(fields.to);
@@ -594,9 +617,8 @@ class Menu {
         statistics['Пропущенный']['time_before_finish'] = 0;
 
         data.data.forEach((call) => {
-            if(request_type==='hours')
-            {
-                if(call.start<fields.time_from_unix||call.start>fields.time_to_unix)
+            if (request_type === 'hours') {
+                if (call.start < fields.time_from_unix || call.start > fields.time_to_unix)
                     return
             }
             statistics['calls_count']++;
@@ -663,19 +685,18 @@ class Menu {
         menu.sortOrdersArrays(statistics['Входящий'].managers);
         menu.sortOrdersArrays(statistics['Исходящий'].managers);
         //формирование сообщения
-        switch (request_type)
-        {
+        switch (request_type) {
             case 'range':
-                message+=`С ${from} по ${to}`;
+                message += `С ${from} по ${to}`;
                 break;
             case 'days':
-                message +=fields.days > 0 ? `С ${from} по ${to}` : `На ${from}`;
+                message += fields.days > 0 ? `С ${from} по ${to}` : `На ${from}`;
                 break;
             case 'hours':
-                if(from===to)
-                    message+=`На ${from} с ${fields.time_from} по ${fields.time_to}`;
+                if (from === to)
+                    message += `На ${from} с ${fields.time_from} по ${fields.time_to}`;
                 else
-                    message+=`С ${from} ${fields.time_from} по ${to} ${fields.time_to}`;
+                    message += `С ${from} ${fields.time_from} по ${to} ${fields.time_to}`;
                 break;
             default:
                 break;
@@ -691,8 +712,7 @@ class Menu {
             message += `\n    ${codes[reason]}: ${statistics.disconnect_reasons.total[reason]},`
         }
         */
-        if(statistics.calls_count)
-        {
+        if (statistics.calls_count) {
             let call_types = ['Входящий', 'Исходящий', 'Недозвон', 'Пропущенный'];
             for (let i in call_types) {
                 if (statistics[call_types[i]].calls_count === 0) continue;
@@ -1070,67 +1090,66 @@ class Menu {
     }
 
     async renderHelp(fields) {
-        let message='';
-        switch (fields.request_type)
-        {
+        let message = '';
+        switch (fields.request_type) {
             case 'order':
-                message='help order info';
+                message = 'help order info';
                 break;
             case 'orders':
-                message+='Информация по команде /orders\nДанная команда выводит статистику в несколько блоков:'+
-                '\n1) Общая статистика по всем заказам;\n2) Статистика по причинам отказов(если таковые имеются);'+
-                '\n3) Статистика по менеджерам;\n4) Статистика по курьерам и курьерским службам;'+
-                '\n5) Статистика по городам;\n6) Число заказов самовывозом и доставкой.\nВ случае ошибок при вводе выводится статистика за текущий день.';
-                message+='Команда поддерживает следующие перегрузки:' +
+                message += 'Информация по команде /orders\nДанная команда выводит статистику в несколько блоков:' +
+                    '\n1) Общая статистика по всем заказам;\n2) Статистика по причинам отказов(если таковые имеются);' +
+                    '\n3) Статистика по менеджерам;\n4) Статистика по курьерам и курьерским службам;' +
+                    '\n5) Статистика по городам;\n6) Число заказов самовывозом и доставкой.\nВ случае ошибок при вводе выводится статистика за текущий день.';
+                message += 'Команда поддерживает следующие перегрузки:' +
                     '    range: Получает на вход две даты в формате ГГГГ-ММ-ДД через пробел.\nНапример: /orders range 2020-01-01 2020-02-01' +
                     '\n Суммирует статистику за период. Даты берутся включительно. При передаче одиннаковых дат выводит статистику за указанный день.\n' +
                     '    day: Получает на вход одну дату в формате ГГГГ-ММ-ДД.\nНапример: /orders day 2020-01-01\nВыводит статистику за указанный день.\n' +
                     '    N: При получении числа "N", суммируется статистика за последние "N" дней.\nНапример: /orders 5\nВ случае отсутствия числа выводится статистика за текущий день.';
-                    break;
+                break;
             case 'expenses':
-                message='help expenses info';
+                message = 'help expenses info';
                 break;
             case 'calls':
-                message+='Информация по команде /calls\nДанная команда выводит статистику в несколько блоков:'+
-                '\n1) Общая статистика;\n2) Статистика по каждому типу звонка:'+
-                '    а)Для входящих и исходящих — статистика по длительности звонков и среднее время до ответа. Для недозвонов и пропущенных — среднее время до сброса звонка;'+
-                '    б)Для входящих и исходящих число звонков по каждому менеджеру, для пропущенных и недозвонов только общее число.';
-                message+='Команда поддерживает следующие перегрузки:' +
+                message += 'Информация по команде /calls\nДанная команда выводит статистику в несколько блоков:' +
+                    '\n1) Общая статистика;\n2) Статистика по каждому типу звонка:' +
+                    '    а)Для входящих и исходящих — статистика по длительности звонков и среднее время до ответа. Для недозвонов и пропущенных — среднее время до сброса звонка;' +
+                    '    б)Для входящих и исходящих число звонков по каждому менеджеру, для пропущенных и недозвонов только общее число.';
+                message += 'Команда поддерживает следующие перегрузки:' +
                     '    range: Получает на вход две даты в формате ГГГГ-ММ-ДД через пробел.\nНапример: /calls range 2020-01-01 2020-02-01' +
                     '\n Предоставляет статистику за период. Даты берутся включительно. При передаче одиннаковых дат выводит статистику за указанный день.\n' +
                     '    day: Получает на вход одну дату в формате ГГГГ-ММ-ДД.\nНапример: /calls day 2020-01-01\nВыводит статистику за указанный день.\n' +
                     '    N: При получении числа "N", предоставляет статистику за последние "N" дней.\nНапример: /calls 5\nВ случае отсутствия числа выводится статистика за текущий день.';
                 break;
             case 'managers':
-                message='help managers info';
+                message = 'help managers info';
                 break;
             case 'missed':
-                message+='Информация по команде /missed\nДанная команда выводит список пропущенных вызовов, на чьи номера ещё не перезвонили(клиент взял трубку).\nСписок состоит из:'+
-                '\n1) Номер клиента;\n2) Дата и время звонка;'+
-                '\n3) Число попыток дозвона;\n4) Линия, на которую поступил вызов.\nВ случае ошибок при вводе выводится статистика за текущий день.';
-                message+='Команда поддерживает следующие перегрузки:' +
+                message += 'Информация по команде /missed\nДанная команда выводит список пропущенных вызовов, на чьи номера ещё не перезвонили(клиент взял трубку).\nСписок состоит из:' +
+                    '\n1) Номер клиента;\n2) Дата и время звонка;' +
+                    '\n3) Число попыток дозвона;\n4) Линия, на которую поступил вызов.\nВ случае ошибок при вводе выводится статистика за текущий день.';
+                message += 'Команда поддерживает следующие перегрузки:' +
                     '    range: Получает на вход две даты в формате ГГГГ-ММ-ДД через пробел.\nНапример: /missed range 2020-01-01 2020-02-01' +
                     '\n Предоставляет список пропущенных за период. Даты берутся включительно. При передаче одиннаковых дат выводит список пропущенных за указанный день.\n' +
                     '    day: Получает на вход одну дату в формате ГГГГ-ММ-ДД.\nНапример: /missed day 2020-01-01\nВыводит список пропущенных за указанный день.\n' +
                     '    N: При получении числа "N", предоставляет список пропущенных за последние "N" дней.\nНапример: /missed 5\nВ случае отсутствия числа выводится список пропущенных за текущий день.';
                 break;
             case 'chrono':
-                message+='Информация по команде /chrono\nДанная команда выводит статистику по часам в 3 блока:'+
-                '1) Общая информация;'+
-                '2) Статистика по звонкам;'+
-                '3) Статистика по заказам;';
-                message+='Команда поддерживает следующие перегрузки:' +
+                message += 'Информация по команде /chrono\nДанная команда выводит статистику по часам в 3 блока:' +
+                    '1) Общая информация;' +
+                    '2) Статистика по звонкам;' +
+                    '3) Статистика по заказам;';
+                message += 'Команда поддерживает следующие перегрузки:' +
                     '    range: Получает на вход две даты в формате ГГГГ-ММ-ДД через пробел.\nНапример: /chrono range 2020-01-01 2020-02-01' +
                     '\n Предоставляет статистику за период. Даты берутся включительно. При передаче одиннаковых дат выводит статистику за указанный день.\n' +
                     '    day: Получает на вход одну дату в формате ГГГГ-ММ-ДД.\nНапример: /chrono day 2020-01-01\nВыводит статистику за указанный день.\n' +
                     '    N: При получении числа "N", предоставляет статистику за последние "N" дней.\nНапример: /chrono 5\nВ случае отсутствия числа выводится статистика за текущий день.';
                 break;
             case 'compare':
-                message+='Информация по команде /compare\nДанная команда выводит статистику за различные периоды времени.  Информация выводится списком:'+
-                '1) Общая информация;'+
-                '2) Статистика по звонкам;'+
-                '3) Статистика по заказам;';
-                message+='Команда поддерживает следующие перегрузки:' +
+                message += 'Информация по команде /compare\nДанная команда выводит статистику за различные периоды времени.  Информация выводится списком:' +
+                    '1) Общая информация;' +
+                    '2) Статистика по звонкам;' +
+                    '3) Статистика по заказам;';
+                message += 'Команда поддерживает следующие перегрузки:' +
                     '    range: Получает на вход две даты в формате ГГГГ-ММ-ДД через пробел.\nНапример: /compare range 2020-01-01 2020-02-01' +
                     '\n Предоставляет статистику за период. Даты берутся включительно.' +
                     '\nВ случае если между датами меньше 45 дней, статистика делится по дням.' +
@@ -1139,8 +1158,8 @@ class Menu {
                     '\n    N: При получении числа "N", предоставляет статистику за последние "N" лет.\nНапример: /compare 5\nВ случае отсутствия числа выводится статистика за текущий и прошлый год.';
                 break;
             default:
-                message+='Команда /help предоставляет информацию по использованию различных команд.\n'
-                message+=`Наберите /help название_команды для вывода справки по ней.
+                message += 'Команда /help предоставляет информацию по использованию различных команд.\n'
+                message += `Наберите /help название_команды для вывода справки по ней.
     Список команд:
         /order
         /orders
@@ -1182,7 +1201,7 @@ const messages = {
     managers: menu.renderManagers,
     chrono: menu.renderChrono,
     compare: menu.renderCompare,
-    help:menu.renderHelp
+    help: menu.renderHelp
 };
 
 
