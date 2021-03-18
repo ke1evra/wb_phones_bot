@@ -107,8 +107,31 @@ class Menu {
         let message = 'Менеджеры:\n';
         const menu = [];
         //console.log(data.data["data1"]);
+
         let messageData = {}
+
         messageData['days'] = fields.days
+
+        messageData['all_managers'] = {}
+        messageData['all_managers']['basic_info'] = {}
+        messageData['all_managers']['basic_info']['total_calls_count'] = 0
+        messageData['all_managers']['basic_info']['in_calls_time'] = 0
+
+        messageData['all_managers']['incoming_calls_info'] = {}
+        messageData['all_managers']['incoming_calls_info']['calls_count'] = 0
+        messageData['all_managers']['incoming_calls_info']['in_calls_time'] = 0
+
+        messageData['all_managers']['failed_incoming_calls_info'] = {}
+        messageData['all_managers']['failed_incoming_calls_info']['calls_count'] = 0
+
+        messageData['all_managers']['outcoming_calls_info'] = {}
+        messageData['all_managers']['outcoming_calls_info']['calls_count'] = 0
+        messageData['all_managers']['outcoming_calls_info']['in_calls_time'] = 0
+
+        messageData['all_managers']['failed_outcoming_calls_info'] = {}
+        messageData['all_managers']['failed_outcoming_calls_info']['calls_count'] = 0
+        messageData['all_managers']['failed_outcoming_calls_info']['in_waiting_time'] = 0
+
         data.data["data1"].map((item, index) => {
             if (!messageData[numberToManager[item.person]]) {
                 messageData[numberToManager[item.person]] = {}
@@ -133,25 +156,46 @@ class Menu {
                 messageData[numberToManager[item.person]]['failed_outcoming_calls_info']['in_waiting_time'] = 0
             }
             messageData[numberToManager[item.person]]['basic_info']['total_calls_count']++
-            switch (item.call_type) {
-                case "inComing":
-                    messageData[numberToManager[item.person]]['incoming_calls_info']['calls_count']++
-                    messageData[numberToManager[item.person]]['incoming_calls_info']['in_calls_time'] += moment(item.end, "HH:mm:ss").diff(moment(moment(item.start, "HH:mm:ss")), "seconds")
-                    messageData[numberToManager[item.person]]['basic_info']['in_calls_time'] += moment(item.end, "HH:mm:ss").diff(moment(moment(item.start, "HH:mm:ss")), "seconds")
-                    break
-                case "outComing":
-                    messageData[numberToManager[item.person]]['outcoming_calls_info']['calls_count']++
-                    messageData[numberToManager[item.person]]['outcoming_calls_info']['in_calls_time'] += moment(item.end, "HH:mm:ss").diff(moment(moment(item.start, "HH:mm:ss")), "seconds")
-                    messageData[numberToManager[item.person]]['basic_info']['in_calls_time'] += moment(item.end, "HH:mm:ss").diff(moment(moment(item.start, "HH:mm:ss")), "seconds")
-                    break
-                case "inComingFail":
-                    messageData[numberToManager[item.person]]['failed_incoming_calls_info']['calls_count']++
-                    break
-                case "outComingFail":
-                    messageData[numberToManager[item.person]]['failed_outcoming_calls_info']['calls_count']++
-                    messageData[numberToManager[item.person]]['failed_outcoming_calls_info']['in_waiting_time'] += moment(item.end, "HH:mm:ss").diff(moment(moment(item.start, "HH:mm:ss")), "seconds")
-                    break
+            messageData['all_managers']['total_calls_count']++
+            if (item.call_type === 'inComing') {
+                const callTime = moment(item.end, "HH:mm:ss").diff(moment(moment(item.answer, "HH:mm:ss")), "seconds")
+                const answerTime = moment(item.answer, "HH:mm:ss").diff(moment(moment(item.start, "HH:mm:ss")), "seconds")
 
+                messageData[numberToManager[item.person]]['incoming_calls_info']['calls_count']++
+                messageData[numberToManager[item.person]]['incoming_calls_info']['in_calls_time'] += callTime
+                messageData[numberToManager[item.person]]['incoming_calls_info']['time_to_answer'] += answerTime
+
+                messageData[numberToManager[item.person]]['basic_info']['in_calls_time'] += callTime
+
+                messageData['all_managers']['incoming_calls_info']['calls_count']++
+                messageData['all_managers']['incoming_calls_info']['in_calls_time'] += callTime
+                messageData['all_managers']['incoming_calls_info']['time_to_answer'] += answerTime
+
+                messageData['all_managers']['basic_info']['in_calls_time'] += callTime
+            } else if (item.call_type === 'outComing') {
+                const callTime = moment(item.end, "HH:mm:ss").diff(moment(moment(item.answer, "HH:mm:ss")), "seconds")
+
+                messageData[numberToManager[item.person]]['outcoming_calls_info']['calls_count']++
+                messageData[numberToManager[item.person]]['outcoming_calls_info']['in_calls_time'] += callTime
+
+                messageData[numberToManager[item.person]]['basic_info']['in_calls_time'] += callTime
+
+                messageData['all_managers']['outcoming_calls_info']['calls_count']++
+                messageData['all_managers']['outcoming_calls_info']['in_calls_time'] += callTime
+
+                messageData['all_managers']['basic_info']['in_calls_time'] += callTime
+            } else if (item.call_type === 'inComingFail') {
+                messageData[numberToManager[item.person]]['failed_incoming_calls_info']['calls_count']++
+
+                messageData['all_managers']['failed_incoming_calls_info']['calls_count']++
+            } else if (item.call_type === 'outComingFail') {
+                const waitingTime = moment(item.end, "HH:mm:ss").diff(moment(moment(item.start, "HH:mm:ss")), "seconds")
+
+                messageData[numberToManager[item.person]]['failed_outcoming_calls_info']['calls_count']++
+                messageData[numberToManager[item.person]]['failed_outcoming_calls_info']['in_waiting_time'] += waitingTime
+
+                messageData['all_managers']['failed_outcoming_calls_info']['calls_count']++
+                messageData['all_managers']['failed_outcoming_calls_info']['in_waiting_time'] += waitingTime
             }
 
             menu.push(new Button(item.client_name, 'some cb'))
