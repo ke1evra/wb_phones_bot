@@ -34,9 +34,9 @@ class Menu {
             case "hours":
                 request_type = 'hours';
                 fields.hours = typeof fields.hours == 'undefined' || fields.hours == null ? 0 : fields.hours;
-                fields.from = moment().subtract(fields.hours,'hours').format('YYYY-MM-DD');
-                fields.time_from = moment().subtract(fields.hours,'hours').format('HH:mm');
-                fields.time_from_unix = moment().subtract(fields.hours,'hours').unix();
+                fields.from = moment().subtract(fields.hours, 'hours').format('YYYY-MM-DD');
+                fields.time_from = moment().subtract(fields.hours, 'hours').format('HH:mm');
+                fields.time_from_unix = moment().subtract(fields.hours, 'hours').unix();
                 fields.to = moment().format('YYYY-MM-DD');
                 fields.time_to = moment().format('HH:mm');
                 fields.time_to_unix = moment().unix();
@@ -44,7 +44,7 @@ class Menu {
             default:
                 request_type = 'days';
                 if (typeof fields.days == "undefined" || fields.days == null) fields.days = 0;
-                fields.from = moment().subtract(fields.days,'days').format('YYYY-MM-DD');
+                fields.from = moment().subtract(fields.days, 'days').format('YYYY-MM-DD');
                 fields.to = moment().format('YYYY-MM-DD');
                 break;
         }
@@ -60,21 +60,20 @@ class Menu {
         let message = 'Список пропущенных вызовов ';
         switch (request_type) {
             case 'days':
-                message+= fields.days > 0 ? `с ${from} по ${to}` : `на ${from}`;
+                message += fields.days > 0 ? `с ${from} по ${to}` : `на ${from}`;
                 break;
             case 'range':
-                message+= from === to ? `с ${from} по ${to}` : `на ${from}`;
+                message += from === to ? `с ${from} по ${to}` : `на ${from}`;
                 break;
             case 'hours':
-                message+= from === to ? `на ${from} с ${fields.time_from} по ${fields.time_to}` :
+                message += from === to ? `на ${from} с ${fields.time_from} по ${fields.time_to}` :
                     `c ${from} ${fields.time_from} по ${to} ${fields.time_to}`;
                 break;
         }
         message += ':\n---------------------------\n';
         const menu = [];
         // console.log(data);
-        if(request_type!=="hours")
-        {
+        if (request_type !== "hours") {
             //Только пропущенные
             if (!data.data.length) {
                 message = 'Нет пропущенных вызовов';
@@ -87,49 +86,44 @@ class Menu {
                 message += `${index + 1}. ${item.client} ( ${missedAt} )\nПопыток дозвона: ${item.nedozvon_cnt}\nЛиния: ${item.line_number}${orderNum}${clientName} \n---------------------------\n`;
                 menu.push(new Button(item.client_name, 'some cb'))
             });
-        }
-        else
-        {
+        } else {
             //Более долгий, но точный запрос для подсчёта статистики вручную
-            const calls=await API.getCalls(fields.days,from,to);
-            if(calls.data.length)
-            {
-                let missed_calls={};
-                let proceeded_clients={};
+            const calls = await API.getCalls(fields.days, from, to);
+            if (calls.data.length) {
+                let missed_calls = {};
+                let proceeded_clients = {};
                 //Обработка звонков
-                calls.data.forEach(call=>{
+                calls.data.forEach(call => {
                     switch (call.call_type) {
                         case 'Пропущенный':
-                            if(!missed_calls.hasOwnProperty(call.client))
-                                missed_calls[call.client]={
-                                    missed_cnt:1,
-                                    nedozvon_cnt:0,
-                                    last_manager_call:null,
-                                    last_manager_call_time:null,
-                                    last_missed_call:call,
+                            if (!missed_calls.hasOwnProperty(call.client))
+                                missed_calls[call.client] = {
+                                    missed_cnt: 1,
+                                    nedozvon_cnt: 0,
+                                    last_manager_call: null,
+                                    last_manager_call_time: null,
+                                    last_missed_call: call,
                                     last_missed_call_time: moment.unix(call.start).format('DD.MM HH:mm')
-                            };
+                                };
                             else {
-                                missed_calls[call.client].last_missed_call=call;
+                                missed_calls[call.client].last_missed_call = call;
                                 missed_calls[call.client].missed_cnt++;
                             }
-                        break;
+                            break;
                         case 'Недозвон':
-                            if(missed_calls.hasOwnProperty(call.client))
-                            {
+                            if (missed_calls.hasOwnProperty(call.client)) {
                                 missed_calls[call.client].nedozvon_cnt++;
-                                missed_calls[call.client].last_manager_call=call;
+                                missed_calls[call.client].last_manager_call = call;
                             }
                             break;
                         default:
-                            if(missed_calls.hasOwnProperty(call.client))
-                            {
-                                missed_calls[call.client].last_manager_call=call;
+                            if (missed_calls.hasOwnProperty(call.client)) {
+                                missed_calls[call.client].last_manager_call = call;
                                 missed_calls[call.client].last_manager_call_time = moment.unix(call.start).format('DD.MM HH:mm');
-                                if(call.call_type==='Исходящий')
+                                if (call.call_type === 'Исходящий')
                                     missed_calls[call.client].nedozvon_cnt++;
                                 //Перенос по значению
-                                proceeded_clients[call.client]=JSON.parse(JSON.stringify(missed_calls[call.client]));
+                                proceeded_clients[call.client] = JSON.parse(JSON.stringify(missed_calls[call.client]));
                                 delete missed_calls[call.client];
                             }
 
@@ -140,28 +134,25 @@ class Menu {
                 console.log(`missed_calls: ${JSON.stringify(missed_calls)}`);
                 console.log(`proceeded_clients: ${JSON.stringify(proceeded_clients)}`);
                 //Вывод пропущенных
-                let i=1;
-                for(let client in missed_calls)
+                let i = 1;
+                for (let client in missed_calls)
                     message += `${i++}. ${client} ( ${missed_calls[client].last_missed_call_time} )\nПопыток дозвона: ${missed_calls[client].nedozvon_cnt}\nЛиния: ${missed_calls[client].last_missed_call.line_number} \n---------------------------\n`;
                 //Вывод обработанных
-                if(i===1) message+='Нет пропущенных вызовов\n';
-                if(proceeded_clients.length)
-                {
-                    message+='Удалось дозвониться:\n'
-                    let i=1;
-                    for(let client in missed_calls)
-                    {
-                        if (proceeded_clients[client].last_manager_call.start<fields.time_from_unix||proceeded_clients[client].last_manager_call.start>fields.time_to_unix)
+                if (i === 1) message += 'Нет пропущенных вызовов\n';
+                if (proceeded_clients.length) {
+                    message += 'Удалось дозвониться:\n'
+                    let i = 1;
+                    for (let client in missed_calls) {
+                        if (proceeded_clients[client].last_manager_call.start < fields.time_from_unix || proceeded_clients[client].last_manager_call.start > fields.time_to_unix)
                             continue
-                        let manager = proceeded_clients[client].last_manager_call.person!==null?`\nМенеджер: ${proceeded_clients[client].last_manager_call.person}`:'';
-                        let nedozvon_cnt = proceeded_clients[client].nedozvon_cnt?`\nПопыток дозвона: ${proceeded_clients[client].nedozvon_cnt}`:'';
+                        let manager = proceeded_clients[client].last_manager_call.person !== null ? `\nМенеджер: ${proceeded_clients[client].last_manager_call.person}` : '';
+                        let nedozvon_cnt = proceeded_clients[client].nedozvon_cnt ? `\nПопыток дозвона: ${proceeded_clients[client].nedozvon_cnt}` : '';
                         message += `${i++}. ${client} ( ${proceeded_clients[client].last_manager_call_time} )${nedozvon_cnt}\nЛиния: ${proceeded_clients[client].last_manager_call.line_number}${manager}\n---------------------------\n`;
                     }
                 }
                 return message;
-            }
-            else
-                message=`Нет пропущенных за период с ${from} ${fields.time_from} по ${to} ${fields.time_to}.`;
+            } else
+                message = `Нет пропущенных за период с ${from} ${fields.time_from} по ${to} ${fields.time_to}.`;
         }
         let options = {
             reply_markup: JSON.stringify({
@@ -304,10 +295,11 @@ class Menu {
 
             menu.push(new Button(item.client_name, 'some cb'))
         });
-        for (let manager in messageData){
-            messageData[manager]['basic_info']['calls_count_percent']=messageData[manager]['basic_info']['total_calls_count']*100/messageData['all_managers']['total_calls_count']
-            messageData[manager]['basic_info']['in_calls_time_percent']=messageData[manager]['basic_info']['in_calls_time']*100/messageData['all_managers']['in_calls_time']
-
+        for (let manager in messageData) {
+            if (manager !== "all_managers") {
+                messageData[manager]['basic_info']['calls_count_percent'] = messageData[manager]['basic_info']['total_calls_count'] * 100 / messageData['all_managers']['total_calls_count']
+                messageData[manager]['basic_info']['in_calls_time_percent'] = messageData[manager]['basic_info']['in_calls_time'] * 100 / messageData['all_managers']['in_calls_time']
+            }
         }
         console.log(messageData)
         let options = {
