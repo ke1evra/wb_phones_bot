@@ -224,6 +224,7 @@ class Menu {
         messageData['all_managers']['incoming_calls_info'] = {}
         messageData['all_managers']['incoming_calls_info']['calls_count'] = 0
         messageData['all_managers']['incoming_calls_info']['in_calls_time'] = 0
+        messageData['all_managers']['incoming_calls_info']['time_to_answer'] = 0
 
         messageData['all_managers']['failed_incoming_calls_info'] = {}
         messageData['all_managers']['failed_incoming_calls_info']['calls_count'] = 0
@@ -247,6 +248,7 @@ class Menu {
                 messageData[numberToManager[item.person]]['incoming_calls_info'] = {}
                 messageData[numberToManager[item.person]]['incoming_calls_info']['calls_count'] = 0
                 messageData[numberToManager[item.person]]['incoming_calls_info']['in_calls_time'] = 0
+                messageData[numberToManager[item.person]]['incoming_calls_info']['time_to_answer'] = 0
 
                 messageData[numberToManager[item.person]]['failed_incoming_calls_info'] = {}
                 messageData[numberToManager[item.person]]['failed_incoming_calls_info']['calls_count'] = 0
@@ -263,7 +265,7 @@ class Menu {
             messageData['all_managers']['basic_info']['total_calls_count']++
             if (item.call_type === 'inComing') {
                 const callTime = moment(item.end, "HH:mm:ss").diff(moment(moment(item.answer, "HH:mm:ss")), "seconds")
-                const answerTime = moment(item.answer).diff(moment(moment(item.start, "HH:mm:ss")), "seconds")
+                const answerTime = moment(item.answer, "HH:mm:ss").diff(moment(moment(item.start, "HH:mm:ss")), "seconds")
 
                 messageData[numberToManager[item.person]]['incoming_calls_info']['calls_count']++
                 messageData[numberToManager[item.person]]['incoming_calls_info']['in_calls_time'] += callTime
