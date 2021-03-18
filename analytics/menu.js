@@ -260,7 +260,7 @@ class Menu {
                 messageData[numberToManager[item.person]]['failed_outcoming_calls_info']['in_waiting_time'] = 0
             }
             messageData[numberToManager[item.person]]['basic_info']['total_calls_count']++
-            messageData['all_managers']['total_calls_count']++
+            messageData['all_managers']['basic_info']['total_calls_count']++
             if (item.call_type === 'inComing') {
                 const callTime = moment(item.end, "HH:mm:ss").diff(moment(moment(item.answer, "HH:mm:ss")), "seconds")
                 const answerTime = moment(item.answer, "HH:mm:ss").diff(moment(moment(item.start, "HH:mm:ss")), "seconds")
