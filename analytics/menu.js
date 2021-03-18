@@ -96,74 +96,72 @@ class Menu {
             {
                 let missed_calls={};
                 let proceeded_clients={};
-                if(calls.data.length)
-                {
-                    //Обработка звонков
-                    calls.data.forEach(call=>{
-                        switch (call.call_type) {
-                            case 'Пропущенный':
-                                if(!missed_calls.hasOwnProperty(call.client))
-                                    missed_calls[call.client]={
-                                        missed_cnt:1,
-                                        nedozvon_cnt:0,
-                                        last_manager_call:null,
-                                        last_manager_call_time:null,
-                                        last_missed_call:call,
-                                        last_missed_call_time: moment.unix(call.start).format('DD.MM HH:mm')
-                                };
-                                else {
-                                    missed_calls[call.client].last_missed_call=call;
-                                    missed_calls[call.client].missed_cnt++;
-                                }
+                //Обработка звонков
+                calls.data.forEach(call=>{
+                    switch (call.call_type) {
+                        case 'Пропущенный':
+                            if(!missed_calls.hasOwnProperty(call.client))
+                                missed_calls[call.client]={
+                                    missed_cnt:1,
+                                    nedozvon_cnt:0,
+                                    last_manager_call:null,
+                                    last_manager_call_time:null,
+                                    last_missed_call:call,
+                                    last_missed_call_time: moment.unix(call.start).format('DD.MM HH:mm')
+                            };
+                            else {
+                                missed_calls[call.client].last_missed_call=call;
+                                missed_calls[call.client].missed_cnt++;
+                            }
+                        break;
+                        case 'Недозвон':
+                            if(missed_calls.hasOwnProperty(call.client))
+                            {
+                                missed_calls[call.client].nedozvon_cnt++;
+                                missed_calls[call.client].last_manager_call=call;
+                            }
                             break;
-                            case 'Недозвон':
-                                if(missed_calls.hasOwnProperty(call.client))
-                                {
+                        default:
+                            if(missed_calls.hasOwnProperty(call.client))
+                            {
+                                missed_calls[call.client].last_manager_call=call;
+                                missed_calls[call.client].last_manager_call_time = moment.unix(call.start).format('DD.MM HH:mm');
+                                if(call.call_type==='Исходящий')
                                     missed_calls[call.client].nedozvon_cnt++;
-                                    missed_calls[call.client].last_manager_call=call;
-                                }
-                                break;
-                            default:
-                                if(missed_calls.hasOwnProperty(call.client))
-                                {
-                                    missed_calls[call.client].last_manager_call=call;
-                                    missed_calls[call.client].last_manager_call_time = moment.unix(call.start).format('DD.MM HH:mm');
-                                    if(call.call_type==='Исходящий')
-                                        missed_calls[call.client].nedozvon_cnt++;
-                                    //Перенос по значению
-                                    proceeded_clients[call.client]=JSON.parse(JSON.stringify(missed_calls[call.client]));
-                                    delete missed_calls[call.client];
-                                }
+                                //Перенос по значению
+                                proceeded_clients[call.client]=JSON.parse(JSON.stringify(missed_calls[call.client]));
+                                delete missed_calls[call.client];
+                            }
 
-                                break;
-                        }
-                    });
-                    //Формирование сообщения
-                    console.log(`missed_calls: ${missed_calls}`);
-                    console.log(`proceeded_clients: ${proceeded_clients}`);
-                    //Вывод пропущенных
+                            break;
+                    }
+                });
+                //Формирование сообщения
+                console.log(`missed_calls: ${missed_calls}`);
+                console.log(`proceeded_clients: ${proceeded_clients}`);
+                //Вывод пропущенных
+                let i=1;
+                for(let client in missed_calls)
+                    message += `${i++}. ${client} ( ${missed_calls[client].last_missed_call_time} )\nПопыток дозвона: ${missed_calls[client].nedozvon_cnt}\nЛиния: ${missed_calls[client].last_missed_call.line_number} \n---------------------------\n`;
+                //Вывод обработанных
+                if(i===1) message+='Нет пропущенных вызовов\n';
+                if(proceeded_clients.length)
+                {
+                    message+='Удалось дозвониться:\n'
                     let i=1;
                     for(let client in missed_calls)
-                        message += `${i++}. ${client} ( ${missed_calls[client].last_missed_call_time} )\nПопыток дозвона: ${missed_calls[client].nedozvon_cnt}\nЛиния: ${missed_calls[client].last_missed_call.line_number} \n---------------------------\n`;
-                    //Вывод обработанных
-                    if(i===1) message+='Нет пропущенных вызовов\n';
-                    if(proceeded_clients.length)
                     {
-                        message+='Удалось дозвониться:\n'
-                        let i=1;
-                        for(let client in missed_calls)
-                        {
-                            if (proceeded_clients[client].last_manager_call.start<fields.time_from_unix||proceeded_clients[client].last_manager_call.start>fields.time_to_unix)
-                                continue
-                            let manager = proceeded_clients[client].last_manager_call.person!==null?`\nМенеджер: ${proceeded_clients[client].last_manager_call.person}`:'';
-                            let nedozvon_cnt = proceeded_clients[client].nedozvon_cnt?`\nПопыток дозвона: ${proceeded_clients[client].nedozvon_cnt}`:'';
-                            message += `${i++}. ${client} ( ${proceeded_clients[client].last_manager_call_time} )${nedozvon_cnt}\nЛиния: ${proceeded_clients[client].last_manager_call.line_number}${manager}\n---------------------------\n`;
-                        }
+                        if (proceeded_clients[client].last_manager_call.start<fields.time_from_unix||proceeded_clients[client].last_manager_call.start>fields.time_to_unix)
+                            continue
+                        let manager = proceeded_clients[client].last_manager_call.person!==null?`\nМенеджер: ${proceeded_clients[client].last_manager_call.person}`:'';
+                        let nedozvon_cnt = proceeded_clients[client].nedozvon_cnt?`\nПопыток дозвона: ${proceeded_clients[client].nedozvon_cnt}`:'';
+                        message += `${i++}. ${client} ( ${proceeded_clients[client].last_manager_call_time} )${nedozvon_cnt}\nЛиния: ${proceeded_clients[client].last_manager_call.line_number}${manager}\n---------------------------\n`;
                     }
-                    return message;
                 }
-                message=`Нет вызовов за период с ${from} ${fields.time_from} по ${to} ${fields.time_to}.`;
+                return message;
             }
+            else
+                message=`Нет вызовов за период с ${from} ${fields.time_from} по ${to} ${fields.time_to}.`;
         }
         let options = {
             reply_markup: JSON.stringify({
