@@ -19,46 +19,150 @@ class Menu {
 
     async renderMissedCalls(fields) {
         //Фильтр на тип запроса
-        let request_type = '';
-        if (['days', 'day', 'range'].includes(fields.request_type))
-            request_type = fields.request_type;
-        else
-            request_type = 'days'
-        //Начало обработки передаваемых параметра
-        if (typeof fields.days == "undefined" || fields.days == null)
-            fields.days = 0;
-        if (request_type === 'day') {
-            fields.to = fields.from;
-            request_type = 'days';
+        let request_type;
+        let from;
+        let to;
+        switch (fields.request_type) {
+            case "range":
+                request_type = 'range';
+                break;
+            case "day":
+                request_type = 'days';
+                fields.to = fields.from;
+                fields.days = 0;
+                break;
+            case "hours":
+                request_type = 'hours';
+                fields.hours = typeof fields.hours == 'undefined' || fields.hours == null ? 0 : fields.hours;
+                fields.from = moment().subtract(fields.hours,'hours').format('YYYY-MM-DD');
+                fields.time_from = moment().subtract(fields.hours,'hours').format('HH:mm');
+                fields.time_from_unix = moment().subtract(fields.hours,'hours').unix();
+                fields.to = moment().format('YYYY-MM-DD');
+                fields.time_to = moment().format('HH:mm');
+                fields.time_to_unix = moment().unix();
+                break;
+            default:
+                request_type = 'days';
+                if (typeof fields.days == "undefined" || fields.days == null) fields.days = 0;
+                fields.from = moment().subtract(fields.days,'days').format('YYYY-MM-DD');
+                fields.to = moment().format('YYYY-MM-DD');
+                break;
         }
-        let from = typeof fields.from == "undefined" || fields.from == null ? moment().subtract(fields.days, "days").format("YYYY-MM-DD") : fields.from;
-        let to = typeof fields.to == "undefined" || fields.to == null ? moment() : moment(fields.to);
+        from = fields.from;
+        to = moment(fields.to);
         //т.к. берёт не включительно добавляем +1 день
         to.add(1, "day");
         //Получение данных
-        //console.log(from,to,fields.days);
         const data = await API.getMissedCalls(fields.days, from, to.format("YYYY-MM-DD"));
         //Возвращаем день назад и преобразуем в строку
         to = to.add(-1, "day").format("YYYY-MM-DD");
-        // console.log(data);
+
         let message = 'Список пропущенных вызовов ';
-        message += request_type === 'days' ?
-            fields.days > 0 ? `с ${from} по ${to}` : `на ${from}`
-            : `с ${from} по ${to}`;
+        switch (request_type) {
+            case 'days':
+                message+= fields.days > 0 ? `с ${from} по ${to}` : `на ${from}`;
+                break;
+            case 'range':
+                message+= from === to ? `с ${from} по ${to}` : `на ${from}`;
+                break;
+            case 'hours':
+                message+= from === to ? `на ${from} с ${fields.time_from} по ${fields.time_to}` :
+                    `c ${from} ${fields.time_from} по ${to} ${fields.time_to}`;
+                break;
+        }
         message += ':\n---------------------------\n';
         const menu = [];
         // console.log(data);
-        if (!data.data.length) {
-            message = 'Нет пропущенных вызовов';
-            return message;
+        if(request_type!=="hours")
+        {
+            //Только пропущенные
+            if (!data.data.length) {
+                message = 'Нет пропущенных вызовов';
+                return message;
+            }
+            data.data.map((item, index) => {
+                const orderNum = `${item.order_number ? '\nНомер заказа: ' + item.order_number : ''}`;
+                const clientName = `${item.client_name ? ' | ' + item.client_name : ''}`;
+                const missedAt = moment(item.missed_at).format('DD.MM HH:mm');
+                message += `${index + 1}. ${item.client} ( ${missedAt} )\nПопыток дозвона: ${item.nedozvon_cnt}\nЛиния: ${item.line_number}${orderNum}${clientName} \n---------------------------\n`;
+                menu.push(new Button(item.client_name, 'some cb'))
+            });
         }
-        data.data.map((item, index) => {
-            const orderNum = `${item.order_number ? '\nНомер заказа: ' + item.order_number : ''}`;
-            const clientName = `${item.client_name ? ' | ' + item.client_name : ''}`;
-            const missedAt = moment(item.missed_at).format('DD.MM HH:mm');
-            message += `${index + 1}. ${item.client} ( ${missedAt} )\nПопыток дозвона: ${item.nedozvon_cnt}\nЛиния: ${item.line_number}${orderNum}${clientName} \n---------------------------\n`;
-            menu.push(new Button(item.client_name, 'some cb'))
-        });
+        else
+        {
+            //Более долгий, но точный запрос для подсчёта статистики вручную
+            const calls=await API.getCalls(fields.days,from,to);
+            if(calls.data.length)
+            {
+                let missed_calls={};
+                let proceeded_clients={};
+                //Обработка звонков
+                calls.data.forEach(call=>{
+                    switch (call.call_type) {
+                        case 'Пропущенный':
+                            if(!missed_calls.hasOwnProperty(call.client))
+                                missed_calls[call.client]={
+                                    missed_cnt:1,
+                                    nedozvon_cnt:0,
+                                    last_manager_call:null,
+                                    last_manager_call_time:null,
+                                    last_missed_call:call,
+                                    last_missed_call_time: moment.unix(call.start).format('DD.MM HH:mm')
+                            };
+                            else {
+                                missed_calls[call.client].last_missed_call=call;
+                                missed_calls[call.client].missed_cnt++;
+                            }
+                        break;
+                        case 'Недозвон':
+                            if(missed_calls.hasOwnProperty(call.client))
+                            {
+                                missed_calls[call.client].nedozvon_cnt++;
+                                missed_calls[call.client].last_manager_call=call;
+                            }
+                            break;
+                        default:
+                            if(missed_calls.hasOwnProperty(call.client))
+                            {
+                                missed_calls[call.client].last_manager_call=call;
+                                missed_calls[call.client].last_manager_call_time = moment.unix(call.start).format('DD.MM HH:mm');
+                                if(call.call_type==='Исходящий')
+                                    missed_calls[call.client].nedozvon_cnt++;
+                                //Перенос по значению
+                                proceeded_clients[call.client]=JSON.parse(JSON.stringify(missed_calls[call.client]));
+                                delete missed_calls[call.client];
+                            }
+
+                            break;
+                    }
+                });
+                //Формирование сообщения
+                console.log(`missed_calls: ${JSON.stringify(missed_calls)}`);
+                console.log(`proceeded_clients: ${JSON.stringify(proceeded_clients)}`);
+                //Вывод пропущенных
+                let i=1;
+                for(let client in missed_calls)
+                    message += `${i++}. ${client} ( ${missed_calls[client].last_missed_call_time} )\nПопыток дозвона: ${missed_calls[client].nedozvon_cnt}\nЛиния: ${missed_calls[client].last_missed_call.line_number} \n---------------------------\n`;
+                //Вывод обработанных
+                if(i===1) message+='Нет пропущенных вызовов\n';
+                if(proceeded_clients.length)
+                {
+                    message+='Удалось дозвониться:\n'
+                    let i=1;
+                    for(let client in missed_calls)
+                    {
+                        if (proceeded_clients[client].last_manager_call.start<fields.time_from_unix||proceeded_clients[client].last_manager_call.start>fields.time_to_unix)
+                            continue
+                        let manager = proceeded_clients[client].last_manager_call.person!==null?`\nМенеджер: ${proceeded_clients[client].last_manager_call.person}`:'';
+                        let nedozvon_cnt = proceeded_clients[client].nedozvon_cnt?`\nПопыток дозвона: ${proceeded_clients[client].nedozvon_cnt}`:'';
+                        message += `${i++}. ${client} ( ${proceeded_clients[client].last_manager_call_time} )${nedozvon_cnt}\nЛиния: ${proceeded_clients[client].last_manager_call.line_number}${manager}\n---------------------------\n`;
+                    }
+                }
+                return message;
+            }
+            else
+                message=`Нет пропущенных за период с ${from} ${fields.time_from} по ${to} ${fields.time_to}.`;
+        }
         let options = {
             reply_markup: JSON.stringify({
                 inline_keyboard: [
@@ -592,7 +696,7 @@ class Menu {
             }
 
             if (!orderTotalCount)
-                message = `Нет заказов за период с ${fields.from} по ${fields.to}.`;
+                message = `Нет заказов за период.`;
             return message;
         } catch (e) {
             console.log(`Ошибка в функции renderOrders:${e}`);
