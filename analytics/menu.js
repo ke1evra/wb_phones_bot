@@ -139,6 +139,8 @@ class Menu {
                         }
                     });
                     //Формирование сообщения
+                    console.log(`missed_calls: ${missed_calls}`);
+                    console.log(`proceeded_clients: ${proceeded_clients}`);
                     //Вывод пропущенных
                     let i=1;
                     for(let client in missed_calls)
