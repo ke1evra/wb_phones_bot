@@ -115,15 +115,18 @@ class Menu {
 
                 messageData[numberToManager[item.person]]['basic_info'] = {}
                 messageData[numberToManager[item.person]]['basic_info']['total_calls_count'] = 0
+                messageData[numberToManager[item.person]]['basic_info']['in_calls_time']=0
 
                 messageData[numberToManager[item.person]]['incoming_calls_info'] = {}
                 messageData[numberToManager[item.person]]['incoming_calls_info']['calls_count'] = 0
+                messageData[numberToManager[item.person]]['incoming_calls_info']['in_calls_time']=0
 
                 messageData[numberToManager[item.person]]['failed_incoming_calls_info'] = {}
                 messageData[numberToManager[item.person]]['failed_incoming_calls_info']['calls_count'] = 0
 
                 messageData[numberToManager[item.person]]['outcoming_calls_info'] = {}
                 messageData[numberToManager[item.person]]['outcoming_calls_info']['calls_count'] = 0
+                messageData[numberToManager[item.person]]['outcoming_calls_info']['in_calls_time']=0
 
                 messageData[numberToManager[item.person]]['failed_outcoming_calls_info'] = {}
                 messageData[numberToManager[item.person]]['failed_outcoming_calls_info']['calls_count'] = 0
@@ -133,9 +136,11 @@ class Menu {
             switch (item.call_type) {
                 case "inComing":
                     messageData[numberToManager[item.person]]['incoming_calls_info']['calls_count']++
+                    messageData[numberToManager[item.person]]['incoming_calls_info']['in_calls_time']+=moment(item.finish_time,"HH:mm:ss").diff(moment(moment(item.start_time,"HH:mm:ss")),"seconds")
                     break
                 case "outComing":
                     messageData[numberToManager[item.person]]['outcoming_calls_info']['calls_count']++
+                    messageData[numberToManager[item.person]]['outcoming_calls_info']['in_calls_time']+=moment(item.finish_time,"HH:mm:ss").diff(moment(moment(item.start_time,"HH:mm:ss")),"seconds")
                     break
                 case "inComingFail":
                     messageData[numberToManager[item.person]]['failed_incoming_calls_info']['calls_count']++
