@@ -263,7 +263,7 @@ class Menu {
             messageData['all_managers']['basic_info']['total_calls_count']++
             if (item.call_type === 'inComing') {
                 const callTime = moment(item.end, "HH:mm:ss").diff(moment(moment(item.answer, "HH:mm:ss")), "seconds")
-                const answerTime = moment(item.answer, "HH:mm:ss").diff(moment(moment(item.start, "HH:mm:ss")), "seconds")
+                const answerTime = moment(item.answer).diff(moment(moment(item.start, "HH:mm:ss")), "seconds")
 
                 messageData[numberToManager[item.person]]['incoming_calls_info']['calls_count']++
                 messageData[numberToManager[item.person]]['incoming_calls_info']['in_calls_time'] += callTime
