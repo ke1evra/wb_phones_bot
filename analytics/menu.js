@@ -161,7 +161,7 @@ class Menu {
                 return message;
             }
             else
-                message=`Нет вызовов за период с ${from} ${fields.time_from} по ${to} ${fields.time_to}.`;
+                message=`Нет пропущенных за период с ${from} ${fields.time_from} по ${to} ${fields.time_to}.`;
         }
         let options = {
             reply_markup: JSON.stringify({
