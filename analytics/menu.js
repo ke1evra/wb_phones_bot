@@ -297,8 +297,8 @@ class Menu {
         });
         for (let manager in messageData) {
             if (manager !== "all_managers") {
-                messageData[manager]['basic_info']['calls_count_percent'] = messageData[manager]['basic_info']['total_calls_count'] * 100 / messageData['all_managers']['total_calls_count']
-                messageData[manager]['basic_info']['in_calls_time_percent'] = messageData[manager]['basic_info']['in_calls_time'] * 100 / messageData['all_managers']['in_calls_time']
+                messageData[manager]['basic_info']['calls_count_percent'] = messageData[manager]['basic_info']['total_calls_count'] * 100 / messageData['all_managers']['basic_info']['total_calls_count']
+                messageData[manager]['basic_info']['in_calls_time_percent'] = messageData[manager]['basic_info']['in_calls_time'] * 100 / messageData['all_managers']['basic_info']['in_calls_time']
             }
         }
         console.log(messageData)
