@@ -129,7 +129,7 @@ class Menu {
                 messageData[numberToManager[item.person]]['failed_outcoming_calls_info']['calls_count'] = 0
 
             }
-            messageData[numberToManager[item.person]]['basic_info']['total_calls']++
+            messageData[numberToManager[item.person]]['basic_info']['total_calls_count']++
             switch (item.call_type) {
                 case "inComing":
                     messageData[numberToManager[item.person]]['incoming_calls_info']['calls_count']++
