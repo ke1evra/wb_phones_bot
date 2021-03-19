@@ -94,6 +94,7 @@ class Menu {
             if (calls.data.length) {
                 let missed_calls = {};
                 let proceeded_clients = {};
+                let proceeded_count=0;
                 //Обработка звонков
                 calls.data.forEach(call => {
                     switch (call.call_type) {
@@ -126,6 +127,7 @@ class Menu {
                                     missed_calls[call.client].nedozvon_cnt++;
                                 //Перенос по значению
                                 proceeded_clients[call.client] = JSON.parse(JSON.stringify(missed_calls[call.client]));
+                                proceeded_count++;
                                 delete missed_calls[call.client];
                             }
 
@@ -141,7 +143,7 @@ class Menu {
                     message += `${i++}. ${client} ( ${missed_calls[client].last_missed_call_time} )\nПопыток дозвона: ${missed_calls[client].nedozvon_cnt}\nЛиния: ${missed_calls[client].last_missed_call.line_number} \n---------------------------\n`;
                 //Вывод обработанных
                 if (i === 1) message += 'Нет пропущенных вызовов\n';
-                if (proceeded_clients.length) {
+                if (proceeded_count) {
                     message += 'Удалось дозвониться:\n'
                     let i = 1;
                     for (let client in missed_calls) {
