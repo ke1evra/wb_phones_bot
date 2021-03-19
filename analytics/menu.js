@@ -350,7 +350,7 @@ class Menu {
                     message += `\nНедозвонов: ${messageData[manager]['failed_outcoming_calls_info']['calls_count']}, среднее время ожидания — ${messageData[manager]['failed_outcoming_calls_info']['avg_waiting_time']}`
                 }
 
-                `\n\nЗанятость: ${messageData[manager]['basic_info']['business']}`
+                message += `\n\nЗанятость: ${messageData[manager]['basic_info']['business']}%`
             }
         }
         let options = {
