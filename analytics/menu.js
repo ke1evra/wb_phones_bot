@@ -74,25 +74,25 @@ class Menu {
         const menu = [];
         // console.log(data);
 
-            //Только пропущенные
-            if (!data.data.length)
-                message = 'Нет пропущенных вызовов';
-            data.data.map((item, index) => {
-                const orderNum = `${item.order_number ? '\nНомер заказа: ' + item.order_number : ''}`;
-                const clientName = `${item.client_name ? ' | ' + item.client_name : ''}`;
-                const missedAt = moment(item.missed_at).format('DD.MM HH:mm');
-                message += `${index + 1}. ${item.client} ( ${missedAt} )\nПопыток дозвона: ${item.nedozvon_cnt}\nЛиния: ${item.line_number}${orderNum}${clientName} \n---------------------------\n`;
-                menu.push(new Button(item.client_name, 'some cb'))
-            });
+        //Только пропущенные
+        if (!data.data.length)
+            message = 'Нет пропущенных вызовов';
+        data.data.map((item, index) => {
+            const orderNum = `${item.order_number ? '\nНомер заказа: ' + item.order_number : ''}`;
+            const clientName = `${item.client_name ? ' | ' + item.client_name : ''}`;
+            const missedAt = moment(item.missed_at).format('DD.MM HH:mm');
+            message += `${index + 1}. ${item.client} ( ${missedAt} )\nПопыток дозвона: ${item.nedozvon_cnt}\nЛиния: ${item.line_number}${orderNum}${clientName} \n---------------------------\n`;
+            menu.push(new Button(item.client_name, 'some cb'))
+        });
         if (request_type === 'hours') {
             //Более долгий, но точный запрос для подсчёта статистики вручную
-            to=moment(to).add(1,'day');
+            to = moment(to).add(1, 'day');
             const calls = await API.getCalls(fields.days, from, to.format("YYYY-MM-DD"));
-            to=to.add(-1,'day').format("YYYY-MM-DD");
+            to = to.add(-1, 'day').format("YYYY-MM-DD");
             if (calls.data.length) {
                 let missed_calls = {};
                 let proceeded_clients = {};
-                let proceeded_count=0;
+                let proceeded_count = 0;
                 //Обработка звонков
                 calls.data.forEach(call => {
                     switch (call.call_type) {
@@ -142,7 +142,7 @@ class Menu {
                         console.log(`Время:${proceeded_clients[client].last_manager_call.start}\nДо:${fields.time_from_unix}\nПосле:${fields.time_to_unix}`);
                         if (proceeded_clients[client].last_manager_call.start < fields.time_from_unix || proceeded_clients[client].last_manager_call.start > fields.time_to_unix)
                             continue
-                        if(i===1) message += '\nУдалось дозвониться:\n'
+                        if (i === 1) message += '\nУдалось дозвониться:\n'
                         let manager = proceeded_clients[client].last_manager_call.person !== null ? `\nМенеджер: ${proceeded_clients[client].last_manager_call.person}` : '';
                         let nedozvon_cnt = proceeded_clients[client].nedozvon_cnt ? `\nПопыток дозвона: ${proceeded_clients[client].nedozvon_cnt}` : '';
                         message += `${i++}. ${client} ( ${proceeded_clients[client].last_manager_call_time} )${nedozvon_cnt}\nЛиния: ${proceeded_clients[client].last_manager_call.line_number}${manager}\n---------------------------\n`;
@@ -277,7 +277,7 @@ class Menu {
                 messageData[numberToManager[item.person]]['outcoming_calls_info']['in_waiting_time'] += waitingTime
 
                 messageData[numberToManager[item.person]]['basic_info']['in_calls_time'] += callTime
-                messageData[numberToManager[item.person]]['basic_info']['in_waiting_time']+=waitingTime
+                messageData[numberToManager[item.person]]['basic_info']['in_waiting_time'] += waitingTime
 
                 messageData['all_managers']['outcoming_calls_info']['calls_count']++
                 messageData['all_managers']['outcoming_calls_info']['in_calls_time'] += callTime
@@ -327,11 +327,23 @@ class Menu {
             }
         }
         console.log(messageData)
-        message+=`Звонков совершено: ${messageData.all_managers.basic_info.total_calls_count}\n`+
-            `Средняя продолжительность звонка: ${messageData.all_managers.basic_info.avg_call_duration}\n`+
-            `Среднее время ответа: ${messageData.all_managers.incoming_calls_info.avg_time_to_answer}\n`+
-            `Процент пропущенных вызовов: ${messageData.all_managers.failed_incoming_calls_info.calls_count_percentage}\n`+
+        message += `Звонков совершено: ${messageData.all_managers.basic_info.total_calls_count}\n` +
+            `Средняя продолжительность звонка: ${messageData.all_managers.basic_info.avg_call_duration}\n` +
+            `Среднее время ответа: ${messageData.all_managers.incoming_calls_info.avg_time_to_answer}\n` +
+            `Процент пропущенных вызовов: ${messageData.all_managers.failed_incoming_calls_info.calls_count_percentage}%\n` +
             `Среднее время ожидания до сброса при исходящем вызове: ${messageData.all_managers.failed_outcoming_calls_info.avg_waiting_time}`
+        for (let manager in messageData) {
+            if (manager !== "all_managers") {
+                message += `\n\n----------------------\n${manager}\n`+
+                    `Всего ${messageData[manager]['basic_info']['total_calls_count']} (${messageData[manager]['basic_info']['calls_count_percentage']}%) звонков, из них:\n`+
+                    `Входящих: ${messageData[manager]['incoming_calls_info']['calls_count']}, среднее время ответа — ${messageData[manager]['incoming_calls_info']['avg_time_to_answer']}\n`+
+                    `Исходящих: ${messageData[manager]['outcoming_calls_info']['calls_count']}\n`+
+                    `Пропущенных: ${messageData[manager]['failed_incoming_calls_info']['calls_count']} (${messageData[manager]['failed_incoming_calls_info']['calls_count_percentage']}%)\n`+
+                    `Недозвонов: ${messageData[manager]['failed_outcoming_calls_info']['calls_count']}, среднее время ожидания — ${messageData[manager]['failed_outcoming_calls_info']['avg_waiting_time']}\n\n`+
+
+                    `Занятость: ${messageData[manager]['basic_info']['business']}`
+            }
+        }
         let options = {
             reply_markup: JSON.stringify({
                 inline_keyboard: [
