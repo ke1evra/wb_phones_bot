@@ -295,10 +295,24 @@ class Menu {
 
             menu.push(new Button(item.client_name, 'some cb'))
         });
+
+        messageData['all_managers']['basic_info']['avg_call_duration'] = (messageData['all_managers']['basic_info']['in_calls_time'] / messageData['all_managers']['basic_info']['total_calls_count']).toFixed(2)
+        messageData['all_managers']['incoming_calls_info']['avg_time_to_answer'] = (messageData['all_managers']['incoming_calls_info']['time_to_answer'] / messageData['all_managers']['incoming_calls_info']['calls_count']).toFixed(2)
+        messageData['all_managers']['failed_incoming_calls_info']['calls_count_percentage'] = (messageData['all_managers']['failed_incoming_calls_info']['failed_incoming_calls_info']['calls_count'] * 100 / messageData['all_managers']['basic_info']['total_calls_count']).toFixed(2)
+        messageData['all_managers']['failed_outcoming_calls_info']['avg_waiting_time'] = (messageData['all_managers']['failed_outcoming_calls_info']['in_waiting_time'] * 100 / messageData['all_managers']['failed_outcoming_calls_info']['calls_count']).toFixed(2)
+
         for (let manager in messageData) {
             if (manager !== "all_managers") {
-                messageData[manager]['basic_info']['calls_count_percent'] = messageData[manager]['basic_info']['total_calls_count'] * 100 / messageData['all_managers']['basic_info']['total_calls_count']
-                messageData[manager]['basic_info']['in_calls_time_percent'] = messageData[manager]['basic_info']['in_calls_time'] * 100 / messageData['all_managers']['basic_info']['in_calls_time']
+                messageData[manager]['basic_info']['calls_count_percentage'] = (messageData[manager]['basic_info']['total_calls_count'] * 100 / messageData['all_managers']['basic_info']['total_calls_count']).toFixed(2)
+                messageData[manager]['basic_info']['in_calls_time_percentage'] = (messageData[manager]['basic_info']['in_calls_time'] * 100 / messageData['all_managers']['basic_info']['in_calls_time']).toFixed(2)
+                messageData[manager]['basic_info']['business'] = (messageData[manager]['basic_info']['in_calls_time'] * 100 / (7.5 * fields.days * 60 * 60)).toFixed(2)
+
+                messageData[manager]['incoming_calls_info']['calls_count_percentage'] = (messageData[manager]['incoming_calls_info']['calls_count'] * 100 / messageData['all_managers']['incoming_calls_info']['calls_count']).toFixed(2)
+                messageData[manager]['incoming_calls_info']['avg_time_to_answer'] = (messageData[manager]['incoming_calls_info']['time_to_answer'] / messageData[manager]['incoming_calls_info']['calls_count']).toFixed(2)
+
+                messageData[manager]['failed_incoming_calls_info']['calls_count_percentage'] = (messageData[manager]['failed_incoming_calls_info']['calls_count'] * 100 / messageData[manager]['basic_info']['total_calls_count']).toFixed(2)
+
+                messageData[manager]['failed_outcoming_calls_info']['avg_waiting_time'] = (messageData[manager]['failed_outcoming_calls_info']['in_waiting_time'] * 100 / messageData[manager]['failed_outcoming_calls_info']['calls_count']).toFixed(2)
             }
         }
         console.log(messageData)
