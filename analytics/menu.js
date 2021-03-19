@@ -88,7 +88,9 @@ class Menu {
             });
         } else {
             //Более долгий, но точный запрос для подсчёта статистики вручную
-            const calls = await API.getCalls(fields.days, from, to);
+            to=moment(to).add(1,'day');
+            const calls = await API.getCalls(fields.days, from, to.format("YYYY-MM-DD"));
+            to=to.add(-1,'day').format("YYYY-MM-DD");
             if (calls.data.length) {
                 let missed_calls = {};
                 let proceeded_clients = {};
