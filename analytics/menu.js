@@ -504,7 +504,7 @@ class Menu {
             colour_id = colour_id > 7 ? 0 : colour_id;
             let msg = `${title} (${(value * 100).toFixed(2)}%)\n`;
             let counter = 1;
-            while (value > 0.05) {
+            while (value >= 0.05) {
                 msg += colours[colour_id][0];
                 counter++;
                 value -= 0.05;
