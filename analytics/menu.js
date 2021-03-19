@@ -327,6 +327,11 @@ class Menu {
             }
         }
         console.log(messageData)
+        message+=`Звонков совершено: ${messageData.all_managers.basic_info.total_calls_count}\n`+
+            `Средняя продолжительность звонка: ${messageData.all_managers.basic_info.avg_call_duration}\n`+
+            `Среднее время ответа: ${messageData.all_managers.incoming_calls_info.avg_time_to_answer}\n`+
+            `Процент пропущенных вызовов: ${messageData.all_managers.failed_incoming_calls_info.calls_count_percentage}\n`+
+            `Среднее время ожидания до сброса при исходящем вызове: ${messageData.all_managers.failed_outcoming_calls_info.avg_waiting_time}`
         let options = {
             reply_markup: JSON.stringify({
                 inline_keyboard: [
