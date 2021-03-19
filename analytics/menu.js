@@ -1012,6 +1012,8 @@ class Menu {
                 for(let i=0;i<number;i++)
                     for(let j=0;j<multiplier;j++)
                         msg+='🟩';
+                for(let i=0;i<20-number*multiplier;i++)
+                    msg+='⬜️';
                 return msg;
             }
             //Формирование сообщения
@@ -1037,7 +1039,7 @@ class Menu {
                         message += `\n${statistics.calls[i][0]} — ${getMultipleSquaresByNumber(statistics.calls[i][1].toString(), statistics.calls[i][1], statistics.max_calls_count)}`;
             }
             if (statistics['orders_count']) {
-                message += '------------------------\nЗаказы\n';
+                message += '\n------------------------\nЗаказы\n';
                 for (let i = 0; i < statistics.orders.length; i++)
                     if(statistics.orders[i][1])
                         message += `\n${statistics.orders[i][0]} — ${getMultipleSquaresByNumber(statistics.orders[i][1].toString(), statistics.orders[i][1], statistics.max_orders_count)}`;
