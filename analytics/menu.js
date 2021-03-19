@@ -507,7 +507,7 @@ class Menu {
             value=Math.round(value*1000);
             console.log(`value start: ${value}`);
             let counter = 0;
-            while (value>50) {
+            while (value>=50) {
                 msg += colours[colour_id][0];
                 counter++;
                 value -= 50;
