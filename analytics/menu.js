@@ -72,18 +72,16 @@ class Menu {
         }
         message += ':\n---------------------------\n';
         const menu = [];
-        // console.log(data);
-
-        //Только пропущенные
-        if (!data.data.length)
-            message = 'Нет пропущенных вызовов';
-        data.data.map((item, index) => {
-            const orderNum = `${item.order_number ? '\nНомер заказа: ' + item.order_number : ''}`;
-            const clientName = `${item.client_name ? ' | ' + item.client_name : ''}`;
-            const missedAt = moment(item.missed_at).format('DD.MM HH:mm');
-            message += `${index + 1}. ${item.client} ( ${missedAt} )\nПопыток дозвона: ${item.nedozvon_cnt}\nЛиния: ${item.line_number}${orderNum}${clientName} \n---------------------------\n`;
-            menu.push(new Button(item.client_name, 'some cb'))
-        });
+            //Только пропущенные
+            if (!data.data.length)
+                message = 'Нет пропущенных вызовов';
+            data.data.map((item, index) => {
+                const orderNum = `${item.order_number ? '\nНомер заказа: ' + item.order_number : ''}`;
+                const clientName = `${item.client_name ? ' | ' + item.client_name : ''}`;
+                const missedAt = moment(item.missed_at).format('DD.MM HH:mm');
+                message += `${index + 1}. ${item.client} ( ${missedAt} )\nПопыток дозвона: ${item.nedozvon_cnt}\nЛиния: ${item.line_number}${orderNum}${clientName} \n---------------------------\n`;
+                menu.push(new Button(item.client_name, 'some cb'))
+            });
         if (request_type === 'hours') {
             //Более долгий, но точный запрос для подсчёта статистики вручную
             to = moment(to).add(1, 'day');
@@ -128,13 +126,9 @@ class Menu {
                                 proceeded_count++;
                                 delete missed_calls[call.client];
                             }
-
                             break;
                     }
                 });
-                //Формирование сообщения
-                //console.log(`missed_calls: ${JSON.stringify(missed_calls)}`);
-                //console.log(`proceeded_clients: ${JSON.stringify(proceeded_clients)}`);
                 //Вывод обработанных
                 if (proceeded_count) {
                     let i = 1;
@@ -142,10 +136,10 @@ class Menu {
                         console.log(`Время:${proceeded_clients[client].last_manager_call.start}\nДо:${fields.time_from_unix}\nПосле:${fields.time_to_unix}`);
                         if (proceeded_clients[client].last_manager_call.start < fields.time_from_unix || proceeded_clients[client].last_manager_call.start > fields.time_to_unix)
                             continue
-                        if (i === 1) message += '\nУдалось дозвониться:\n'
+                        if(i===1) message += '\nУдалось дозвониться:\n'
                         let manager = proceeded_clients[client].last_manager_call.person !== null ? `\nМенеджер: ${proceeded_clients[client].last_manager_call.person}` : '';
                         let nedozvon_cnt = proceeded_clients[client].nedozvon_cnt ? `\nПопыток дозвона: ${proceeded_clients[client].nedozvon_cnt}` : '';
-                        let line_number = proceeded_clients[client].last_manager_call.line_number !== '' && proceeded_clients[client].last_manager_call.line_number != null ? `\nЛиния: ${proceeded_clients[client].last_manager_call.line_number}` : '';
+                        let line_number = proceeded_clients[client].last_manager_call.line_number!=='' && proceeded_clients[client].last_manager_call.line_number != null ? `\nЛиния: ${proceeded_clients[client].last_manager_call.line_number}`:'';
                         message += `${i++}. ${client} ( ${proceeded_clients[client].last_manager_call_time} )${nedozvon_cnt}${line_number}${manager}\n---------------------------\n`;
                     }
                 }
@@ -981,6 +975,8 @@ class Menu {
             statistics['orders'] = [];
             statistics['calls_count'] = 0;
             statistics['orders_count'] = 0;
+            statistics['max_calls_count'] = 0;
+            statistics['max_orders_count'] = 0;
             for (let i = 0; i < 24; i++) {
                 let number = i.toString();
                 if (i < 10)
@@ -998,6 +994,8 @@ class Menu {
                     menu.searchPushOrdersArrays(moment(order.created_at).format('HH'), statistics['orders']);
                     statistics['orders_count']++;
                 });
+            statistics['calls'].forEach(item=>{statistics.max_calls_count=Math.max(item[1],statistics.max_calls_count)});
+            statistics['orders'].forEach(item=>{statistics.max_orders_count=Math.max(item[1],statistics.max_orders_count)});
             if (!statistics.calls_count && !statistics.orders_count) {
                 if (request_type === 'days')
                     return `Нет данных за период ${fields.days > 0 ?
@@ -1013,16 +1011,17 @@ class Menu {
             message += ' было совершено:\n';
             message += `${statistics['calls_count'] ? `${statistics['calls_count']} звонков\n` : ''}`;
             message += `${statistics['orders_count'] ? `${statistics['orders_count']} заказов\n` : ''}`;
-
             if (statistics['calls_count']) {
                 message += '------------------------\nЗвонки\n';
                 for (let i = 0; i < statistics.calls.length; i++)
-                    message += `\n${statistics.calls[i][0]} — ${menu.renderPercentage(statistics.calls[i][1].toString(), statistics.calls[i][1] / statistics.calls_count)}`;
+                    if(statistics.calls[i][1])
+                        message += `\n${statistics.calls[i][0]} — ${menu.renderPercentage(statistics.calls[i][1].toString(), statistics.calls[i][1] / statistics.max_calls_count)}`;
             }
             if (statistics['orders_count']) {
                 message += '------------------------\nЗаказы\n';
                 for (let i = 0; i < statistics.orders.length; i++)
-                    message += `\n${statistics.orders[i][0]} — ${menu.renderPercentage(statistics.orders[i][1].toString(), statistics.orders[i][1] / statistics.orders_count)}`;
+                    if(statistics.orders[i][1])
+                        message += `\n${statistics.orders[i][0]} — ${menu.renderPercentage(statistics.orders[i][1].toString(), statistics.orders[i][1] / statistics.max_orders_count)}`;
             }
             return message;
         } catch (e) {
