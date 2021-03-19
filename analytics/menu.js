@@ -508,10 +508,10 @@ class Menu {
             while (value >= 0.05) {
                 msg += colours[colour_id][0];
                 counter++;
-                value -= 0.05;
+                value -= 0.050000000000000000000000000000;
             }
             console.log(`value after: ${value}`);
-            if (value>0.00001)
+            if (value>0.0000001)
                 msg += value >= 0.025 ? colours[colour_id][1] : '⚪️';
             else
                 msg += '⬜️';
