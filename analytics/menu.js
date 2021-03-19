@@ -145,7 +145,7 @@ class Menu {
                         if (i === 1) message += '\nУдалось дозвониться:\n'
                         let manager = proceeded_clients[client].last_manager_call.person !== null ? `\nМенеджер: ${proceeded_clients[client].last_manager_call.person}` : '';
                         let nedozvon_cnt = proceeded_clients[client].nedozvon_cnt ? `\nПопыток дозвона: ${proceeded_clients[client].nedozvon_cnt}` : '';
-                        let line_number = proceeded_clients[client].last_manager_call.line_number!=='' && proceeded_clients[client].last_manager_call.line_number != null ? `\nЛиния: ${proceeded_clients[client].last_manager_call.line_number}`:'';
+                        let line_number = proceeded_clients[client].last_manager_call.line_number !== '' && proceeded_clients[client].last_manager_call.line_number != null ? `\nЛиния: ${proceeded_clients[client].last_manager_call.line_number}` : '';
                         message += `${i++}. ${client} ( ${proceeded_clients[client].last_manager_call_time} )${nedozvon_cnt}${line_number}${manager}\n---------------------------\n`;
                     }
                 }
@@ -335,14 +335,22 @@ class Menu {
             `Среднее время ожидания до сброса при исходящем вызове: ${messageData.all_managers.failed_outcoming_calls_info.avg_waiting_time}`
         for (let manager in messageData) {
             if (manager !== "all_managers") {
-                message += `\n\n----------------------\n${manager}\n`+
-                    `Всего ${messageData[manager]['basic_info']['total_calls_count']} (${messageData[manager]['basic_info']['calls_count_percentage']}%) звонков, из них:\n`+
-                    `Входящих: ${messageData[manager]['incoming_calls_info']['calls_count']}, среднее время ответа — ${messageData[manager]['incoming_calls_info']['avg_time_to_answer']}\n`+
-                    `Исходящих: ${messageData[manager]['outcoming_calls_info']['calls_count']}\n`+
-                    `Пропущенных: ${messageData[manager]['failed_incoming_calls_info']['calls_count']} (${messageData[manager]['failed_incoming_calls_info']['calls_count_percentage']}%)\n`+
-                    `Недозвонов: ${messageData[manager]['failed_outcoming_calls_info']['calls_count']}, среднее время ожидания — ${messageData[manager]['failed_outcoming_calls_info']['avg_waiting_time']}\n\n`+
+                message += `\n\n----------------------\n${manager}\n` +
+                    `Всего ${messageData[manager]['basic_info']['total_calls_count']} (${messageData[manager]['basic_info']['calls_count_percentage']}%) звонков, из них:`
+                if (messageData[manager]['incoming_calls_info']['calls_count']) {
+                    message += `\nВходящих: ${messageData[manager]['incoming_calls_info']['calls_count']}, среднее время ответа — ${messageData[manager]['incoming_calls_info']['avg_time_to_answer']}`
+                }
+                if (messageData[manager]['outcoming_calls_info']['calls_count']) {
+                    message += `\nИсходящих: ${messageData[manager]['outcoming_calls_info']['calls_count']}`
+                }
+                if (messageData[manager]['failed_incoming_calls_info']['calls_count']) {
+                    message += `\nПропущенных: ${messageData[manager]['failed_incoming_calls_info']['calls_count']} (${messageData[manager]['failed_incoming_calls_info']['calls_count_percentage']}%)`
+                }
+                if (messageData[manager]['failed_outcoming_calls_info']['calls_count']) {
+                    message += `\nНедозвонов: ${messageData[manager]['failed_outcoming_calls_info']['calls_count']}, среднее время ожидания — ${messageData[manager]['failed_outcoming_calls_info']['avg_waiting_time']}`
+                }
 
-                    `Занятость: ${messageData[manager]['basic_info']['business']}`
+                `\n\nЗанятость: ${messageData[manager]['basic_info']['business']}`
             }
         }
         let options = {
