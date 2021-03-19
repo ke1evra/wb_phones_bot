@@ -146,7 +146,7 @@ class Menu {
                 if (proceeded_count) {
                     message += 'Удалось дозвониться:\n'
                     let i = 1;
-                    for (let client in missed_calls) {
+                    for (let client in proceeded_clients) {
                         if (proceeded_clients[client].last_manager_call.start < fields.time_from_unix || proceeded_clients[client].last_manager_call.start > fields.time_to_unix)
                             continue
                         let manager = proceeded_clients[client].last_manager_call.person !== null ? `\nМенеджер: ${proceeded_clients[client].last_manager_call.person}` : '';
