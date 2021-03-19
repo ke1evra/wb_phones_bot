@@ -1004,7 +1004,7 @@ class Menu {
             {
                 if(max_number>20)
                     return menu.renderPercentage(title,number/max_number);
-                const multiplier=Math.floor(max_number/number);
+                const multiplier=Math.floor(20/max_number);
                 let msg=`${title} (${(number/max_number * 100).toFixed(2)}%)\n`;
                 console.log(`multiplier: ${multiplier}`);
                 console.log(`number: ${number}`);
