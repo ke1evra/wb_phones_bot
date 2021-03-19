@@ -145,7 +145,8 @@ class Menu {
                         if(i===1) message += '\nУдалось дозвониться:\n'
                         let manager = proceeded_clients[client].last_manager_call.person !== null ? `\nМенеджер: ${proceeded_clients[client].last_manager_call.person}` : '';
                         let nedozvon_cnt = proceeded_clients[client].nedozvon_cnt ? `\nПопыток дозвона: ${proceeded_clients[client].nedozvon_cnt}` : '';
-                        message += `${i++}. ${client} ( ${proceeded_clients[client].last_manager_call_time} )${nedozvon_cnt}\nЛиния: ${proceeded_clients[client].last_manager_call.line_number}${manager}\n---------------------------\n`;
+                        let line_number = roceeded_clients[client].last_manager_call.line_number!=='' && roceeded_clients[client].last_manager_call.line_number != null ? `\nЛиния: ${proceeded_clients[client].last_manager_call.line_number}`:'';
+                        message += `${i++}. ${client} ( ${proceeded_clients[client].last_manager_call_time} )${nedozvon_cnt}${line_number}${manager}\n---------------------------\n`;
                     }
                 }
                 return message;
