@@ -501,7 +501,7 @@ class Menu {
                 ['⬛️', '⚫️'],//чёрный
                 ['🟫', '🟤']//коричневый
             ];
-            console.log(`value${value}`);
+            console.log(`value start: ${value}`);
             colour_id = colour_id > 7 ? 0 : colour_id;
             let msg = `${title} (${(value * 100).toFixed(2)}%)\n`;
             let counter = 1;
@@ -510,6 +510,7 @@ class Menu {
                 counter++;
                 value -= 0.05;
             }
+            console.log(`value after: ${value}`);
             if (value>0.00001)
                 msg += value >= 0.025 ? colours[colour_id][1] : '⚪️';
             else
