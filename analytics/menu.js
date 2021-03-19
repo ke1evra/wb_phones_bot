@@ -505,14 +505,12 @@ class Menu {
             let msg = `${title} (${(value * 100).toFixed(2)}%)\n`;
             //Будем вычислять в целых числах
             value=Math.round(value*1000);
-            console.log(`value start: ${value}`);
             let counter = 0;
             while (value>=50) {
                 msg += colours[colour_id][0];
                 counter++;
                 value -= 50;
             }
-            console.log(`value after: ${value}`);
             if(value)
             {
                 msg += value >= 25 ? colours[colour_id][1] : '⚪️';
@@ -1001,6 +999,19 @@ class Menu {
                 });
             statistics['calls'].forEach(item=>{statistics.max_calls_count=Math.max(item[1],statistics.max_calls_count)});
             statistics['orders'].forEach(item=>{statistics.max_orders_count=Math.max(item[1],statistics.max_orders_count)});
+            //Функция для отрисовки квадратиков
+            function getMultipleSquaresByNumber(title, number, max_number)
+            {
+                if(max_number>20)
+                    return menu.renderPercentage(title,number/max_number);
+                const multiplier=Math.round(max_number/number);
+                let msg=`${title} (${(number/max_number * 100).toFixed(2)}%)\n`;
+                for(let i=0;i<number;i++)
+                    for(let j=0;j<multiplier;j++)
+                        msg+='🟩';
+                return msg;
+            }
+            //Формирование сообщения
             if (!statistics.calls_count && !statistics.orders_count) {
                 if (request_type === 'days')
                     return `Нет данных за период ${fields.days > 0 ?
@@ -1020,13 +1031,13 @@ class Menu {
                 message += '------------------------\nЗвонки\n';
                 for (let i = 0; i < statistics.calls.length; i++)
                     if(statistics.calls[i][1])
-                        message += `\n${statistics.calls[i][0]} — ${menu.renderPercentage(statistics.calls[i][1].toString(), statistics.calls[i][1] / statistics.max_calls_count)}`;
+                        message += `\n${statistics.calls[i][0]} — ${getMultipleSquaresByNumber(statistics.calls[i][1].toString(), statistics.calls[i][1], statistics.max_calls_count)}`;
             }
             if (statistics['orders_count']) {
                 message += '------------------------\nЗаказы\n';
                 for (let i = 0; i < statistics.orders.length; i++)
                     if(statistics.orders[i][1])
-                        message += `\n${statistics.orders[i][0]} — ${menu.renderPercentage(statistics.orders[i][1].toString(), statistics.orders[i][1] / statistics.max_orders_count)}`;
+                        message += `\n${statistics.orders[i][0]} — ${getMultipleSquaresByNumber(statistics.orders[i][1].toString(), statistics.orders[i][1], statistics.max_orders_count)}`;
             }
             return message;
         } catch (e) {
