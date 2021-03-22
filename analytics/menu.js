@@ -1000,15 +1000,12 @@ class Menu {
             statistics['calls'].forEach(item=>{statistics.max_calls_count=Math.max(item[1],statistics.max_calls_count)});
             statistics['orders'].forEach(item=>{statistics.max_orders_count=Math.max(item[1],statistics.max_orders_count)});
             //Функция для отрисовки квадратиков
-            function getMultipleSquaresByNumber(title, number, max_number)
+            function getMultipleSquaresByNumber(title, number=1, max_number=number?number:1, total_number=max_number)
             {
                 if(max_number>20)
-                    return menu.renderPercentage(title,number/max_number);
+                    return menu.renderPercentage(title,number/total_number);
                 const multiplier=Math.floor(20/max_number);
-                let msg=`${title} (${(number/max_number * 100).toFixed(2)}%)\n`;
-                console.log(`multiplier: ${multiplier}`);
-                console.log(`number: ${number}`);
-                console.log(`max_number: ${max_number}`);
+                let msg=`${title} (${(number/total_number * 100).toFixed(2)}%)\n`;
                 for(let i=0;i<number;i++)
                     for(let j=0;j<multiplier;j++)
                         msg+='🟩';
@@ -1036,13 +1033,13 @@ class Menu {
                 message += '------------------------\nЗвонки\n';
                 for (let i = 0; i < statistics.calls.length; i++)
                     if(statistics.calls[i][1])
-                        message += `\n${statistics.calls[i][0]} — ${getMultipleSquaresByNumber(statistics.calls[i][1].toString(), statistics.calls[i][1], statistics.max_calls_count)}`;
+                        message += `\n${statistics.calls[i][0]} — ${getMultipleSquaresByNumber(statistics.calls[i][1].toString(), statistics.calls[i][1], statistics.max_calls_count, statistics.calls_count)}`;
             }
             if (statistics['orders_count']) {
                 message += '\n------------------------\nЗаказы\n';
                 for (let i = 0; i < statistics.orders.length; i++)
                     if(statistics.orders[i][1])
-                        message += `\n${statistics.orders[i][0]} — ${getMultipleSquaresByNumber(statistics.orders[i][1].toString(), statistics.orders[i][1], statistics.max_orders_count)}`;
+                        message += `\n${statistics.orders[i][0]} — ${getMultipleSquaresByNumber(statistics.orders[i][1].toString(), statistics.orders[i][1], statistics.max_orders_count, statistics.orders_count)}`;
             }
             return message;
         } catch (e) {
