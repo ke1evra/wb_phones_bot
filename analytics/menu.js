@@ -929,7 +929,12 @@ class Menu {
                     for (let j = 0; j < statistics[call_types[i]].managers.length; j++)
                         message += `\n${statistics[call_types[i]].managers[j][1]} — ${menu.renderPercentage(statistics[call_types[i]].managers[j][0], statistics[call_types[i]].managers[j][1] / statistics[call_types[i]].calls_count)}`
                 } else
-                    message += `\n${menu.formatSecondsAsHHMMSS((statistics[call_types[i]].time_before_finish / statistics[call_types[i]].calls_count).toFixed(2))} — Среднее время до сброса звонка`;
+                {
+                    let time_before_finish=menu.formatSecondsAsHHMMSS((statistics[call_types[i]].time_before_finish / statistics[call_types[i]].calls_count).toFixed(2));
+                    if(time_before_finish==='') time_before_finish='00:00';
+                    message += `\n${time_before_finish} — Среднее время до сброса звонка`;
+
+                }
                 //Блок по причинам окончания звонков
                 /*
                 message += `\n   По причинам окончания:`;
