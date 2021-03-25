@@ -1007,15 +1007,33 @@ class Menu {
             //Функция для отрисовки квадратиков
             function getMultipleSquaresByNumber(title, number=1, max_number=number?number:1, total_number=max_number)
             {
-                if(max_number>20)
-                    return menu.renderPercentage(title,number/total_number);
-                const multiplier=Math.floor(20/max_number);
                 let msg=`${title} (${(number/total_number * 100).toFixed(2)}%)\n`;
-                for(let i=0;i<number;i++)
-                    for(let j=0;j<multiplier;j++)
-                        msg+='🟩';
-                for(let i=0;i<20-number*multiplier;i++)
-                    msg+='⬜️';
+                if(max_number>20)
+                {
+                    let value=Math.round(number/max_number*1000);
+                    let counter = 0;
+                    while (value>=50) {
+                        msg += '🟩';
+                        counter++;
+                        value -= 50;
+                    }
+                    if(value)
+                    {
+                        msg += value >= 25 ? '🟢' : '⚪️';
+                        counter++;
+                    }
+                    for (counter; counter < 20; counter++)
+                        msg += '⬜️';
+                }
+                else
+                {
+                    const multiplier=Math.floor(20/max_number);
+                    for(let i=0;i<number;i++)
+                        for(let j=0;j<multiplier;j++)
+                            msg+='🟩';
+                    for(let i=0;i<20-number*multiplier;i++)
+                        msg+='⬜️';
+                }
                 return msg;
             }
             //Формирование сообщения
