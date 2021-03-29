@@ -191,7 +191,7 @@ class Menu {
         const data = await API.getManagersCalls(fields.days);
         //console.log(data.data.data1);
         //console.log(data.data.incomingByNumber);
-        let message = '```Менеджеры:\n';
+        let message = '\`\`\`\nМенеджеры:\n';
         const menu = [];
         //console.log(data.data["data1"]);
 
@@ -366,8 +366,7 @@ class Menu {
                 message += `\n\nЗанятость: ${messageData[manager]['basic_info']['business']}%`
             }
         }
-        message=message.replace(/\n/g,"```\n```")
-        message+='```'
+        message+='\n\`\`\`'
         let options = {
             reply_markup: JSON.stringify({
                 inline_keyboard: [
