@@ -329,10 +329,9 @@ class Menu {
             `Среднее время ожидания до сброса при исходящем вызове: ${messageData.all_managers.failed_outcoming_calls_info.avg_waiting_time}`
 
         const managersOrdersData = await API.getManagersOrders();
-        console.log(managersOrdersData)
         let ordersByManagers = {}
 
-        for (let order in managersOrdersData) {
+        for (let order of managersOrdersData['data']) {
             if (!ordersByManagers[order['name']] && order['name'] !== 'null') {
                 ordersByManagers[order['name']] = {}
 
