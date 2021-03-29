@@ -85,13 +85,21 @@ class DataManager {
         );
     }
 
-    async getManagers(
+    async getManagersCalls(
         days = 1,
         from = moment().subtract(days, "days").unix(),
         to = moment().endOf("day").unix()
     ) {
         return await axios.get(
             `http://185.211.247.12:3000/mango/day?date_from=${from}&date_to=${to}`
+        );
+    }
+
+    async getManagersOrders(
+        date = moment().format("YYYY-MM-DD"),
+    ) {
+        return await axios.get(
+            `http://185.211.247.12:3000/orders/managers?date=${date}`
         );
     }
 

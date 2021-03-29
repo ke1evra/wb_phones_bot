@@ -188,7 +188,7 @@ class Menu {
         if (typeof fields.days == "undefined" || fields.days == null)
             fields.days = 1;
         if (!fields.days) fields.days++
-        const data = await API.getManagers(fields.days);
+        const data = await API.getManagersCalls(fields.days);
         //console.log(data.data.data1);
         //console.log(data.data.incomingByNumber);
         let message = 'Менеджеры:\n';
@@ -327,6 +327,32 @@ class Menu {
             `Среднее время ответа: ${messageData.all_managers.incoming_calls_info.avg_time_to_answer}\n` +
             `Процент пропущенных вызовов: ${messageData.all_managers.failed_incoming_calls_info.calls_count_percentage}%\n` +
             `Среднее время ожидания до сброса при исходящем вызове: ${messageData.all_managers.failed_outcoming_calls_info.avg_waiting_time}`
+
+        const managersOrdersData = await API.getManagersOrders();
+        let ordersByManagers = {}
+
+        for (let order in managersOrdersData) {
+            if (!ordersByManagers[order['name']]){
+                ordersByManagers[order['name']]={}
+                ordersByManagers[order['name']]['Отгрузить']['count']=0
+                ordersByManagers[order['name']]['Отгрузить']['sum']=0
+
+                ordersByManagers[order['name']]['На склад']['count']=0
+                ordersByManagers[order['name']]['На склад']['sum']=0
+
+                ordersByManagers[order['name']]['Отказ']['count']=0
+                ordersByManagers[order['name']]['Отказ']['sum']=0
+
+                ordersByManagers[order['name']]['Продано']['count']=0
+                ordersByManagers[order['name']]['Продано']['sum']=0
+            } else {
+                ordersByManagers[order['name']][order['action_title']]['count']++
+                ordersByManagers[order['name']][order['action_title']]['sum']+=order['order_sum']
+            }
+        }
+
+        console.log(ordersByManagers)
+
         for (let manager in messageData) {
             if (manager !== "all_managers") {
                 message += `\n\n----------------------\n${manager}\n` +
@@ -444,7 +470,6 @@ class Menu {
             }
             message += `-------------------------\n`
         }
-
 
         const getLogs = {}
         getLogs.number = data.data[0].phone_key
