@@ -72,16 +72,16 @@ class Menu {
         }
         message += ':\n---------------------------\n';
         const menu = [];
-            //Только пропущенные
-            if (!data.data.length)
-                message = 'Нет пропущенных вызовов';
-            data.data.map((item, index) => {
-                const orderNum = `${item.order_number ? '\nНомер заказа: ' + item.order_number : ''}`;
-                const clientName = `${item.client_name ? ' | ' + item.client_name : ''}`;
-                const missedAt = moment(item.missed_at).format('DD.MM HH:mm');
-                message += `${index + 1}. ${item.client} ( ${missedAt} )\nПопыток дозвона: ${item.nedozvon_cnt}\nЛиния: ${item.line_number}${orderNum}${clientName} \n---------------------------\n`;
-                menu.push(new Button(item.client_name, 'some cb'))
-            });
+        //Только пропущенные
+        if (!data.data.length)
+            message = 'Нет пропущенных вызовов';
+        data.data.map((item, index) => {
+            const orderNum = `${item.order_number ? '\nНомер заказа: ' + item.order_number : ''}`;
+            const clientName = `${item.client_name ? ' | ' + item.client_name : ''}`;
+            const missedAt = moment(item.missed_at).format('DD.MM HH:mm');
+            message += `${index + 1}. ${item.client} ( ${missedAt} )\nПопыток дозвона: ${item.nedozvon_cnt}\nЛиния: ${item.line_number}${orderNum}${clientName} \n---------------------------\n`;
+            menu.push(new Button(item.client_name, 'some cb'))
+        });
         if (request_type === 'hours') {
             //Более долгий, но точный запрос для подсчёта статистики вручную
             to = moment(to).add(1, 'day');
@@ -136,10 +136,10 @@ class Menu {
                         console.log(`Время:${proceeded_clients[client].last_manager_call.start}\nДо:${fields.time_from_unix}\nПосле:${fields.time_to_unix}`);
                         if (proceeded_clients[client].last_manager_call.start < fields.time_from_unix || proceeded_clients[client].last_manager_call.start > fields.time_to_unix)
                             continue
-                        if(i===1) message += '\nУдалось дозвониться:\n'
+                        if (i === 1) message += '\nУдалось дозвониться:\n'
                         let manager = proceeded_clients[client].last_manager_call.person !== null ? `\nМенеджер: ${proceeded_clients[client].last_manager_call.person}` : '';
                         let nedozvon_cnt = proceeded_clients[client].nedozvon_cnt ? `\nПопыток дозвона: ${proceeded_clients[client].nedozvon_cnt}` : '';
-                        let line_number = proceeded_clients[client].last_manager_call.line_number!=='' && proceeded_clients[client].last_manager_call.line_number != null ? `\nЛиния: ${proceeded_clients[client].last_manager_call.line_number}`:'';
+                        let line_number = proceeded_clients[client].last_manager_call.line_number !== '' && proceeded_clients[client].last_manager_call.line_number != null ? `\nЛиния: ${proceeded_clients[client].last_manager_call.line_number}` : '';
                         message += `${i++}. ${client} ( ${proceeded_clients[client].last_manager_call_time} )${nedozvon_cnt}${line_number}${manager}\n---------------------------\n`;
                     }
                 }
@@ -329,30 +329,31 @@ class Menu {
             `Среднее время ожидания до сброса при исходящем вызове: ${messageData.all_managers.failed_outcoming_calls_info.avg_waiting_time}`
 
         const managersOrdersData = await API.getManagersOrders();
+        console.log(managersOrdersData)
         let ordersByManagers = {}
 
         for (let order in managersOrdersData) {
-            if (!ordersByManagers[order['name']]){
-                ordersByManagers[order['name']]={}
+            if (!ordersByManagers[order['name']] && order['name'] !== 'null') {
+                ordersByManagers[order['name']] = {}
 
-                ordersByManagers[order['name']]['Отгрузить']={}
-                ordersByManagers[order['name']]['Отгрузить']['count']=0
-                ordersByManagers[order['name']]['Отгрузить']['sum']=0
+                ordersByManagers[order['name']]['Отгрузить'] = {}
+                ordersByManagers[order['name']]['Отгрузить']['count'] = 0
+                ordersByManagers[order['name']]['Отгрузить']['sum'] = 0
 
-                ordersByManagers[order['name']]['На склад']={}
-                ordersByManagers[order['name']]['На склад']['count']=0
-                ordersByManagers[order['name']]['На склад']['sum']=0
+                ordersByManagers[order['name']]['На склад'] = {}
+                ordersByManagers[order['name']]['На склад']['count'] = 0
+                ordersByManagers[order['name']]['На склад']['sum'] = 0
 
-                ordersByManagers[order['name']]['Отказ']={}
-                ordersByManagers[order['name']]['Отказ']['count']=0
-                ordersByManagers[order['name']]['Отказ']['sum']=0
+                ordersByManagers[order['name']]['Отказ'] = {}
+                ordersByManagers[order['name']]['Отказ']['count'] = 0
+                ordersByManagers[order['name']]['Отказ']['sum'] = 0
 
-                ordersByManagers[order['name']]['Продано']={}
-                ordersByManagers[order['name']]['Продано']['count']=0
-                ordersByManagers[order['name']]['Продано']['sum']=0
+                ordersByManagers[order['name']]['Продано'] = {}
+                ordersByManagers[order['name']]['Продано']['count'] = 0
+                ordersByManagers[order['name']]['Продано']['sum'] = 0
             } else {
                 ordersByManagers[order['name']][order['action_title']]['count']++
-                ordersByManagers[order['name']][order['action_title']]['sum']+=order['order_sum']
+                ordersByManagers[order['name']][order['action_title']]['sum'] += order['order_sum']
             }
         }
 
@@ -534,15 +535,14 @@ class Menu {
             colour_id = colour_id > 7 ? 0 : colour_id;
             let msg = `${title} (${(value * 100).toFixed(2)}%)\n`;
             //Будем вычислять в целых числах
-            value=Math.round(value*1000);
+            value = Math.round(value * 1000);
             let counter = 0;
-            while (value>=50) {
+            while (value >= 50) {
                 msg += colours[colour_id][0];
                 counter++;
                 value -= 50;
             }
-            if(value)
-            {
+            if (value) {
                 msg += value >= 25 ? colours[colour_id][1] : '⚪️';
                 counter++;
             }
@@ -958,10 +958,9 @@ class Menu {
                     message += '\n';
                     for (let j = 0; j < statistics[call_types[i]].managers.length; j++)
                         message += `\n${statistics[call_types[i]].managers[j][1]} — ${menu.renderPercentage(statistics[call_types[i]].managers[j][0], statistics[call_types[i]].managers[j][1] / statistics[call_types[i]].calls_count)}`
-                } else
-                {
-                    let time_before_finish=menu.formatSecondsAsHHMMSS((statistics[call_types[i]].time_before_finish / statistics[call_types[i]].calls_count).toFixed(2));
-                    if(time_before_finish==='') time_before_finish='00:00';
+                } else {
+                    let time_before_finish = menu.formatSecondsAsHHMMSS((statistics[call_types[i]].time_before_finish / statistics[call_types[i]].calls_count).toFixed(2));
+                    if (time_before_finish === '') time_before_finish = '00:00';
                     message += `\n${time_before_finish} — Среднее время до сброса звонка`;
 
                 }
@@ -1032,40 +1031,41 @@ class Menu {
                     menu.searchPushOrdersArrays(moment(order.created_at).format('HH'), statistics['orders']);
                     statistics['orders_count']++;
                 });
-            statistics['calls'].forEach(item=>{statistics.max_calls_count=Math.max(item[1],statistics.max_calls_count)});
-            statistics['orders'].forEach(item=>{statistics.max_orders_count=Math.max(item[1],statistics.max_orders_count)});
+            statistics['calls'].forEach(item => {
+                statistics.max_calls_count = Math.max(item[1], statistics.max_calls_count)
+            });
+            statistics['orders'].forEach(item => {
+                statistics.max_orders_count = Math.max(item[1], statistics.max_orders_count)
+            });
+
             //Функция для отрисовки квадратиков
-            function getMultipleSquaresByNumber(title, number=1, max_number=number?number:1, total_number=max_number)
-            {
-                let msg=`${title} (${(number/total_number * 100).toFixed(2)}%)\n`;
-                if(max_number>20)
-                {
-                    let value=Math.round(number/max_number*1000);
+            function getMultipleSquaresByNumber(title, number = 1, max_number = number ? number : 1, total_number = max_number) {
+                let msg = `${title} (${(number / total_number * 100).toFixed(2)}%)\n`;
+                if (max_number > 20) {
+                    let value = Math.round(number / max_number * 1000);
                     let counter = 0;
-                    while (value>=50) {
+                    while (value >= 50) {
                         msg += '🟩';
                         counter++;
                         value -= 50;
                     }
-                    if(value)
-                    {
+                    if (value) {
                         msg += value >= 25 ? '🟢' : '⚪️';
                         counter++;
                     }
                     for (counter; counter < 20; counter++)
                         msg += '⬜️';
-                }
-                else
-                {
-                    const multiplier=Math.floor(20/max_number);
-                    for(let i=0;i<number;i++)
-                        for(let j=0;j<multiplier;j++)
-                            msg+='🟩';
-                    for(let i=0;i<20-number*multiplier;i++)
-                        msg+='⬜️';
+                } else {
+                    const multiplier = Math.floor(20 / max_number);
+                    for (let i = 0; i < number; i++)
+                        for (let j = 0; j < multiplier; j++)
+                            msg += '🟩';
+                    for (let i = 0; i < 20 - number * multiplier; i++)
+                        msg += '⬜️';
                 }
                 return msg;
             }
+
             //Формирование сообщения
             if (!statistics.calls_count && !statistics.orders_count) {
                 if (request_type === 'days')
@@ -1085,13 +1085,13 @@ class Menu {
             if (statistics['calls_count']) {
                 message += '------------------------\nЗвонки\n';
                 for (let i = 0; i < statistics.calls.length; i++)
-                    if(statistics.calls[i][1])
+                    if (statistics.calls[i][1])
                         message += `\n${statistics.calls[i][0]} — ${getMultipleSquaresByNumber(statistics.calls[i][1].toString(), statistics.calls[i][1], statistics.max_calls_count, statistics.calls_count)}`;
             }
             if (statistics['orders_count']) {
                 message += '\n------------------------\nЗаказы\n';
                 for (let i = 0; i < statistics.orders.length; i++)
-                    if(statistics.orders[i][1])
+                    if (statistics.orders[i][1])
                         message += `\n${statistics.orders[i][0]} — ${getMultipleSquaresByNumber(statistics.orders[i][1].toString(), statistics.orders[i][1], statistics.max_orders_count, statistics.orders_count)}`;
             }
             return message;
@@ -1368,7 +1368,7 @@ class Menu {
         switch (fields.request_type) {
             case 'order':
                 message = 'Информация по команде /order\n';
-                message+='Команда получает на вход номер заказа, по которому выводится полная информация.\n' +
+                message += 'Команда получает на вход номер заказа, по которому выводится полная информация.\n' +
                     'Например: /order 1138412';
                 break;
             case 'orders':
