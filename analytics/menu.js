@@ -334,15 +334,20 @@ class Menu {
         for (let order in managersOrdersData) {
             if (!ordersByManagers[order['name']]){
                 ordersByManagers[order['name']]={}
+
+                ordersByManagers[order['name']]['Отгрузить']={}
                 ordersByManagers[order['name']]['Отгрузить']['count']=0
                 ordersByManagers[order['name']]['Отгрузить']['sum']=0
 
+                ordersByManagers[order['name']]['На склад']={}
                 ordersByManagers[order['name']]['На склад']['count']=0
                 ordersByManagers[order['name']]['На склад']['sum']=0
 
+                ordersByManagers[order['name']]['Отказ']={}
                 ordersByManagers[order['name']]['Отказ']['count']=0
                 ordersByManagers[order['name']]['Отказ']['sum']=0
 
+                ordersByManagers[order['name']]['Продано']={}
                 ordersByManagers[order['name']]['Продано']['count']=0
                 ordersByManagers[order['name']]['Продано']['sum']=0
             } else {
