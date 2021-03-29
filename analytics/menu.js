@@ -366,6 +366,7 @@ class Menu {
                 message += `\n\nЗанятость: ${messageData[manager]['basic_info']['business']}%`
             }
         }
+        message.replace(/\n/g,"`\n`")
         message+='`'
         let options = {
             reply_markup: JSON.stringify({
