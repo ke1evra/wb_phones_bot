@@ -96,7 +96,7 @@ class DataManager {
     }
 
     async getManagersOrders(
-        date = moment().format("YYYY-MM-DD"),
+        date = moment().subtract(1, 'days').format('DD.MM.YYYY'),
     ) {
         return await axios.get(
             `http://185.211.247.12:3000/orders/managers?date=${date}`
