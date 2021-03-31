@@ -385,7 +385,7 @@ class Menu {
             // disable_web_page_preview: true,
         };
         if (!data.data["data1"].length)
-            message = 'Нет данных';
+            message = 'Нет данных' ;
         return message;
     }
 
