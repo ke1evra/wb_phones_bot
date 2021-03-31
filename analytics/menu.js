@@ -308,8 +308,8 @@ class Menu {
 
         for (let manager in messageData) {
             if (manager !== "all_managers") {
-                messageData[manager]['calls']['calls']['basic_info']['calls_count_percentage'] = (messageData[manager]['calls']['basic_info']['total_calls_count'] * 100 / messageData['all_managers']['basic_info']['total_calls_count']).toFixed(2)
-                messageData[manager]['calls']['basic_info']['in_calls_time_percentage'] = (messageData[manager]['calls']['basic_info']['in_calls_time'] * 100 / messageData['all_managers']['basic_info']['in_calls_time']).toFixed(2)
+                messageData[manager]['calls']['calls']['basic_info']['calls_count_percentage'] = (messageData[manager]['calls']['basic_info']['total_calls_count'] * 100 / messageData['all_managers']['calls']['basic_info']['total_calls_count']).toFixed(2)
+                messageData[manager]['calls']['basic_info']['in_calls_time_percentage'] = (messageData[manager]['calls']['basic_info']['in_calls_time'] * 100 / messageData['all_managers']['calls']['basic_info']['in_calls_time']).toFixed(2)
                 messageData[manager]['calls']['basic_info']['business'] = (messageData[manager]['calls']['basic_info']['in_calls_time'] * 100 / (7.5 * fields.days * 60 * 60)).toFixed(2)
 
                 if (messageData[manager]['calls']['incoming_calls_info']['calls_count']) {
