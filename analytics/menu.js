@@ -323,7 +323,6 @@ class Menu {
                 }
             }
         }
-        console.log(messageData)
         message += `Звонков совершено: ${messageData.all_managers.calls.basic_info.total_calls_count}\n` +
             `Средняя продолжительность звонка: ${messageData.all_managers.calls.basic_info.avg_call_duration}\n` +
             `Среднее время ответа: ${messageData.all_managers.calls.incoming_calls_info.avg_time_to_answer}\n` +
@@ -373,12 +372,12 @@ class Menu {
                     //message += `\n\nЗанятость: ${messageData[manager]['calls']['basic_info']['business']}%\n\n`
                     message+=`\n`
                 }
-                if (messageData[manager]['orders']) {
+                /*if (messageData[manager]['orders']) {
                     message+=`——— 📦 Заказы —————————————————\n\n`
                     for (let order in messageData[manager]['orders']){
-                        message+= `${order['action_title']}:${order['action_title']['count']} (${order['action_title']['sum']})\n`
+                        message+= `${order['action_title']}:${order['count']} (${order['sum']})\n`
                     }
-                }
+                }*/
             }
         }
         message += '\n\`\`\`'
