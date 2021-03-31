@@ -221,6 +221,8 @@ class Menu {
         messageData['all_managers']['calls']['failed_outcoming_calls_info']['calls_count'] = 0
         messageData['all_managers']['calls']['failed_outcoming_calls_info']['in_waiting_time'] = 0
 
+        console.log('Создана структура по всем менеджерам')
+
         data.data["data1"].map((item, index) => {
             if (!messageData[numberToManager[item.person]]) {
                 messageData[numberToManager[item.person]] = {}
@@ -247,6 +249,8 @@ class Menu {
                 messageData[numberToManager[item.person]]['calls']['failed_outcoming_calls_info'] = {}
                 messageData[numberToManager[item.person]]['calls']['failed_outcoming_calls_info']['calls_count'] = 0
                 messageData[numberToManager[item.person]]['calls']['failed_outcoming_calls_info']['in_waiting_time'] = 0
+
+                console.log('Создана структура по менеджеру:', numberToManager[item.person])
             }
             messageData[numberToManager[item.person]]['calls']['basic_info']['total_calls_count']++
             messageData['all_managers']['calls']['basic_info']['total_calls_count']++
@@ -297,6 +301,8 @@ class Menu {
                 messageData['all_managers']['calls']['basic_info']['in_waiting_time'] += waitingTime
             }
 
+            console.log('Заполнены данные по менеджеру:', numberToManager[item.person])
+
             menu.push(new Button(item.client_name, 'some cb'))
         });
 
@@ -321,6 +327,7 @@ class Menu {
                 if (messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']) {
                     messageData[manager]['calls']['failed_outcoming_calls_info']['avg_waiting_time'] = (messageData[manager]['calls']['failed_outcoming_calls_info']['in_waiting_time'] / messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']).toFixed(2)
                 }
+                console.log('Обработаны данные по менеджеру:', numberToManager[item.person])
             }
         }
         console.log(messageData)
