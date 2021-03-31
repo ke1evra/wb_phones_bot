@@ -189,11 +189,9 @@ class Menu {
             fields.days = 1;
         if (!fields.days) fields.days++
         const data = await API.getManagersCalls(fields.days);
-        //console.log(data.data.data1);
-        //console.log(data.data.incomingByNumber);
-        let message = '\`\`\`— Отчет по менеджерам —————————\n\n';
+
+        let message = '\`\`\`\n— Отчет по менеджерам —————————\n\n';
         const menu = [];
-        //console.log(data.data["data1"]);
 
         let messageData = {}
 
@@ -330,7 +328,7 @@ class Menu {
             `Средняя продолжительность звонка: ${messageData.all_managers.calls.basic_info.avg_call_duration}\n` +
             `Среднее время ответа: ${messageData.all_managers.calls.incoming_calls_info.avg_time_to_answer}\n` +
             `Процент пропущенных вызовов: ${messageData.all_managers.calls.failed_incoming_calls_info.calls_count_percentage}%\n` +
-            `Среднее время ожидания до сброса при исходящем вызове: ${messageData.all_managers.calls.failed_outcoming_calls_info.avg_waiting_time}`
+            `Среднее время ожидания до сброса при исходящем вызове: ${messageData.all_managers.calls.failed_outcoming_calls_info.avg_waiting_time}\n\n`
 
         const managersOrdersData = await API.getManagersOrders();
 
@@ -366,7 +364,7 @@ class Menu {
                         message += `\nНедозвонов: ${messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']}, среднее время ожидания — ${messageData[manager]['calls']['failed_outcoming_calls_info']['avg_waiting_time']}`
                     }
 
-                    message += `\n\nЗанятость: ${messageData[manager]['calls']['basic_info']['business']}%`
+                    message += `\n\nЗанятость: ${messageData[manager]['calls']['basic_info']['business']}%\n`
                 }
                 if (messageData[manager]['orders']) {
                     message+="\nзаказы есть\n"
