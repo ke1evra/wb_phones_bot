@@ -350,8 +350,8 @@ class Menu {
             if (manager !== "all_managers") {
                 message += `—— ${manager} ` + '—'.repeat(27-manager.length) + "\n\n"
                 if (messageData[manager]['calls']) {
-                    message+=`——— ☎️ Звонки —————————————————\n\n`
-                        message+=`${messageData[manager]['calls']['basic_info']['total_calls_count']}) звонков\n`
+                    message+=`——— ☎️ Звонки —————————————————\n`
+                        message+=`\n${messageData[manager]['calls']['basic_info']['total_calls_count']} звонков\n`
                     if (messageData[manager]['calls']['incoming_calls_info']['calls_count']) {
                         //message += `\nВходящих: ${messageData[manager]['calls']['incoming_calls_info']['calls_count']}, среднее время ответа — ${messageData[manager]['calls']['incoming_calls_info']['avg_time_to_answer']}`
                         message +=`\n🟩Входящих: ${messageData[manager]['calls']['incoming_calls_info']['calls_count']}`
