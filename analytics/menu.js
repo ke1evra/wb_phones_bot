@@ -198,7 +198,7 @@ class Menu {
         let messageData = {}
 
         messageData['all_managers'] = {}
-        messageData['all_managers']['calls']={}
+        messageData['all_managers']['calls'] = {}
         messageData['all_managers']['calls']['basic_info'] = {}
         messageData['all_managers']['calls']['basic_info']['total_calls_count'] = 0
         messageData['all_managers']['calls']['basic_info']['in_calls_time'] = 0
@@ -220,8 +220,6 @@ class Menu {
         messageData['all_managers']['calls']['failed_outcoming_calls_info'] = {}
         messageData['all_managers']['calls']['failed_outcoming_calls_info']['calls_count'] = 0
         messageData['all_managers']['calls']['failed_outcoming_calls_info']['in_waiting_time'] = 0
-
-        console.log('Создана структура по всем менеджерам')
 
         data.data["data1"].map((item, index) => {
             if (!messageData[numberToManager[item.person]]) {
@@ -250,7 +248,6 @@ class Menu {
                 messageData[numberToManager[item.person]]['calls']['failed_outcoming_calls_info']['calls_count'] = 0
                 messageData[numberToManager[item.person]]['calls']['failed_outcoming_calls_info']['in_waiting_time'] = 0
 
-                console.log('Создана структура по менеджеру:', numberToManager[item.person])
             }
             messageData[numberToManager[item.person]]['calls']['basic_info']['total_calls_count']++
             messageData['all_managers']['calls']['basic_info']['total_calls_count']++
@@ -301,8 +298,6 @@ class Menu {
                 messageData['all_managers']['calls']['basic_info']['in_waiting_time'] += waitingTime
             }
 
-            console.log('Заполнены данные по менеджеру:', numberToManager[item.person])
-
             menu.push(new Button(item.client_name, 'some cb'))
         });
 
@@ -314,7 +309,7 @@ class Menu {
 
         for (let manager in messageData) {
             if (manager !== "all_managers") {
-                messageData[manager]['calls']['calls']['basic_info']['calls_count_percentage'] = (messageData[manager]['calls']['basic_info']['total_calls_count'] * 100 / messageData['all_managers']['calls']['basic_info']['total_calls_count']).toFixed(2)
+                messageData[manager]['calls']['basic_info']['calls_count_percentage'] = (messageData[manager]['calls']['basic_info']['total_calls_count'] * 100 / messageData['all_managers']['calls']['basic_info']['total_calls_count']).toFixed(2)
                 messageData[manager]['calls']['basic_info']['in_calls_time_percentage'] = (messageData[manager]['calls']['basic_info']['in_calls_time'] * 100 / messageData['all_managers']['calls']['basic_info']['in_calls_time']).toFixed(2)
                 messageData[manager]['calls']['basic_info']['business'] = (messageData[manager]['calls']['basic_info']['in_calls_time'] * 100 / (7.5 * fields.days * 60 * 60)).toFixed(2)
 
@@ -375,7 +370,7 @@ class Menu {
                 message += `\n\nЗанятость: ${messageData[manager]['calls']['basic_info']['business']}%`
             }
         }
-        message+='\n\`\`\`'
+        message += '\n\`\`\`'
         let options = {
             reply_markup: JSON.stringify({
                 inline_keyboard: [
@@ -385,7 +380,7 @@ class Menu {
             // disable_web_page_preview: true,
         };
         if (!data.data["data1"].length)
-            message = 'Нет данных' ;
+            message = 'Нет данных';
         return message;
     }
 
