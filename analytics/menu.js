@@ -191,7 +191,7 @@ class Menu {
         const data = await API.getManagersCalls(fields.days);
         //console.log(data.data.data1);
         //console.log(data.data.incomingByNumber);
-        let message = '\`\`\`\nМенеджеры:\n';
+        let message = '\`\`\`— Отчет по менеджерам —————————\n\n';
         const menu = [];
         //console.log(data.data["data1"]);
 
@@ -350,9 +350,9 @@ class Menu {
 
         for (let manager in messageData) {
             if (manager !== "all_managers") {
+                message += `—— ${manager} ` + '—'.repeat(27-manager.length) + "\n"
                 if (messageData[manager]['calls']) {
-                    message += `\n\n----------------------\n${manager}\n` +
-                        `Всего ${messageData[manager]['calls']['basic_info']['total_calls_count']} (${messageData[manager]['calls']['basic_info']['calls_count_percentage']}%) звонков, из них:`
+                        message+=`Всего ${messageData[manager]['calls']['basic_info']['total_calls_count']} (${messageData[manager]['calls']['basic_info']['calls_count_percentage']}%) звонков, из них:`
                     if (messageData[manager]['calls']['incoming_calls_info']['calls_count']) {
                         message += `\nВходящих: ${messageData[manager]['calls']['incoming_calls_info']['calls_count']}, среднее время ответа — ${messageData[manager]['calls']['incoming_calls_info']['avg_time_to_answer']}`
                     }
