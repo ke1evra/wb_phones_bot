@@ -369,13 +369,17 @@ class Menu {
                         message += `🟧Недозвонов: ${messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']}\n`
                     }
                     //message += `\n\nЗанятость: ${messageData[manager]['calls']['basic_info']['business']}%\n\n`
+                    message+=`\n`
                 }
                 if (messageData[manager]['orders']) {
-                    message+="заказы есть\n\n"
+                    message+=`——— 📦 Заказы —————————————————\n\n`
+
                 }
             }
         }
         message += '\n\`\`\`'
+
+        console.log(messageData)
         let options = {
             reply_markup: JSON.stringify({
                 inline_keyboard: [
