@@ -221,6 +221,7 @@ class Menu {
         messageData['all_managers']['calls']['failed_outcoming_calls_info']['calls_count'] = 0
         messageData['all_managers']['calls']['failed_outcoming_calls_info']['in_waiting_time'] = 0
 
+
         data.data["data1"].map((item, index) => {
             if (!messageData[numberToManager[item.person]]) {
                 messageData[numberToManager[item.person]] = {}
@@ -332,41 +333,43 @@ class Menu {
             `Среднее время ожидания до сброса при исходящем вызове: ${messageData.all_managers.calls.failed_outcoming_calls_info.avg_waiting_time}`
 
         const managersOrdersData = await API.getManagersOrders();
-        let ordersByManagers = {}
 
         for (let order of managersOrdersData['data']) {
-            if (!ordersByManagers[order['name']]) {
-                ordersByManagers[order['name']] = {}
+            if (!messageData[order['name']]) {
+                messageData[order['name']] = {}
             }
-            if (!ordersByManagers[order['name']][order['action_title']]) {
-                ordersByManagers[order['name']][order['action_title']] = {}
-                ordersByManagers[order['name']][order['action_title']]['count'] = 0
-                ordersByManagers[order['name']][order['action_title']]['sum'] = 0
+            if (!messageData[order['name']][order['action_title']]) {
+                messageData[order['name']][order['action_title']] = {}
+                messageData[order['name']][order['action_title']]['count'] = 0
+                messageData[order['name']][order['action_title']]['sum'] = 0
             }
-            ordersByManagers[order['name']][order['action_title']]['count']++
-            ordersByManagers[order['name']][order['action_title']]['sum'] += order['order_sum']
+            messageData[order['name']][order['action_title']]['count']++
+            messageData[order['name']][order['action_title']]['sum'] += order['order_sum']
         }
-
-        console.log(ordersByManagers)
 
         for (let manager in messageData) {
             if (manager !== "all_managers") {
-                message += `\n\n----------------------\n${manager}\n` +
-                    `Всего ${messageData[manager]['calls']['basic_info']['total_calls_count']} (${messageData[manager]['calls']['basic_info']['calls_count_percentage']}%) звонков, из них:`
-                if (messageData[manager]['calls']['incoming_calls_info']['calls_count']) {
-                    message += `\nВходящих: ${messageData[manager]['calls']['incoming_calls_info']['calls_count']}, среднее время ответа — ${messageData[manager]['calls']['incoming_calls_info']['avg_time_to_answer']}`
-                }
-                if (messageData[manager]['calls']['outcoming_calls_info']['calls_count']) {
-                    message += `\nИсходящих: ${messageData[manager]['calls']['outcoming_calls_info']['calls_count']}`
-                }
-                if (messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']) {
-                    message += `\nПропущенных: ${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']} (${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count_percentage']}%)`
-                }
-                if (messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']) {
-                    message += `\nНедозвонов: ${messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']}, среднее время ожидания — ${messageData[manager]['calls']['failed_outcoming_calls_info']['avg_waiting_time']}`
-                }
+                if (messageData[manager]['calls']) {
+                    message += `\n\n----------------------\n${manager}\n` +
+                        `Всего ${messageData[manager]['calls']['basic_info']['total_calls_count']} (${messageData[manager]['calls']['basic_info']['calls_count_percentage']}%) звонков, из них:`
+                    if (messageData[manager]['calls']['incoming_calls_info']['calls_count']) {
+                        message += `\nВходящих: ${messageData[manager]['calls']['incoming_calls_info']['calls_count']}, среднее время ответа — ${messageData[manager]['calls']['incoming_calls_info']['avg_time_to_answer']}`
+                    }
+                    if (messageData[manager]['calls']['outcoming_calls_info']['calls_count']) {
+                        message += `\nИсходящих: ${messageData[manager]['calls']['outcoming_calls_info']['calls_count']}`
+                    }
+                    if (messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']) {
+                        message += `\nПропущенных: ${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']} (${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count_percentage']}%)`
+                    }
+                    if (messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']) {
+                        message += `\nНедозвонов: ${messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']}, среднее время ожидания — ${messageData[manager]['calls']['failed_outcoming_calls_info']['avg_waiting_time']}`
+                    }
 
-                message += `\n\nЗанятость: ${messageData[manager]['calls']['basic_info']['business']}%`
+                    message += `\n\nЗанятость: ${messageData[manager]['calls']['basic_info']['business']}%`
+                }
+                if (messageData[manager]['orders']) {
+                    message+="\nзаказы есть\n"
+                }
             }
         }
         message += '\n\`\`\`'
