@@ -338,13 +338,14 @@ class Menu {
             if (!messageData[order['name']]) {
                 messageData[order['name']] = {}
             }
-            if (!messageData[order['name']][order['action_title']]) {
-                messageData[order['name']][order['action_title']] = {}
-                messageData[order['name']][order['action_title']]['count'] = 0
-                messageData[order['name']][order['action_title']]['sum'] = 0
+            messageData[order['name']]['orders'] = {}
+            if (!messageData[order['name']]['orders'][order['action_title']]) {
+                messageData[order['name']]['orders'][order['action_title']] = {}
+                messageData[order['name']]['orders'][order['action_title']]['count'] = 0
+                messageData[order['name']]['orders'][order['action_title']]['sum'] = 0
             }
-            messageData[order['name']][order['action_title']]['count']++
-            messageData[order['name']][order['action_title']]['sum'] += order['order_sum']
+            messageData[order['name']]['orders'][order['action_title']]['count']++
+            messageData[order['name']]['orders'][order['action_title']]['sum'] += order['order_sum']
         }
 
         for (let manager in messageData) {
