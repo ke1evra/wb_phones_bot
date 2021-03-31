@@ -198,126 +198,128 @@ class Menu {
         let messageData = {}
 
         messageData['all_managers'] = {}
-        messageData['all_managers']['basic_info'] = {}
-        messageData['all_managers']['basic_info']['total_calls_count'] = 0
-        messageData['all_managers']['basic_info']['in_calls_time'] = 0
-        messageData['all_managers']['basic_info']['in_waiting_time'] = 0
+        messageData['all_managers']['calls']={}
+        messageData['all_managers']['calls']['basic_info'] = {}
+        messageData['all_managers']['calls']['basic_info']['total_calls_count'] = 0
+        messageData['all_managers']['calls']['basic_info']['in_calls_time'] = 0
+        messageData['all_managers']['calls']['basic_info']['in_waiting_time'] = 0
 
-        messageData['all_managers']['incoming_calls_info'] = {}
-        messageData['all_managers']['incoming_calls_info']['calls_count'] = 0
-        messageData['all_managers']['incoming_calls_info']['in_calls_time'] = 0
-        messageData['all_managers']['incoming_calls_info']['time_to_answer'] = 0
+        messageData['all_managers']['calls']['incoming_calls_info'] = {}
+        messageData['all_managers']['calls']['incoming_calls_info']['calls_count'] = 0
+        messageData['all_managers']['calls']['incoming_calls_info']['in_calls_time'] = 0
+        messageData['all_managers']['calls']['incoming_calls_info']['time_to_answer'] = 0
 
-        messageData['all_managers']['failed_incoming_calls_info'] = {}
-        messageData['all_managers']['failed_incoming_calls_info']['calls_count'] = 0
+        messageData['all_managers']['calls']['failed_incoming_calls_info'] = {}
+        messageData['all_managers']['calls']['failed_incoming_calls_info']['calls_count'] = 0
 
-        messageData['all_managers']['outcoming_calls_info'] = {}
-        messageData['all_managers']['outcoming_calls_info']['calls_count'] = 0
-        messageData['all_managers']['outcoming_calls_info']['in_calls_time'] = 0
-        messageData['all_managers']['outcoming_calls_info']['in_waiting_time'] = 0
+        messageData['all_managers']['calls']['outcoming_calls_info'] = {}
+        messageData['all_managers']['calls']['outcoming_calls_info']['calls_count'] = 0
+        messageData['all_managers']['calls']['outcoming_calls_info']['in_calls_time'] = 0
+        messageData['all_managers']['calls']['outcoming_calls_info']['in_waiting_time'] = 0
 
-        messageData['all_managers']['failed_outcoming_calls_info'] = {}
-        messageData['all_managers']['failed_outcoming_calls_info']['calls_count'] = 0
-        messageData['all_managers']['failed_outcoming_calls_info']['in_waiting_time'] = 0
+        messageData['all_managers']['calls']['failed_outcoming_calls_info'] = {}
+        messageData['all_managers']['calls']['failed_outcoming_calls_info']['calls_count'] = 0
+        messageData['all_managers']['calls']['failed_outcoming_calls_info']['in_waiting_time'] = 0
 
         data.data["data1"].map((item, index) => {
             if (!messageData[numberToManager[item.person]]) {
                 messageData[numberToManager[item.person]] = {}
+                messageData[numberToManager[item.person]]['calls'] = {}
 
-                messageData[numberToManager[item.person]]['basic_info'] = {}
-                messageData[numberToManager[item.person]]['basic_info']['total_calls_count'] = 0
-                messageData[numberToManager[item.person]]['basic_info']['in_calls_time'] = 0
-                messageData[numberToManager[item.person]]['basic_info']['in_waiting_time'] = 0
+                messageData[numberToManager[item.person]]['calls']['basic_info'] = {}
+                messageData[numberToManager[item.person]]['calls']['basic_info']['total_calls_count'] = 0
+                messageData[numberToManager[item.person]]['calls']['basic_info']['in_calls_time'] = 0
+                messageData[numberToManager[item.person]]['calls']['basic_info']['in_waiting_time'] = 0
 
-                messageData[numberToManager[item.person]]['incoming_calls_info'] = {}
-                messageData[numberToManager[item.person]]['incoming_calls_info']['calls_count'] = 0
-                messageData[numberToManager[item.person]]['incoming_calls_info']['in_calls_time'] = 0
-                messageData[numberToManager[item.person]]['incoming_calls_info']['time_to_answer'] = 0
+                messageData[numberToManager[item.person]]['calls']['incoming_calls_info'] = {}
+                messageData[numberToManager[item.person]]['calls']['incoming_calls_info']['calls_count'] = 0
+                messageData[numberToManager[item.person]]['calls']['incoming_calls_info']['in_calls_time'] = 0
+                messageData[numberToManager[item.person]]['calls']['incoming_calls_info']['time_to_answer'] = 0
 
-                messageData[numberToManager[item.person]]['failed_incoming_calls_info'] = {}
-                messageData[numberToManager[item.person]]['failed_incoming_calls_info']['calls_count'] = 0
+                messageData[numberToManager[item.person]]['calls']['failed_incoming_calls_info'] = {}
+                messageData[numberToManager[item.person]]['calls']['failed_incoming_calls_info']['calls_count'] = 0
 
-                messageData[numberToManager[item.person]]['outcoming_calls_info'] = {}
-                messageData[numberToManager[item.person]]['outcoming_calls_info']['calls_count'] = 0
-                messageData[numberToManager[item.person]]['outcoming_calls_info']['in_calls_time'] = 0
-                messageData[numberToManager[item.person]]['outcoming_calls_info']['in_waiting_time'] = 0
+                messageData[numberToManager[item.person]]['calls']['outcoming_calls_info'] = {}
+                messageData[numberToManager[item.person]]['calls']['outcoming_calls_info']['calls_count'] = 0
+                messageData[numberToManager[item.person]]['calls']['outcoming_calls_info']['in_calls_time'] = 0
+                messageData[numberToManager[item.person]]['calls']['outcoming_calls_info']['in_waiting_time'] = 0
 
-                messageData[numberToManager[item.person]]['failed_outcoming_calls_info'] = {}
-                messageData[numberToManager[item.person]]['failed_outcoming_calls_info']['calls_count'] = 0
-                messageData[numberToManager[item.person]]['failed_outcoming_calls_info']['in_waiting_time'] = 0
+                messageData[numberToManager[item.person]]['calls']['failed_outcoming_calls_info'] = {}
+                messageData[numberToManager[item.person]]['calls']['failed_outcoming_calls_info']['calls_count'] = 0
+                messageData[numberToManager[item.person]]['calls']['failed_outcoming_calls_info']['in_waiting_time'] = 0
             }
-            messageData[numberToManager[item.person]]['basic_info']['total_calls_count']++
-            messageData['all_managers']['basic_info']['total_calls_count']++
+            messageData[numberToManager[item.person]]['calls']['basic_info']['total_calls_count']++
+            messageData['all_managers']['calls']['basic_info']['total_calls_count']++
             if (item.call_type === 'inComing') {
                 const callTime = moment(item.end, "HH:mm:ss").diff(moment(moment(item.answer, "HH:mm:ss")), "seconds")
                 const answerTime = moment(item.answer, "HH:mm:ss").diff(moment(moment(item.start, "HH:mm:ss")), "seconds")
 
-                messageData[numberToManager[item.person]]['incoming_calls_info']['calls_count']++
-                messageData[numberToManager[item.person]]['incoming_calls_info']['in_calls_time'] += callTime
-                messageData[numberToManager[item.person]]['incoming_calls_info']['time_to_answer'] += answerTime
+                messageData[numberToManager[item.person]]['calls']['incoming_calls_info']['calls_count']++
+                messageData[numberToManager[item.person]]['calls']['incoming_calls_info']['in_calls_time'] += callTime
+                messageData[numberToManager[item.person]]['calls']['incoming_calls_info']['time_to_answer'] += answerTime
 
-                messageData[numberToManager[item.person]]['basic_info']['in_calls_time'] += callTime
+                messageData[numberToManager[item.person]]['calls']['basic_info']['in_calls_time'] += callTime
 
-                messageData['all_managers']['incoming_calls_info']['calls_count']++
-                messageData['all_managers']['incoming_calls_info']['in_calls_time'] += callTime
-                messageData['all_managers']['incoming_calls_info']['time_to_answer'] += answerTime
+                messageData['all_managers']['calls']['incoming_calls_info']['calls_count']++
+                messageData['all_managers']['calls']['incoming_calls_info']['in_calls_time'] += callTime
+                messageData['all_managers']['calls']['incoming_calls_info']['time_to_answer'] += answerTime
 
-                messageData['all_managers']['basic_info']['in_calls_time'] += callTime
+                messageData['all_managers']['calls']['basic_info']['in_calls_time'] += callTime
             } else if (item.call_type === 'outComing') {
                 const callTime = moment(item.end, "HH:mm:ss").diff(moment(moment(item.answer, "HH:mm:ss")), "seconds")
                 const waitingTime = moment(item.answer, "HH:mm:ss").diff(moment(moment(item.start, "HH:mm:ss")), "seconds")
 
-                messageData[numberToManager[item.person]]['outcoming_calls_info']['calls_count']++
-                messageData[numberToManager[item.person]]['outcoming_calls_info']['in_calls_time'] += callTime
-                messageData[numberToManager[item.person]]['outcoming_calls_info']['in_waiting_time'] += waitingTime
+                messageData[numberToManager[item.person]]['calls']['outcoming_calls_info']['calls_count']++
+                messageData[numberToManager[item.person]]['calls']['outcoming_calls_info']['in_calls_time'] += callTime
+                messageData[numberToManager[item.person]]['calls']['outcoming_calls_info']['in_waiting_time'] += waitingTime
 
-                messageData[numberToManager[item.person]]['basic_info']['in_calls_time'] += callTime
-                messageData[numberToManager[item.person]]['basic_info']['in_waiting_time'] += waitingTime
+                messageData[numberToManager[item.person]]['calls']['basic_info']['in_calls_time'] += callTime
+                messageData[numberToManager[item.person]]['calls']['basic_info']['in_waiting_time'] += waitingTime
 
-                messageData['all_managers']['outcoming_calls_info']['calls_count']++
-                messageData['all_managers']['outcoming_calls_info']['in_calls_time'] += callTime
-                messageData['all_managers']['outcoming_calls_info']['in_waiting_time'] += waitingTime
+                messageData['all_managers']['calls']['outcoming_calls_info']['calls_count']++
+                messageData['all_managers']['calls']['outcoming_calls_info']['in_calls_time'] += callTime
+                messageData['all_managers']['calls']['outcoming_calls_info']['in_waiting_time'] += waitingTime
 
-                messageData['all_managers']['basic_info']['in_calls_time'] += callTime
-                messageData['all_managers']['basic_info']['in_waiting_time'] += waitingTime
+                messageData['all_managers']['calls']['basic_info']['in_calls_time'] += callTime
+                messageData['all_managers']['calls']['basic_info']['in_waiting_time'] += waitingTime
             } else if (item.call_type === 'inComingFail') {
-                messageData[numberToManager[item.person]]['failed_incoming_calls_info']['calls_count']++
+                messageData[numberToManager[item.person]]['calls']['failed_incoming_calls_info']['calls_count']++
 
-                messageData['all_managers']['failed_incoming_calls_info']['calls_count']++
+                messageData['all_managers']['calls']['failed_incoming_calls_info']['calls_count']++
             } else if (item.call_type === 'outComingFail') {
                 const waitingTime = moment(item.end, "HH:mm:ss").diff(moment(moment(item.start, "HH:mm:ss")), "seconds")
 
-                messageData[numberToManager[item.person]]['failed_outcoming_calls_info']['calls_count']++
-                messageData[numberToManager[item.person]]['failed_outcoming_calls_info']['in_waiting_time'] += waitingTime
+                messageData[numberToManager[item.person]]['calls']['failed_outcoming_calls_info']['calls_count']++
+                messageData[numberToManager[item.person]]['calls']['failed_outcoming_calls_info']['in_waiting_time'] += waitingTime
 
-                messageData['all_managers']['failed_outcoming_calls_info']['calls_count']++
-                messageData['all_managers']['failed_outcoming_calls_info']['in_waiting_time'] += waitingTime
-                messageData['all_managers']['basic_info']['in_waiting_time'] += waitingTime
+                messageData['all_managers']['calls']['failed_outcoming_calls_info']['calls_count']++
+                messageData['all_managers']['calls']['failed_outcoming_calls_info']['in_waiting_time'] += waitingTime
+                messageData['all_managers']['calls']['basic_info']['in_waiting_time'] += waitingTime
             }
 
             menu.push(new Button(item.client_name, 'some cb'))
         });
 
-        messageData['all_managers']['basic_info']['avg_call_duration'] = (messageData['all_managers']['basic_info']['in_calls_time'] / messageData['all_managers']['basic_info']['total_calls_count']).toFixed(2)
-        messageData['all_managers']['incoming_calls_info']['avg_time_to_answer'] = (messageData['all_managers']['incoming_calls_info']['time_to_answer'] / messageData['all_managers']['incoming_calls_info']['calls_count']).toFixed(2)
-        messageData['all_managers']['failed_incoming_calls_info']['calls_count_percentage'] = (messageData['all_managers']['failed_incoming_calls_info']['calls_count'] * 100 / messageData['all_managers']['basic_info']['total_calls_count']).toFixed(2)
-        messageData['all_managers']['failed_outcoming_calls_info']['avg_waiting_time'] = (messageData['all_managers']['failed_outcoming_calls_info']['in_waiting_time'] / messageData['all_managers']['failed_outcoming_calls_info']['calls_count']).toFixed(2)
+        messageData['all_managers']['calls']['basic_info']['avg_call_duration'] = (messageData['all_managers']['calls']['basic_info']['in_calls_time'] / messageData['all_managers']['calls']['basic_info']['total_calls_count']).toFixed(2)
+        messageData['all_managers']['calls']['incoming_calls_info']['avg_time_to_answer'] = (messageData['all_managers']['calls']['incoming_calls_info']['time_to_answer'] / messageData['all_managers']['calls']['incoming_calls_info']['calls_count']).toFixed(2)
+        messageData['all_managers']['calls']['failed_incoming_calls_info']['calls_count_percentage'] = (messageData['all_managers']['calls']['failed_incoming_calls_info']['calls_count'] * 100 / messageData['all_managers']['calls']['basic_info']['total_calls_count']).toFixed(2)
+        messageData['all_managers']['calls']['failed_outcoming_calls_info']['avg_waiting_time'] = (messageData['all_managers']['calls']['failed_outcoming_calls_info']['in_waiting_time'] / messageData['all_managers']['calls']['failed_outcoming_calls_info']['calls_count']).toFixed(2)
 
 
         for (let manager in messageData) {
             if (manager !== "all_managers") {
-                messageData[manager]['basic_info']['calls_count_percentage'] = (messageData[manager]['basic_info']['total_calls_count'] * 100 / messageData['all_managers']['basic_info']['total_calls_count']).toFixed(2)
-                messageData[manager]['basic_info']['in_calls_time_percentage'] = (messageData[manager]['basic_info']['in_calls_time'] * 100 / messageData['all_managers']['basic_info']['in_calls_time']).toFixed(2)
-                messageData[manager]['basic_info']['business'] = (messageData[manager]['basic_info']['in_calls_time'] * 100 / (7.5 * fields.days * 60 * 60)).toFixed(2)
+                messageData[manager]['calls']['calls']['basic_info']['calls_count_percentage'] = (messageData[manager]['calls']['basic_info']['total_calls_count'] * 100 / messageData['all_managers']['basic_info']['total_calls_count']).toFixed(2)
+                messageData[manager]['calls']['basic_info']['in_calls_time_percentage'] = (messageData[manager]['calls']['basic_info']['in_calls_time'] * 100 / messageData['all_managers']['basic_info']['in_calls_time']).toFixed(2)
+                messageData[manager]['calls']['basic_info']['business'] = (messageData[manager]['calls']['basic_info']['in_calls_time'] * 100 / (7.5 * fields.days * 60 * 60)).toFixed(2)
 
-                if (messageData[manager]['incoming_calls_info']['calls_count']) {
-                    messageData[manager]['incoming_calls_info']['avg_time_to_answer'] = (messageData[manager]['incoming_calls_info']['time_to_answer'] / messageData[manager]['incoming_calls_info']['calls_count']).toFixed(2)
+                if (messageData[manager]['calls']['incoming_calls_info']['calls_count']) {
+                    messageData[manager]['calls']['incoming_calls_info']['avg_time_to_answer'] = (messageData[manager]['calls']['incoming_calls_info']['time_to_answer'] / messageData[manager]['calls']['incoming_calls_info']['calls_count']).toFixed(2)
                 }
 
-                messageData[manager]['failed_incoming_calls_info']['calls_count_percentage'] = (messageData[manager]['failed_incoming_calls_info']['calls_count'] * 100 / messageData[manager]['basic_info']['total_calls_count']).toFixed(2)
+                messageData[manager]['calls']['failed_incoming_calls_info']['calls_count_percentage'] = (messageData[manager]['calls']['failed_incoming_calls_info']['calls_count'] * 100 / messageData[manager]['calls']['basic_info']['total_calls_count']).toFixed(2)
 
-                if (messageData[manager]['failed_outcoming_calls_info']['calls_count']) {
-                    messageData[manager]['failed_outcoming_calls_info']['avg_waiting_time'] = (messageData[manager]['failed_outcoming_calls_info']['in_waiting_time'] / messageData[manager]['failed_outcoming_calls_info']['calls_count']).toFixed(2)
+                if (messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']) {
+                    messageData[manager]['calls']['failed_outcoming_calls_info']['avg_waiting_time'] = (messageData[manager]['calls']['failed_outcoming_calls_info']['in_waiting_time'] / messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']).toFixed(2)
                 }
             }
         }
@@ -349,21 +351,21 @@ class Menu {
         for (let manager in messageData) {
             if (manager !== "all_managers") {
                 message += `\n\n----------------------\n${manager}\n` +
-                    `Всего ${messageData[manager]['basic_info']['total_calls_count']} (${messageData[manager]['basic_info']['calls_count_percentage']}%) звонков, из них:`
-                if (messageData[manager]['incoming_calls_info']['calls_count']) {
-                    message += `\nВходящих: ${messageData[manager]['incoming_calls_info']['calls_count']}, среднее время ответа — ${messageData[manager]['incoming_calls_info']['avg_time_to_answer']}`
+                    `Всего ${messageData[manager]['calls']['basic_info']['total_calls_count']} (${messageData[manager]['calls']['basic_info']['calls_count_percentage']}%) звонков, из них:`
+                if (messageData[manager]['calls']['incoming_calls_info']['calls_count']) {
+                    message += `\nВходящих: ${messageData[manager]['calls']['incoming_calls_info']['calls_count']}, среднее время ответа — ${messageData[manager]['calls']['incoming_calls_info']['avg_time_to_answer']}`
                 }
-                if (messageData[manager]['outcoming_calls_info']['calls_count']) {
-                    message += `\nИсходящих: ${messageData[manager]['outcoming_calls_info']['calls_count']}`
+                if (messageData[manager]['calls']['outcoming_calls_info']['calls_count']) {
+                    message += `\nИсходящих: ${messageData[manager]['calls']['outcoming_calls_info']['calls_count']}`
                 }
-                if (messageData[manager]['failed_incoming_calls_info']['calls_count']) {
-                    message += `\nПропущенных: ${messageData[manager]['failed_incoming_calls_info']['calls_count']} (${messageData[manager]['failed_incoming_calls_info']['calls_count_percentage']}%)`
+                if (messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']) {
+                    message += `\nПропущенных: ${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']} (${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count_percentage']}%)`
                 }
-                if (messageData[manager]['failed_outcoming_calls_info']['calls_count']) {
-                    message += `\nНедозвонов: ${messageData[manager]['failed_outcoming_calls_info']['calls_count']}, среднее время ожидания — ${messageData[manager]['failed_outcoming_calls_info']['avg_waiting_time']}`
+                if (messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']) {
+                    message += `\nНедозвонов: ${messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']}, среднее время ожидания — ${messageData[manager]['calls']['failed_outcoming_calls_info']['avg_waiting_time']}`
                 }
 
-                message += `\n\nЗанятость: ${messageData[manager]['basic_info']['business']}%`
+                message += `\n\nЗанятость: ${messageData[manager]['calls']['basic_info']['business']}%`
             }
         }
         message+='\n\`\`\`'
