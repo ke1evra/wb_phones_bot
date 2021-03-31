@@ -375,7 +375,9 @@ class Menu {
                 }
                 if (messageData[manager]['orders']) {
                     message+=`——— 📦 Заказы —————————————————\n\n`
-
+                    for (let order in messageData[manager]['orders']){
+                        message+= `${order['action_title']}:${order['action_title']['count']} (${order['action_title']['sum']})\n`
+                    }
                 }
             }
         }
