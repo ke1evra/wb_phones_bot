@@ -336,7 +336,9 @@ class Menu {
             if (!messageData[order['name']]) {
                 messageData[order['name']] = {}
             }
-            messageData[order['name']]['orders'] = {}
+            if (!messageData[order['name']]['orders']){
+                messageData[order['name']]['orders'] = {}
+            }
             if (!messageData[order['name']]['orders'][order['action_title']]) {
                 messageData[order['name']]['orders'][order['action_title']] = {}
                 messageData[order['name']]['orders'][order['action_title']]['count'] = 0
