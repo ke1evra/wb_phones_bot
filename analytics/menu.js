@@ -372,12 +372,12 @@ class Menu {
                     //message += `\n\nЗанятость: ${messageData[manager]['calls']['basic_info']['business']}%\n\n`
                     message+=`\n`
                 }
-                /*if (messageData[manager]['orders']) {
+                if (messageData[manager]['orders']) {
                     message+=`——— 📦 Заказы —————————————————\n\n`
                     for (let order in messageData[manager]['orders']){
-                        message+= `${order['action_title']}:${order['count']} (${order['sum']})\n`
+                        message+= `${order}:${essageData[manager]['orders'][order['count']]} (${essageData[manager]['orders'][order['sum']]})\n`
                     }
-                }*/
+                }
             }
         }
         message += '\n\`\`\`'
