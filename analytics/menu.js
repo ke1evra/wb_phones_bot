@@ -322,7 +322,6 @@ class Menu {
                 if (messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']) {
                     messageData[manager]['calls']['failed_outcoming_calls_info']['avg_waiting_time'] = (messageData[manager]['calls']['failed_outcoming_calls_info']['in_waiting_time'] / messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']).toFixed(2)
                 }
-                console.log('Обработаны данные по менеджеру:', numberToManager[item.person])
             }
         }
         console.log(messageData)
