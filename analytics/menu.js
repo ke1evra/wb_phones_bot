@@ -348,26 +348,31 @@ class Menu {
 
         for (let manager in messageData) {
             if (manager !== "all_managers") {
-                message += `—— ${manager} ` + '—'.repeat(27-manager.length) + "\n"
+                message += `—— ${manager} ` + '—'.repeat(27-manager.length) + "\n\n"
                 if (messageData[manager]['calls']) {
-                        message+=`Всего ${messageData[manager]['calls']['basic_info']['total_calls_count']} (${messageData[manager]['calls']['basic_info']['calls_count_percentage']}%) звонков, из них:`
+                    message+=`——— ☎️ Звонки —————————————————\n\n`
+                        message+=`${messageData[manager]['calls']['basic_info']['total_calls_count']}) звонков\n`
                     if (messageData[manager]['calls']['incoming_calls_info']['calls_count']) {
-                        message += `\nВходящих: ${messageData[manager]['calls']['incoming_calls_info']['calls_count']}, среднее время ответа — ${messageData[manager]['calls']['incoming_calls_info']['avg_time_to_answer']}`
+                        //message += `\nВходящих: ${messageData[manager]['calls']['incoming_calls_info']['calls_count']}, среднее время ответа — ${messageData[manager]['calls']['incoming_calls_info']['avg_time_to_answer']}`
+                        message +=`\n🟩Входящих: ${messageData[manager]['calls']['incoming_calls_info']['calls_count']}`
                     }
                     if (messageData[manager]['calls']['outcoming_calls_info']['calls_count']) {
-                        message += `\nИсходящих: ${messageData[manager]['calls']['outcoming_calls_info']['calls_count']}`
+                        //message += `\nИсходящих: ${messageData[manager]['calls']['outcoming_calls_info']['calls_count']}`
+                        message += `\n🟦Исходящих: ${messageData[manager]['calls']['outcoming_calls_info']['calls_count']}`
                     }
                     if (messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']) {
-                        message += `\nПропущенных: ${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']} (${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count_percentage']}%)`
+                        //message += `\nПропущенных: ${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']} (${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count_percentage']}%)`
+                        message += `\n🟥Пропущенных: ${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']}`
                     }
                     if (messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']) {
-                        message += `\nНедозвонов: ${messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']}, среднее время ожидания — ${messageData[manager]['calls']['failed_outcoming_calls_info']['avg_waiting_time']}`
+                        //message += `\nНедозвонов: ${messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']}, среднее время ожидания — ${messageData[manager]['calls']['failed_outcoming_calls_info']['avg_waiting_time']}`
+                        message += `\n🟧Недозвонов: ${messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']}`
                     }
 
-                    message += `\n\nЗанятость: ${messageData[manager]['calls']['basic_info']['business']}%\n`
+                    //message += `\n\nЗанятость: ${messageData[manager]['calls']['basic_info']['business']}%\n\n`
                 }
                 if (messageData[manager]['orders']) {
-                    message+="\nзаказы есть\n"
+                    message+="заказы есть\n\n"
                 }
             }
         }
