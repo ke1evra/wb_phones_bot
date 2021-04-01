@@ -101,7 +101,7 @@ class DataManager {
         to = moment().add(1, "day").format("YYYY-MM-DD")
     ) {
         return await axios.get(
-            `http://185.211.247.12:3000/orders/managers?date_from=${date}&date_to=${to}`
+            `http://185.211.247.12:3000/orders/managers?date_from=${from}&date_to=${to}`
         );
     }
 
