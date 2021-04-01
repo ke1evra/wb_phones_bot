@@ -86,7 +86,7 @@ class DataManager {
     }
 
     async getManagersCalls(
-        days = 1,
+        days = 0,
         from = moment().subtract(days, "days").unix(),
         to = moment().add(1, "day").unix()
     ) {
@@ -96,7 +96,7 @@ class DataManager {
     }
 
     async getManagersOrders(
-        days = 1,
+        days = 0,
         from = moment().subtract(days, "days").format("YYYY-MM-DD"),
         to = moment().add(1, "day").format("YYYY-MM-DD")
     ) {
