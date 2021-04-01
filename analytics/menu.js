@@ -351,7 +351,7 @@ class Menu {
 
         for (let manager in messageData) {
             if (manager !== "all_managers") {
-                message += `\n—— ${manager} ` + '—'.repeat(27-manager.length) + "\n\n"
+                message += `\n—— ${manager} ——` + "\n\n"
                 if (messageData[manager]['calls']) {
                     message+=`——— ☎️ Звонки —————————————————\n\n`
                         message+=`${messageData[manager]['calls']['basic_info']['total_calls_count']} звонков\n\n`
