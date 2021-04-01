@@ -184,6 +184,7 @@ class Menu {
     }
 
     async renderManagers(fields) {
+        const orderStatusIcons = require('../constants/OrderStatusIcons')
         const numberToManager = require('../constants/vks_numbers')
         if (typeof fields.days == "undefined" || fields.days == null)
             fields.days = 1;
@@ -338,13 +339,13 @@ class Menu {
             if (!messageData[order['name']]['orders']){
                 messageData[order['name']]['orders'] = {}
             }
-            if (!messageData[order['name']]['orders'][order['action_title']]) {
-                messageData[order['name']]['orders'][order['action_title']] = {}
-                messageData[order['name']]['orders'][order['action_title']]['count'] = 0
-                messageData[order['name']]['orders'][order['action_title']]['sum'] = 0
+            if (!messageData[order['name']]['orders'][order['title']]) {
+                messageData[order['name']]['orders'][order['title']] = {}
+                messageData[order['name']]['orders'][order['title']]['count'] = 0
+                messageData[order['name']]['orders'][order['title']]['sum'] = 0
             }
-            messageData[order['name']]['orders'][order['action_title']]['count']++
-            messageData[order['name']]['orders'][order['action_title']]['sum'] += order['order_sum']
+            messageData[order['name']]['orders'][order['title']]['count']++
+            messageData[order['name']]['orders'][order['title']]['sum'] += order['order_sum']
         }
 
         for (let manager in messageData) {
@@ -374,8 +375,8 @@ class Menu {
                 }
                 if (messageData[manager]['orders']) {
                     message+=`——— 📦 Заказы —————————————————\n\n`
-                    for (let order in messageData[manager]['orders']){
-                        message+= `${order}:${messageData[manager]['orders'][order]['count']} (${messageData[manager]['orders'][order]['sum']})\n`
+                    for (let status in messageData[manager]['orders']){
+                        message+= `${orderStatusIcons[status]}${status}: ${messageData[manager]['orders'][status]['count']} (${messageData[manager]['orders'][status]['sum']} ₽)\n`
                     }
                 }
             }
