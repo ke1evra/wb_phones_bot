@@ -184,6 +184,7 @@ class Menu {
     }
 
     async renderManagers(fields) {
+        console.log(fields)
         const orderStatusIcons = require('../constants/OrderStatusIcons')
         const numberToManager = require('../constants/vks_numbers')
         if (typeof fields.days == "undefined" || fields.days == null)

@@ -96,10 +96,12 @@ class DataManager {
     }
 
     async getManagersOrders(
-        date = moment().subtract(1, 'days').format('YYYY-MM-DD'),
+        days = 0,
+        from = moment().subtract(days, "days").format("YYYY-MM-DD HH:mm:ss"),
+        to = moment().add(1, "day").format("YYYY-MM-DD HH:mm:ss")
     ) {
         return await axios.get(
-            `http://185.211.247.12:3000/orders/managers?date=${date}`
+            `http://185.211.247.12:3000/orders/managers?date_from=${date}&date_to=${to}`
         );
     }
 
