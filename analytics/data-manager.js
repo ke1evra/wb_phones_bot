@@ -88,7 +88,7 @@ class DataManager {
     async getManagersCalls(
         days = 1,
         from = moment().subtract(days, "days").unix(),
-        to = moment().endOf("day").unix()
+        to = moment().add(1, "day").unix()
     ) {
         return await axios.get(
             `http://185.211.247.12:3000/mango/day?date_from=${from}&date_to=${to}`
@@ -96,9 +96,9 @@ class DataManager {
     }
 
     async getManagersOrders(
-        days = 0,
-        from = moment().subtract(days, "days").format("YYYY-MM-DD HH:mm:ss"),
-        to = moment().add(1, "day").format("YYYY-MM-DD HH:mm:ss")
+        days = 1,
+        from = moment().subtract(days, "days").format("YYYY-MM-DD"),
+        to = moment().add(1, "day").format("YYYY-MM-DD")
     ) {
         return await axios.get(
             `http://185.211.247.12:3000/orders/managers?date_from=${date}&date_to=${to}`
