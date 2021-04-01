@@ -1498,17 +1498,17 @@ class Menu {
                     '\n           за текущий и прошлый год.';
                 break;
             default:
-                message = 'Команда /help предоставляет информацию по использованию различных команд.\n'
-                message += 'Наберите /help название_команды для вывода справки по ней.' +
-                    '    Список команд:' +
-                    '        /order' +
-                    '        /orders' +
-                    '        /expenses' +
-                    '        /calls' +
-                    '        /managers' +
-                    '        /missed' +
-                    '        /chrono' +
-                    '        /compare';
+                message += 'Команда /help предоставляет информацию по использованию различных команд.\n'
+                message += `Наберите /help название\_команды для вывода справки по ней.
+    Список команд:
+        /order
+        /orders
+        /expenses
+        /calls
+        /managers
+        /missed
+        /chrono
+        /compare`;
                 break;
         }
         return message

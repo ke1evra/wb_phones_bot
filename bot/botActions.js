@@ -220,7 +220,7 @@ bot.onText(/^\/([a-z]+)\s*.*/, async (msg, match) => {
                 fields["days"] = day[1] ? day[1] : 0;
             }
         }
-        console.log(JSON.stringify(fields));
+        //console.log(JSON.stringify(fields));
         await methods.sendMessageByType(router_type, msg, fields);
     } catch (e) {
         console.log(e);
