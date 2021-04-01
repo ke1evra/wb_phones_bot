@@ -187,10 +187,7 @@ class Menu {
         console.log(fields)
         const orderStatusIcons = require('../constants/OrderStatusIcons')
         const numberToManager = require('../constants/vks_numbers')
-        if (typeof fields.days == "undefined" || fields.days == null)
-            fields.days = 1;
-        if (!fields.days) fields.days++
-        const data = await API.getManagersCalls(fields.days, fields.date_from, fields.date_to);
+        const data = await API.getManagersCalls(fields.days, fields.from, fields.to);
 
         let message = '\`\`\`\n— Отчет по менеджерам —————————\n\n';
         const menu = [];
