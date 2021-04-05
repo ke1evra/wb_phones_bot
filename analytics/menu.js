@@ -398,12 +398,13 @@ class Menu {
                     for (let status in messageData[manager]['orders']) {
                         message += `${messageData[manager]['orders'][status]['count']+ ' '.repeat(ordersShift-String(String(messageData[manager]['orders'][status]['count']).length))}${orderStatusIcons[status]} ${status} (${messageData[manager]['orders'][status]['sum']} ₽)\n`
                     }
+                    message += `\n`
                 }
                 if (messageData[manager]['calls']){
                     message += `——— 📊 Показатели ———\n\n`
-                    message += 'Показатель'
+                    message += 'Показатель\n'
+                    message += `\n`
                 }
-                message+='\n'
             }
         }
         message += '\n\`\`\`'
