@@ -412,7 +412,7 @@ class Menu {
         message=message.match(/.{1,4104}/g).map(e=>{
             return `\`\`\`${e}\`\`\``
         }).join('')
-
+        message='a'.repeat(4500)
         console.log(messageData)
         console.log(message)
         let options = {
