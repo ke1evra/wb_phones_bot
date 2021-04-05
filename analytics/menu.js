@@ -340,7 +340,7 @@ class Menu {
             messageData[order['name']]['orders'][order['title']]['sum'] += order['order_sum']
         }
 
-        const width = 34
+        const width = 35
 
 
         let message = `\`\`\`\n— Отчет по менеджерам —${'—'.repeat(width - 23)}\n\n`;
