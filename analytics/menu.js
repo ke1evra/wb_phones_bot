@@ -350,7 +350,7 @@ class Menu {
 
         for (let manager in messageData) {
             if (!(manager === "all_managers" || manager === "null")) {
-                message += `—— ${manager} ${manager.length + 4 >= width ? null : '—'.repeat(width - manager.length - 4)}` + "\n\n"
+                message += `—— ${manager} ${manager.length + 4 >= width ? '' : '—'.repeat(width - manager.length - 4)}` + "\n\n"
                 if (messageData[manager]['calls']) {
 
                     let cntLengths = []
@@ -403,9 +403,9 @@ class Menu {
                 if (messageData[manager]['calls']){
                     message += `——— 📊 Показатели ———\n\n`
 
-                    message +=`${messageData[manager]['calls']['incoming_calls_info']['avg_time_to_answer']?`Среднее время ответа — ${messageData[manager]['calls']['incoming_calls_info']['avg_time_to_answer']} с\n`:''}`
+                    message +=`${messageData[manager]['calls']['incoming_calls_info']['avg_time_to_answer']?`Ср. время ответа — ${messageData[manager]['calls']['incoming_calls_info']['avg_time_to_answer']} с\n`:''}`
                     message +=`${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']?`Процент пропущенных — ${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count_percentage']}%\n`:''}`
-                    message +=`${messageData[manager]['calls']['failed_outcoming_calls_info']['avg_waiting_time']?`Среднее время ожидания при недозвоне — ${messageData[manager]['calls']['failed_outcoming_calls_info']['avg_waiting_time']} с\n`:''}`
+                    message +=`${messageData[manager]['calls']['failed_outcoming_calls_info']['avg_waiting_time']?`Ср. время ожидания при недозвоне — ${messageData[manager]['calls']['failed_outcoming_calls_info']['avg_waiting_time']} с\n`:''}`
 
                     message += `\n`
                 }
