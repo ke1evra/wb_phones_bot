@@ -118,7 +118,7 @@ const methods = {
     async sendMsg(chat_id, message) {
         try {
             return bot
-                .sendMessage(chat_id, message, {parse_mode: "Markdown"})
+                .sendMessage(chat_id, message,{parse_mode: "Markdown"})
                 .then((msg) => {
                     console.log(`сообщение (id: ${msg.message_id})${message.length > 80 ? message.substr(0, 80) + '...' : message} успешно отправлено в чат (${chat_id})`
                     );
@@ -220,7 +220,7 @@ bot.onText(/^\/([a-z]+)\s*.*/, async (msg, match) => {
                 fields["days"] = day[1] ? day[1] : 0;
             }
         }
-
+        //console.log(JSON.stringify(fields));
         await methods.sendMessageByType(router_type, msg, fields);
     } catch (e) {
         console.log(e);

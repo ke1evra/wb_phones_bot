@@ -1347,7 +1347,7 @@ class Menu {
                 statistics.days[day].order_sum += item["order_sum"];
             });
             //Формирование сообщения
-            message += `В преиод с ${from} по ${to}\n`;
+            message += `В период с ${from} по ${to}\n`;
             //Вывод шапки
             let colour = 0;
             if (statistics.days_count <= 7) {
@@ -1499,7 +1499,7 @@ class Menu {
                 break;
             default:
                 message += 'Команда /help предоставляет информацию по использованию различных команд.\n'
-                message += `Наберите /help название_команды для вывода справки по ней.
+                message += `Наберите /help название\\_команды для вывода справки по ней.
     Список команд:
         /order
         /orders
