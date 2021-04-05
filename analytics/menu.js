@@ -334,7 +334,7 @@ class Menu {
             if (!messageData[order['name']]) {
                 messageData[order['name']] = {}
             }
-            if (!messageData[order['name']]['orders']){
+            if (!messageData[order['name']]['orders']) {
                 messageData[order['name']]['orders'] = {}
             }
             if (!messageData[order['name']]['orders'][order['title']]) {
@@ -346,15 +346,17 @@ class Menu {
             messageData[order['name']]['orders'][order['title']]['sum'] += order['order_sum']
         }
 
+        const width = 57
+
         for (let manager in messageData) {
             if (manager !== "all_managers") {
-                message += `\n—— ${manager} ——` + "\n\n"
+                message += `\n—— ${manager} ${manager.length + 4 >= width ? null : '—'.repeat(width - manager.length - 4)}` + "\n\n"
                 if (messageData[manager]['calls']) {
-                    message+=`——— ☎️ Звонки —————————————————\n\n`
-                        message+=`${messageData[manager]['calls']['basic_info']['total_calls_count']} звонков\n\n`
+                    message += `——— ☎️ Звонки —————————————————\n\n`
+                    message += `${messageData[manager]['calls']['basic_info']['total_calls_count']} звонков\n\n`
                     if (messageData[manager]['calls']['incoming_calls_info']['calls_count']) {
                         //message += `\nВходящих: ${messageData[manager]['calls']['incoming_calls_info']['calls_count']}, среднее время ответа — ${messageData[manager]['calls']['incoming_calls_info']['avg_time_to_answer']}`
-                        message +=`🟩Входящих: ${messageData[manager]['calls']['incoming_calls_info']['calls_count']}\n`
+                        message += `🟩Входящих: ${messageData[manager]['calls']['incoming_calls_info']['calls_count']}\n`
                     }
                     if (messageData[manager]['calls']['outcoming_calls_info']['calls_count']) {
                         //message += `\nИсходящих: ${messageData[manager]['calls']['outcoming_calls_info']['calls_count']}`
@@ -369,12 +371,12 @@ class Menu {
                         message += `🟧Недозвонов: ${messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']}\n`
                     }
                     //message += `\n\nЗанятость: ${messageData[manager]['calls']['basic_info']['business']}%\n\n`
-                    message+=`\n`
+                    message += `\n`
                 }
                 if (messageData[manager]['orders']) {
-                    message+=`——— 📦 Заказы —————————————————\n\n`
-                    for (let status in messageData[manager]['orders']){
-                        message+= `${orderStatusIcons[status]}${status}: ${messageData[manager]['orders'][status]['count']} (${messageData[manager]['orders'][status]['sum']} ₽)\n`
+                    message += `——— 📦 Заказы —————————————————\n\n`
+                    for (let status in messageData[manager]['orders']) {
+                        message += `${orderStatusIcons[status]}${status}: ${messageData[manager]['orders'][status]['count']} (${messageData[manager]['orders'][status]['sum']} ₽)\n`
                     }
                 }
             }
