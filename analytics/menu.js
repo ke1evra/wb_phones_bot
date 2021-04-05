@@ -315,7 +315,6 @@ class Menu {
                 }
 
                 messageData[manager]['calls']['failed_incoming_calls_info']['calls_count_percentage'] = (messageData[manager]['calls']['failed_incoming_calls_info']['calls_count'] * 100 / messageData[manager]['calls']['basic_info']['total_calls_count']).toFixed(2)
-                in_calls_time_percentage
                 if (messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']) {
                     messageData[manager]['calls']['failed_outcoming_calls_info']['avg_waiting_time'] = (messageData[manager]['calls']['failed_outcoming_calls_info']['in_waiting_time'] / messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']).toFixed(2)
                 }
