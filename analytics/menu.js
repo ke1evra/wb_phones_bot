@@ -340,7 +340,7 @@ class Menu {
             messageData[order['name']]['orders'][order['title']]['sum'] += order['order_sum']
         }
 
-        const width = 57
+        const width = 48
 
 
         let message = `\`\`\`\n— Отчет по менеджерам —${'—'.repeat(width - 23)}\n\n`;
@@ -381,11 +381,11 @@ class Menu {
                     }
                     if (messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']) {
                         //message += `\nПропущенных: ${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']} (${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count_percentage']}%)`
-                        message += `${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']+' '.repeat(callsShift-String(messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']).length)}🟦Пропущенный\n`
+                        message += `${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']+' '.repeat(callsShift-String(messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']).length)}🟥Пропущенный\n`
                     }
                     if (messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']) {
                         //message += `\nНедозвонов: ${messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']}, среднее время ожидания — ${messageData[manager]['calls']['failed_outcoming_calls_info']['avg_waiting_time']}`
-                        message += `${messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']+' '.repeat(callsShift-String(messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']).length)}🟦Недозвон\n`
+                        message += `${messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']+' '.repeat(callsShift-String(messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']).length)}🟧Недозвон\n`
                     }
                     //message += `\n\nЗанятость: ${messageData[manager]['calls']['basic_info']['business']}%\n\n`
                     message += `\n`
