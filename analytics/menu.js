@@ -341,7 +341,7 @@ class Menu {
 
         const width = 34
 
-        let message = `\`\`\`\n— Отчет по менеджерам —${'—'.repeat(width - 23)}\n\n`;
+        let message = `— Отчет по менеджерам —${'—'.repeat(width - 23)}\n\n`;
         message += `Звонков совершено: ${messageData.all_managers.calls.basic_info.total_calls_count}\n` +
             `Ср. продолжительность звонка: ${messageData.all_managers.calls.basic_info.avg_call_duration}\n` +
             `Ср. время ответа: ${messageData.all_managers.calls.incoming_calls_info.avg_time_to_answer}\n` +
@@ -349,7 +349,7 @@ class Menu {
             `Ср. время ожидания при недозвоне: ${messageData.all_managers.calls.failed_outcoming_calls_info.avg_waiting_time}\n\n`
 
         for (let manager in messageData) {
-            if (!(manager === "all_managers" || manager === "null" || manager === "тест менеджер")) {
+            if (!(manager === "all_managers" || manager === "null")) {
                 message += `—— ${manager} ${manager.length + 4 >= width ? '' : '—'.repeat(width - manager.length - 4)}` + "\n\n"
                 if (messageData[manager]['calls']) {
 
@@ -409,7 +409,9 @@ class Menu {
                 }
             }
         }
-        message += '\n\`\`\`'
+        message=message.match(/.{1,4090}/g).map(e=>{
+            return `\`\`\`${e}\`\`\``
+        }).join('')
 
         console.log(messageData)
         console.log(message)
