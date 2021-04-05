@@ -187,7 +187,6 @@ class Menu {
         console.log(fields)
         const orderStatusIcons = require('../constants/OrderStatusIcons')
         const numberToManager = require('../constants/vks_numbers')
-        console.log(fields)
         const data = await API.getManagersCalls(fields.days, fields.from, fields.to);
 
         const menu = [];
@@ -322,7 +321,7 @@ class Menu {
             }
         }
 
-        const managersOrdersData = await API.getManagersOrders();
+        const managersOrdersData = await API.getManagersOrders(fields.days, fields.from, fields.to);
 
         for (let order of managersOrdersData['data']) {
             if (!messageData[order['name']]) {
