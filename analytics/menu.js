@@ -349,7 +349,7 @@ class Menu {
             `Ср. время ожидания при недозвоне: ${messageData.all_managers.calls.failed_outcoming_calls_info.avg_waiting_time}\n\n`
 
         for (let manager in messageData) {
-            if (!(manager === "all_managers" || manager === "null")) {
+            if (!(manager === "all_managers" || manager === "null" || manager === "тест менеджер")) {
                 message += `—— ${manager} ${manager.length + 4 >= width ? '' : '—'.repeat(width - manager.length - 4)}` + "\n\n"
                 if (messageData[manager]['calls']) {
 
