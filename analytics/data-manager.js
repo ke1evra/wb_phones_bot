@@ -90,7 +90,7 @@ class DataManager {
         from = moment().startOf('day').subtract(days, "days").unix(),
         to = moment().startOf('day').add(1, "day").unix()
     ) {
-        console.log(days, from, to)
+        console.log(days, from,  to)
         return await axios.get(
             `http://185.211.247.12:3000/mango/day?date_from=${from}&date_to=${to}`
         );
