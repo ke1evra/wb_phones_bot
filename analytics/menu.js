@@ -189,7 +189,6 @@ class Menu {
         const numberToManager = require('../constants/vks_numbers')
         const data = await API.getManagersCalls(fields.days, fields.from, fields.to);
 
-        let message = '\`\`\`\n— Отчет по менеджерам —————————\n\n';
         const menu = [];
 
         let messageData = {}
@@ -322,11 +321,6 @@ class Menu {
                 }
             }
         }
-        message += `Звонков совершено: ${messageData.all_managers.calls.basic_info.total_calls_count}\n` +
-            `Средняя продолжительность звонка: ${messageData.all_managers.calls.basic_info.avg_call_duration}\n` +
-            `Среднее время ответа: ${messageData.all_managers.calls.incoming_calls_info.avg_time_to_answer}\n` +
-            `Процент пропущенных вызовов: ${messageData.all_managers.calls.failed_incoming_calls_info.calls_count_percentage}%\n` +
-            `Среднее время ожидания до сброса при исходящем вызове: ${messageData.all_managers.calls.failed_outcoming_calls_info.avg_waiting_time}\n\n`
 
         const managersOrdersData = await API.getManagersOrders();
 
@@ -348,27 +342,48 @@ class Menu {
 
         const width = 57
 
+
+        let message = `\`\`\`\n— Отчет по менеджерам —${'—'.repeat(width - 23)}\n\n`;
+        message += `Звонков совершено: ${messageData.all_managers.calls.basic_info.total_calls_count}\n` +
+            `Ср. продолжительность звонка: ${messageData.all_managers.calls.basic_info.avg_call_duration}\n` +
+            `Ср. время ответа: ${messageData.all_managers.calls.incoming_calls_info.avg_time_to_answer}\n` +
+            `Процент пропущенных вызовов: ${messageData.all_managers.calls.failed_incoming_calls_info.calls_count_percentage}%\n` +
+            `Ср. время ожидания при недозвоне: ${messageData.all_managers.calls.failed_outcoming_calls_info.avg_waiting_time}\n\n`
+
         for (let manager in messageData) {
             if (manager !== "all_managers") {
                 message += `\n—— ${manager} ${manager.length + 4 >= width ? null : '—'.repeat(width - manager.length - 4)}` + "\n\n"
                 if (messageData[manager]['calls']) {
-                    message += `——— ☎️ Звонки —————————————————\n\n`
+
+                    let cntLengths = []
+                    if (messageData[manager]['calls']['incoming_calls_info']['calls_count'])
+                        cntLengths.push(messageData[manager]['calls']['incoming_calls_info']['calls_count'].length)
+                    if (messageData[manager]['calls']['outcoming_calls_info']['calls_count'])
+                        cntLengths.push(messageData[manager]['calls']['outcoming_calls_info']['calls_count'].length)
+                    if (messageData[manager]['calls']['failed_incoming_calls_info']['calls_count'])
+                        cntLengths.push(messageData[manager]['calls']['failed_incoming_calls_info']['calls_count'].length)
+                    if (messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count'])
+                        cntLengths.push(messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count'].length)
+
+                    let callsShift = Math.max.apply(null, cntLengths)+1
+
+                    message += `——— ☎️ Звонки ———\n\n`
                     message += `${messageData[manager]['calls']['basic_info']['total_calls_count']} звонков\n\n`
                     if (messageData[manager]['calls']['incoming_calls_info']['calls_count']) {
                         //message += `\nВходящих: ${messageData[manager]['calls']['incoming_calls_info']['calls_count']}, среднее время ответа — ${messageData[manager]['calls']['incoming_calls_info']['avg_time_to_answer']}`
-                        message += `🟩Входящих: ${messageData[manager]['calls']['incoming_calls_info']['calls_count']}\n`
+                        message += `${messageData[manager]['calls']['incoming_calls_info']['calls_count']+' '.repeat(callsShift-messageData[manager]['calls']['incoming_calls_info']['calls_count'].length)}🟩Входящий\n`
                     }
                     if (messageData[manager]['calls']['outcoming_calls_info']['calls_count']) {
                         //message += `\nИсходящих: ${messageData[manager]['calls']['outcoming_calls_info']['calls_count']}`
-                        message += `🟦Исходящих: ${messageData[manager]['calls']['outcoming_calls_info']['calls_count']}\n`
+                        message += `${messageData[manager]['calls']['outcoming_calls_info']['calls_count']+' '.repeat(callsShift-messageData[manager]['calls']['outcoming_calls_info']['calls_count'].length)}🟦Исходящий\n`
                     }
                     if (messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']) {
                         //message += `\nПропущенных: ${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']} (${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count_percentage']}%)`
-                        message += `🟥Пропущенных: ${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']}\n`
+                        message += `${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']+' '.repeat(callsShift-messageData[manager]['calls']['failed_incoming_calls_info']['calls_count'].length)}🟦Пропущенный\n`
                     }
                     if (messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']) {
                         //message += `\nНедозвонов: ${messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']}, среднее время ожидания — ${messageData[manager]['calls']['failed_outcoming_calls_info']['avg_waiting_time']}`
-                        message += `🟧Недозвонов: ${messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']}\n`
+                        message += `${messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']+' '.repeat(callsShift-messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count'].length)}🟦Недозвон\n`
                     }
                     //message += `\n\nЗанятость: ${messageData[manager]['calls']['basic_info']['business']}%\n\n`
                     message += `\n`
