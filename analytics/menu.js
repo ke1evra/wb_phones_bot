@@ -342,7 +342,6 @@ class Menu {
 
         const width = 34
 
-
         let message = `\`\`\`\n— Отчет по менеджерам —${'—'.repeat(width - 23)}\n\n`;
         message += `Звонков совершено: ${messageData.all_managers.calls.basic_info.total_calls_count}\n` +
             `Ср. продолжительность звонка: ${messageData.all_managers.calls.basic_info.avg_call_duration}\n` +
@@ -351,7 +350,7 @@ class Menu {
             `Ср. время ожидания при недозвоне: ${messageData.all_managers.calls.failed_outcoming_calls_info.avg_waiting_time}\n\n`
 
         for (let manager in messageData) {
-            if (manager !== "all_managers") {
+            if (manager !== "all_managers" || manager !== "null") {
                 message += `\n—— ${manager} ${manager.length + 4 >= width ? null : '—'.repeat(width - manager.length - 4)}` + "\n\n"
                 if (messageData[manager]['calls']) {
 
@@ -365,7 +364,7 @@ class Menu {
                     if (messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count'])
                         cntLengths.push(String(messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']).length)
 
-                    let callsShift = Math.max.apply(null, cntLengths)+1
+                    let callsShift = Math.max.apply(null, cntLengths) + 1
 
                     console.log(cntLengths)
 
@@ -373,27 +372,32 @@ class Menu {
                     message += `${messageData[manager]['calls']['basic_info']['total_calls_count']} звонков\n\n`
                     if (messageData[manager]['calls']['incoming_calls_info']['calls_count']) {
                         //message += `\nВходящих: ${messageData[manager]['calls']['incoming_calls_info']['calls_count']}, среднее время ответа — ${messageData[manager]['calls']['incoming_calls_info']['avg_time_to_answer']}`
-                        message += `${messageData[manager]['calls']['incoming_calls_info']['calls_count']+' '.repeat(callsShift-String(messageData[manager]['calls']['incoming_calls_info']['calls_count']).length)}🟩 Входящий\n`
+                        message += `${messageData[manager]['calls']['incoming_calls_info']['calls_count'] + ' '.repeat(callsShift - String(messageData[manager]['calls']['incoming_calls_info']['calls_count']).length)}🟩 Входящий\n`
                     }
                     if (messageData[manager]['calls']['outcoming_calls_info']['calls_count']) {
                         //message += `\nИсходящих: ${messageData[manager]['calls']['outcoming_calls_info']['calls_count']}`
-                        message += `${messageData[manager]['calls']['outcoming_calls_info']['calls_count']+' '.repeat(callsShift-String(messageData[manager]['calls']['outcoming_calls_info']['calls_count']).length)}🟦 Исходящий\n`
+                        message += `${messageData[manager]['calls']['outcoming_calls_info']['calls_count'] + ' '.repeat(callsShift - String(messageData[manager]['calls']['outcoming_calls_info']['calls_count']).length)}🟦 Исходящий\n`
                     }
                     if (messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']) {
                         //message += `\nПропущенных: ${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']} (${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count_percentage']}%)`
-                        message += `${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']+' '.repeat(callsShift-String(messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']).length)}🟥 Пропущенный\n`
+                        message += `${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count'] + ' '.repeat(callsShift - String(messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']).length)}🟥 Пропущенный\n`
                     }
                     if (messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']) {
                         //message += `\nНедозвонов: ${messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']}, среднее время ожидания — ${messageData[manager]['calls']['failed_outcoming_calls_info']['avg_waiting_time']}`
-                        message += `${messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']+' '.repeat(callsShift-String(messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']).length)}🟧 Недозвон\n`
+                        message += `${messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count'] + ' '.repeat(callsShift - String(messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']).length)}🟧 Недозвон\n`
                     }
                     //message += `\n\nЗанятость: ${messageData[manager]['calls']['basic_info']['business']}%\n\n`
                     message += `\n`
                 }
                 if (messageData[manager]['orders']) {
-                    message += `——— 📦 Заказы —————————————————\n\n`
+                    message += `——— 📦 Заказы ———\n\n`
+                    let cntLengths = []
                     for (let status in messageData[manager]['orders']) {
-                        message += `${orderStatusIcons[status]}${status}: ${messageData[manager]['orders'][status]['count']} (${messageData[manager]['orders'][status]['sum']} ₽)\n`
+                        cntLengths.push(String(messageData[manager]['orders'][status]['count']).length)
+                    }
+                    let ordersShift = Math.max.apply(null, cntLengths)+1
+                    for (let status in messageData[manager]['orders']) {
+                        message += `${messageData[manager]['orders'][status]['count']+ ' '.repeat(ordersShift-String(String(messageData[manager]['orders'][status]['count']).length))}${orderStatusIcons[status]} ${status} (${messageData[manager]['orders'][status]['sum']} ₽)\n`
                     }
                 }
             }
