@@ -307,7 +307,7 @@ class Menu {
         for (let manager in messageData) {
             if (manager !== "all_managers") {
                 messageData[manager]['calls']['basic_info']['calls_count_percentage'] = (messageData[manager]['calls']['basic_info']['total_calls_count'] * 100 / messageData['all_managers']['calls']['basic_info']['total_calls_count']).toFixed(2)
-                messageData[manager]['calls']['basic_info']['in_calls_time_percentage'] = (messageData[manager]['calls']['basic_info']['in_calls_time'] * 100 / messageData['all_managers']['calls']['basic_info']['in_calls_time']).toFixed(2)
+                messageData[manager]['calls']['basic_info'][''] = (messageData[manager]['calls']['basic_info']['in_calls_time'] * 100 / messageData['all_managers']['calls']['basic_info']['in_calls_time']).toFixed(2)
                 messageData[manager]['calls']['basic_info']['business'] = (messageData[manager]['calls']['basic_info']['in_calls_time'] * 100 / (7.5 * fields.days * 60 * 60)).toFixed(2)
 
                 if (messageData[manager]['calls']['incoming_calls_info']['calls_count']) {
@@ -315,7 +315,7 @@ class Menu {
                 }
 
                 messageData[manager]['calls']['failed_incoming_calls_info']['calls_count_percentage'] = (messageData[manager]['calls']['failed_incoming_calls_info']['calls_count'] * 100 / messageData[manager]['calls']['basic_info']['total_calls_count']).toFixed(2)
-
+                in_calls_time_percentage
                 if (messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']) {
                     messageData[manager]['calls']['failed_outcoming_calls_info']['avg_waiting_time'] = (messageData[manager]['calls']['failed_outcoming_calls_info']['in_waiting_time'] / messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']).toFixed(2)
                 }
@@ -350,8 +350,8 @@ class Menu {
             `Ср. время ожидания при недозвоне: ${messageData.all_managers.calls.failed_outcoming_calls_info.avg_waiting_time}\n\n`
 
         for (let manager in messageData) {
-            if (manager !== "all_managers" || manager !== "null") {
-                message += `\n—— ${manager} ${manager.length + 4 >= width ? null : '—'.repeat(width - manager.length - 4)}` + "\n\n"
+            if (!(manager === "all_managers" || manager === "null")) {
+                message += `—— ${manager} ${manager.length + 4 >= width ? null : '—'.repeat(width - manager.length - 4)}` + "\n\n"
                 if (messageData[manager]['calls']) {
 
                     let cntLengths = []
@@ -400,6 +400,11 @@ class Menu {
                         message += `${messageData[manager]['orders'][status]['count']+ ' '.repeat(ordersShift-String(String(messageData[manager]['orders'][status]['count']).length))}${orderStatusIcons[status]} ${status} (${messageData[manager]['orders'][status]['sum']} ₽)\n`
                     }
                 }
+                if (messageData[manager]['calls']){
+                    message += `——— 📊 Показатели ———\n\n`
+                    message += 'Показатель'
+                }
+                message+='\n'
             }
         }
         message += '\n\`\`\`'
