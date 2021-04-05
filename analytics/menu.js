@@ -340,7 +340,7 @@ class Menu {
             messageData[order['name']]['orders'][order['title']]['sum'] += order['order_sum']
         }
 
-        const width = 48
+        const width = 34
 
 
         let message = `\`\`\`\n— Отчет по менеджерам —${'—'.repeat(width - 23)}\n\n`;
@@ -373,19 +373,19 @@ class Menu {
                     message += `${messageData[manager]['calls']['basic_info']['total_calls_count']} звонков\n\n`
                     if (messageData[manager]['calls']['incoming_calls_info']['calls_count']) {
                         //message += `\nВходящих: ${messageData[manager]['calls']['incoming_calls_info']['calls_count']}, среднее время ответа — ${messageData[manager]['calls']['incoming_calls_info']['avg_time_to_answer']}`
-                        message += `${messageData[manager]['calls']['incoming_calls_info']['calls_count']+' '.repeat(callsShift-String(messageData[manager]['calls']['incoming_calls_info']['calls_count']).length)}🟩Входящий\n`
+                        message += `${messageData[manager]['calls']['incoming_calls_info']['calls_count']+' '.repeat(callsShift-String(messageData[manager]['calls']['incoming_calls_info']['calls_count']).length)}🟩 Входящий\n`
                     }
                     if (messageData[manager]['calls']['outcoming_calls_info']['calls_count']) {
                         //message += `\nИсходящих: ${messageData[manager]['calls']['outcoming_calls_info']['calls_count']}`
-                        message += `${messageData[manager]['calls']['outcoming_calls_info']['calls_count']+' '.repeat(callsShift-String(messageData[manager]['calls']['outcoming_calls_info']['calls_count']).length)}🟦Исходящий\n`
+                        message += `${messageData[manager]['calls']['outcoming_calls_info']['calls_count']+' '.repeat(callsShift-String(messageData[manager]['calls']['outcoming_calls_info']['calls_count']).length)}🟦 Исходящий\n`
                     }
                     if (messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']) {
                         //message += `\nПропущенных: ${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']} (${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count_percentage']}%)`
-                        message += `${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']+' '.repeat(callsShift-String(messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']).length)}🟥Пропущенный\n`
+                        message += `${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']+' '.repeat(callsShift-String(messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']).length)}🟥 Пропущенный\n`
                     }
                     if (messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']) {
                         //message += `\nНедозвонов: ${messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']}, среднее время ожидания — ${messageData[manager]['calls']['failed_outcoming_calls_info']['avg_waiting_time']}`
-                        message += `${messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']+' '.repeat(callsShift-String(messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']).length)}🟧Недозвон\n`
+                        message += `${messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']+' '.repeat(callsShift-String(messageData[manager]['calls']['failed_outcoming_calls_info']['calls_count']).length)}🟧 Недозвон\n`
                     }
                     //message += `\n\nЗанятость: ${messageData[manager]['calls']['basic_info']['business']}%\n\n`
                     message += `\n`
