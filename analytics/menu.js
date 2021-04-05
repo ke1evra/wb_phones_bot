@@ -412,6 +412,7 @@ class Menu {
         message += '\n\`\`\`'
 
         console.log(messageData)
+        console.log(message)
         let options = {
             reply_markup: JSON.stringify({
                 inline_keyboard: [
