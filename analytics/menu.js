@@ -365,8 +365,6 @@ class Menu {
 
                     let callsShift = Math.max.apply(null, cntLengths) + 1
 
-                    console.log(cntLengths)
-
                     message += `——— ☎️ Звонки ———\n\n`
                     message += `${messageData[manager]['calls']['basic_info']['total_calls_count']} звонков\n\n`
                     if (messageData[manager]['calls']['incoming_calls_info']['calls_count']) {
@@ -413,7 +411,7 @@ class Menu {
         }
         message += '\n\`\`\`'
 
-        //console.log(messageData)
+        console.log(messageData)
         let options = {
             reply_markup: JSON.stringify({
                 inline_keyboard: [
