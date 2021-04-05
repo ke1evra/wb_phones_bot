@@ -187,6 +187,7 @@ class Menu {
         console.log(fields)
         const orderStatusIcons = require('../constants/OrderStatusIcons')
         const numberToManager = require('../constants/vks_numbers')
+        console.log(fields)
         const data = await API.getManagersCalls(fields.days, fields.from, fields.to);
 
         const menu = [];
@@ -394,18 +395,18 @@ class Menu {
                     for (let status in messageData[manager]['orders']) {
                         cntLengths.push(String(messageData[manager]['orders'][status]['count']).length)
                     }
-                    let ordersShift = Math.max.apply(null, cntLengths)+1
+                    let ordersShift = Math.max.apply(null, cntLengths) + 1
                     for (let status in messageData[manager]['orders']) {
-                        message += `${messageData[manager]['orders'][status]['count']+ ' '.repeat(ordersShift-String(String(messageData[manager]['orders'][status]['count']).length))}${orderStatusIcons[status]} ${status} (${messageData[manager]['orders'][status]['sum']} ₽)\n`
+                        message += `${messageData[manager]['orders'][status]['count'] + ' '.repeat(ordersShift - String(String(messageData[manager]['orders'][status]['count']).length))}${orderStatusIcons[status]} ${status} (${messageData[manager]['orders'][status]['sum']} ₽)\n`
                     }
                     message += `\n`
                 }
-                if (messageData[manager]['calls']){
+                if (messageData[manager]['calls']) {
                     message += `——— 📊 Показатели ———\n\n`
 
-                    message +=`${messageData[manager]['calls']['incoming_calls_info']['avg_time_to_answer']?`Ср. время ответа — ${messageData[manager]['calls']['incoming_calls_info']['avg_time_to_answer']} с\n`:''}`
-                    message +=`${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count']?`Процент пропущенных — ${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count_percentage']}%\n`:''}`
-                    message +=`${messageData[manager]['calls']['failed_outcoming_calls_info']['avg_waiting_time']?`Ср. время ожидания при недозвоне — ${messageData[manager]['calls']['failed_outcoming_calls_info']['avg_waiting_time']} с\n`:''}`
+                    message += `${messageData[manager]['calls']['incoming_calls_info']['avg_time_to_answer'] ? `Ср. время ответа — ${messageData[manager]['calls']['incoming_calls_info']['avg_time_to_answer']} с\n` : ''}`
+                    message += `${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count'] ? `Процент пропущенных — ${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count_percentage']}%\n` : ''}`
+                    message += `${messageData[manager]['calls']['failed_outcoming_calls_info']['avg_waiting_time'] ? `Ср. время ожидания при недозвоне — ${messageData[manager]['calls']['failed_outcoming_calls_info']['avg_waiting_time']} с\n` : ''}`
 
                     message += `\n`
                 }

@@ -90,6 +90,7 @@ class DataManager {
         from = moment().startOf('day').subtract(days, "days").unix(),
         to = moment().startOf('day').add(1, "day").unix()
     ) {
+        console.log(days, from, to)
         return await axios.get(
             `http://185.211.247.12:3000/mango/day?date_from=${from}&date_to=${to}`
         );
@@ -114,13 +115,13 @@ class DataManager {
             `http://185.211.247.12:3000/orders/cnt?date_from=${from}&date_to=${to}`
         );
     }
+
     async getOrdersSumByMonth(
         months = 0,
         from = moment().subtract(months, "months").format("YYYY-MM-DD"),
         to = moment().add(1, "day").format("YYYY-MM-DD"),
-        shop_id=1
-    )
-    {
+        shop_id = 1
+    ) {
         return await axios.get(
             `http://185.211.247.12:3000/orders/month/sum?date_from=${from}&date_to=${to}&shop=${shop_id}`
         );
@@ -130,9 +131,8 @@ class DataManager {
         days = 0,
         from = moment().subtract(days, "days").format("YYYY-MM-DD"),
         to = moment().add(1, "day").format("YYYY-MM-DD"),
-        shop_id=1
-    )
-    {
+        shop_id = 1
+    ) {
         return await axios.get(
             `http://185.211.247.12:3000/orders/day/sum?date_from=${from}&date_to=${to}&shop=${shop_id}`
         );
