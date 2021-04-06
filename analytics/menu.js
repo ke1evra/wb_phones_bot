@@ -341,7 +341,7 @@ class Menu {
 
         const width = 34
 
-        let message = `—— Отчет по менеджерам —${'—'.repeat(width - 24)}\n\n`;
+        let message = `— Отчет по менеджерам —${'—'.repeat(width - 23)}\n\n`;
         message += `Звонков совершено: ${messageData.all_managers.calls.basic_info.total_calls_count}\n` +
             `Ср. продолжительность звонка: ${messageData.all_managers.calls.basic_info.avg_call_duration}\n` +
             `Ср. время ответа: ${messageData.all_managers.calls.incoming_calls_info.avg_time_to_answer}\n` +
@@ -409,7 +409,7 @@ class Menu {
                 }
             }
         }
-        message=message.match(/[\s\S]{1,4090}/g).map(e=>{
+        message=message.match(/[\s\S]{1,3997}/g).map(e=>{
             return `\`\`\`${e}\`\`\``
         }).join('')
         console.log(message)
