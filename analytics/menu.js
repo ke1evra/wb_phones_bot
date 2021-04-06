@@ -409,9 +409,9 @@ class Menu {
                 }
             }
         }
-        /*message=message.match(/.{1,4076}/g).map(e=>{
+        message=message.match(/[\s\S]{1,4090}/g).map(e=>{
             return `\`\`\`${e}\`\`\``
-        }).join('')*/
+        }).join('')
         console.log(message)
         let options = {
             reply_markup: JSON.stringify({
