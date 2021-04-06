@@ -257,7 +257,7 @@ class Menu {
             if (item.call_type === 'Входящий') {
                 const callTime = moment(item.finish).diff(moment(moment(item.answer)), "seconds")
                 const answerTime = moment(item.answer).diff(moment(moment(item.start)), "seconds")
-
+                console.log(item.person, call_type, callTime, answerTime)
                 messageData[item.person]['calls']['incoming_calls_info']['calls_count']++
                 messageData[item.person]['calls']['incoming_calls_info']['in_calls_time'] += callTime
                 messageData[item.person]['calls']['incoming_calls_info']['time_to_answer'] += answerTime
@@ -272,6 +272,7 @@ class Menu {
             } else if (item.call_type === 'Исходящий') {
                 const callTime = moment(item.finish).diff(moment(moment(item.answer)), "seconds")
                 const waitingTime = moment(item.answer).diff(moment(moment(item.start)), "seconds")
+                console.log(item.person, call_type, callTime, waitingTime)
 
                 messageData[item.person]['calls']['outcoming_calls_info']['calls_count']++
                 messageData[item.person]['calls']['outcoming_calls_info']['in_calls_time'] += callTime
@@ -292,6 +293,7 @@ class Menu {
                 messageData['all_managers']['calls']['failed_incoming_calls_info']['calls_count']++
             } else if (item.call_type === 'Недозвон') {
                 const waitingTime = moment(item.end).diff(moment(moment(item.start)), "seconds")
+                console.log(item.person, call_type, waitingTime)
 
                 messageData[item.person]['calls']['failed_outcoming_calls_info']['calls_count']++
                 messageData[item.person]['calls']['failed_outcoming_calls_info']['in_waiting_time'] += waitingTime
@@ -416,7 +418,7 @@ class Menu {
             }
         }
 
-        message=message.match(/[\s\S]{1,3994}/g).map(e=>{
+        message = message.match(/[\s\S]{1,3994}/g).map(e => {
             return `\`\`\`${e}\`\`\``
         }).join('')
 
