@@ -420,7 +420,7 @@ class Menu {
             return `\`\`\`${e}\`\`\``
         }).join('')
 
-        console.log(messageData)
+        console.log(messageData['all_managers'])
         let options = {
             reply_markup: JSON.stringify({
                 inline_keyboard: [
