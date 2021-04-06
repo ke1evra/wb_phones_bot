@@ -192,8 +192,9 @@ class Menu {
         let to = typeof fields.to == "undefined" || fields.to == null ? moment() : moment(fields.to);
         to.add(1, "day");
         const data = await API.getCalls(fields.days, from, to.format("YYYY-MM-DD"));
-
-        console.log(data)
+        if(!fields.days)
+            fields.days=1
+        //console.log(data)
 
         const menu = [];
 
