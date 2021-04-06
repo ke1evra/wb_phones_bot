@@ -254,11 +254,9 @@ class Menu {
             }
             messageData[item.person]['calls']['basic_info']['total_calls_count']++
             messageData['all_managers']['calls']['basic_info']['total_calls_count']++
-            console.log(item)
             if (item.call_type === 'Входящий') {
                 const callTime = moment(item.finish*1000).diff(moment(moment(item.answer*1000)), "seconds")
                 const answerTime = moment(item.answer*1000).diff(moment(moment(item.start*1000)), "seconds")
-                console.log(item.person, item.call_type, callTime, answerTime)
                 messageData[item.person]['calls']['incoming_calls_info']['calls_count']++
                 messageData[item.person]['calls']['incoming_calls_info']['in_calls_time'] += callTime
                 messageData[item.person]['calls']['incoming_calls_info']['time_to_answer'] += answerTime
@@ -273,7 +271,6 @@ class Menu {
             } else if (item.call_type === 'Исходящий') {
                 const callTime = moment(item.finish*1000).diff(moment(moment(item.answer*1000)), "seconds")
                 const waitingTime = moment(item.answer*1000).diff(moment(moment(item.start*1000)), "seconds")
-                console.log(item.person, item.call_type, callTime, waitingTime)
 
                 messageData[item.person]['calls']['outcoming_calls_info']['calls_count']++
                 messageData[item.person]['calls']['outcoming_calls_info']['in_calls_time'] += callTime
@@ -294,7 +291,6 @@ class Menu {
                 messageData['all_managers']['calls']['failed_incoming_calls_info']['calls_count']++
             } else if (item.call_type === 'Недозвон') {
                 const waitingTime = moment(item.finish*1000).diff(moment(moment(item.start*1000)), "seconds")
-                console.log(item.person, item.call_type, waitingTime)
 
                 messageData[item.person]['calls']['failed_outcoming_calls_info']['calls_count']++
                 messageData[item.person]['calls']['failed_outcoming_calls_info']['in_waiting_time'] += waitingTime
