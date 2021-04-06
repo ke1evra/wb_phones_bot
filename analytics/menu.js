@@ -312,7 +312,6 @@ class Menu {
         messageData['all_managers']['calls']['failed_incoming_calls_info']['calls_count_percentage'] = (messageData['all_managers']['calls']['failed_incoming_calls_info']['calls_count'] * 100 / messageData['all_managers']['calls']['basic_info']['total_calls_count']).toFixed(2)
         messageData['all_managers']['calls']['failed_outcoming_calls_info']['avg_waiting_time'] = (messageData['all_managers']['calls']['failed_outcoming_calls_info']['in_waiting_time'] / messageData['all_managers']['calls']['failed_outcoming_calls_info']['calls_count']).toFixed(2)
 
-
         for (let manager in messageData) {
             if (manager !== "all_managers") {
                 messageData[manager]['calls']['basic_info']['calls_count_percentage'] = (messageData[manager]['calls']['basic_info']['total_calls_count'] * 100 / messageData['all_managers']['calls']['basic_info']['total_calls_count']).toFixed(2)
@@ -413,6 +412,7 @@ class Menu {
                     message += `${messageData[manager]['calls']['incoming_calls_info']['avg_time_to_answer'] ? `Ср. время ответа — ${messageData[manager]['calls']['incoming_calls_info']['avg_time_to_answer']} с\n` : ''}`
                     message += `${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count'] ? `Процент пропущенных — ${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count_percentage']}%\n` : ''}`
                     message += `${messageData[manager]['calls']['failed_outcoming_calls_info']['avg_waiting_time'] ? `Ср. время ожидания при недозвоне — ${messageData[manager]['calls']['failed_outcoming_calls_info']['avg_waiting_time']} с\n` : ''}`
+                    message+= `${messageData[manager]['calls']['basic_info']['business'] ? `Занятость — ${messageData[manager]['calls']['basic_info']['business']}%\n` : ''}`
 
                     message += `\n`
                 }
