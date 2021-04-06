@@ -409,7 +409,7 @@ class Menu {
                 }
             }
         }
-        message=message.match(/[\s\S]{1,3997}/g).map(e=>{
+        message=message.match(/[\s\S]{1,3994}/g).map(e=>{
             return `\`\`\`${e}\`\`\``
         }).join('')
         console.log(message)
