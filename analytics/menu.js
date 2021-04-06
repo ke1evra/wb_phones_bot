@@ -429,7 +429,7 @@ class Menu {
             }),
             // disable_web_page_preview: true,
         };
-        if (!data.data["data1"].length)
+        if (!data.data.length)
             message = 'Нет данных';
         return message;
     }
