@@ -187,7 +187,13 @@ class Menu {
         console.log(fields)
         const orderStatusIcons = require('../constants/OrderStatusIcons')
         const numberToManager = require('../constants/vks_numbers')
-        const data = await API.getManagersCalls(fields.days, fields.from, fields.to);
+
+        let from = typeof fields.from == "undefined" || fields.from == null ? moment().subtract(fields.days, "days").format("YYYY-MM-DD") : fields.from;
+        let to = typeof fields.to == "undefined" || fields.to == null ? moment() : moment(fields.to);
+        to.add(1, "day");
+        const data = await API.getCalls(fields.days, from, to.format("YYYY-MM-DD"));
+
+        console.log(data)
 
         const menu = [];
 
@@ -218,7 +224,7 @@ class Menu {
         messageData['all_managers']['calls']['failed_outcoming_calls_info']['in_waiting_time'] = 0
 
 
-        data.data["data1"].map((item, index) => {
+        data.data.map((item, index) => {
             if (!messageData[numberToManager[item.person]]) {
                 messageData[numberToManager[item.person]] = {}
                 messageData[numberToManager[item.person]]['calls'] = {}
@@ -409,9 +415,11 @@ class Menu {
                 }
             }
         }
+
         message=message.match(/[\s\S]{1,3994}/g).map(e=>{
             return `\`\`\`${e}\`\`\``
         }).join('')
+
         console.log(message)
         let options = {
             reply_markup: JSON.stringify({
