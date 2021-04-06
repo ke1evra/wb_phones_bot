@@ -254,7 +254,7 @@ class Menu {
             }
             messageData[numberToManager[item.person]]['calls']['basic_info']['total_calls_count']++
             messageData['all_managers']['calls']['basic_info']['total_calls_count']++
-            if (item.call_type === 'inComing') {
+            if (item.call_type === 'Входящий') {
                 const callTime = moment(item.end, "HH:mm:ss").diff(moment(moment(item.answer, "HH:mm:ss")), "seconds")
                 const answerTime = moment(item.answer, "HH:mm:ss").diff(moment(moment(item.start, "HH:mm:ss")), "seconds")
 
@@ -269,7 +269,7 @@ class Menu {
                 messageData['all_managers']['calls']['incoming_calls_info']['time_to_answer'] += answerTime
 
                 messageData['all_managers']['calls']['basic_info']['in_calls_time'] += callTime
-            } else if (item.call_type === 'outComing') {
+            } else if (item.call_type === 'Исходящий') {
                 const callTime = moment(item.end, "HH:mm:ss").diff(moment(moment(item.answer, "HH:mm:ss")), "seconds")
                 const waitingTime = moment(item.answer, "HH:mm:ss").diff(moment(moment(item.start, "HH:mm:ss")), "seconds")
 
@@ -286,11 +286,11 @@ class Menu {
 
                 messageData['all_managers']['calls']['basic_info']['in_calls_time'] += callTime
                 messageData['all_managers']['calls']['basic_info']['in_waiting_time'] += waitingTime
-            } else if (item.call_type === 'inComingFail') {
+            } else if (item.call_type === 'Пропущенный') {
                 messageData[numberToManager[item.person]]['calls']['failed_incoming_calls_info']['calls_count']++
 
                 messageData['all_managers']['calls']['failed_incoming_calls_info']['calls_count']++
-            } else if (item.call_type === 'outComingFail') {
+            } else if (item.call_type === 'Недозвон') {
                 const waitingTime = moment(item.end, "HH:mm:ss").diff(moment(moment(item.start, "HH:mm:ss")), "seconds")
 
                 messageData[numberToManager[item.person]]['calls']['failed_outcoming_calls_info']['calls_count']++
