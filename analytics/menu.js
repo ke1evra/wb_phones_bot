@@ -225,44 +225,44 @@ class Menu {
 
 
         data.data.map((item, index) => {
-            if (!messageData[numberToManager[item.person]]) {
-                messageData[numberToManager[item.person]] = {}
-                messageData[numberToManager[item.person]]['calls'] = {}
+            if (!messageData[item.person]) {
+                messageData[item.person] = {}
+                messageData[item.person]['calls'] = {}
 
-                messageData[numberToManager[item.person]]['calls']['basic_info'] = {}
-                messageData[numberToManager[item.person]]['calls']['basic_info']['total_calls_count'] = 0
-                messageData[numberToManager[item.person]]['calls']['basic_info']['in_calls_time'] = 0
-                messageData[numberToManager[item.person]]['calls']['basic_info']['in_waiting_time'] = 0
+                messageData[item.person]['calls']['basic_info'] = {}
+                messageData[item.person]['calls']['basic_info']['total_calls_count'] = 0
+                messageData[item.person]['calls']['basic_info']['in_calls_time'] = 0
+                messageData[item.person]['calls']['basic_info']['in_waiting_time'] = 0
 
-                messageData[numberToManager[item.person]]['calls']['incoming_calls_info'] = {}
-                messageData[numberToManager[item.person]]['calls']['incoming_calls_info']['calls_count'] = 0
-                messageData[numberToManager[item.person]]['calls']['incoming_calls_info']['in_calls_time'] = 0
-                messageData[numberToManager[item.person]]['calls']['incoming_calls_info']['time_to_answer'] = 0
+                messageData[item.person]['calls']['incoming_calls_info'] = {}
+                messageData[item.person]['calls']['incoming_calls_info']['calls_count'] = 0
+                messageData[item.person]['calls']['incoming_calls_info']['in_calls_time'] = 0
+                messageData[item.person]['calls']['incoming_calls_info']['time_to_answer'] = 0
 
-                messageData[numberToManager[item.person]]['calls']['failed_incoming_calls_info'] = {}
-                messageData[numberToManager[item.person]]['calls']['failed_incoming_calls_info']['calls_count'] = 0
+                messageData[item.person]['calls']['failed_incoming_calls_info'] = {}
+                messageData[item.person]['calls']['failed_incoming_calls_info']['calls_count'] = 0
 
-                messageData[numberToManager[item.person]]['calls']['outcoming_calls_info'] = {}
-                messageData[numberToManager[item.person]]['calls']['outcoming_calls_info']['calls_count'] = 0
-                messageData[numberToManager[item.person]]['calls']['outcoming_calls_info']['in_calls_time'] = 0
-                messageData[numberToManager[item.person]]['calls']['outcoming_calls_info']['in_waiting_time'] = 0
+                messageData[item.person]['calls']['outcoming_calls_info'] = {}
+                messageData[item.person]['calls']['outcoming_calls_info']['calls_count'] = 0
+                messageData[item.person]['calls']['outcoming_calls_info']['in_calls_time'] = 0
+                messageData[item.person]['calls']['outcoming_calls_info']['in_waiting_time'] = 0
 
-                messageData[numberToManager[item.person]]['calls']['failed_outcoming_calls_info'] = {}
-                messageData[numberToManager[item.person]]['calls']['failed_outcoming_calls_info']['calls_count'] = 0
-                messageData[numberToManager[item.person]]['calls']['failed_outcoming_calls_info']['in_waiting_time'] = 0
+                messageData[item.person]['calls']['failed_outcoming_calls_info'] = {}
+                messageData[item.person]['calls']['failed_outcoming_calls_info']['calls_count'] = 0
+                messageData[item.person]['calls']['failed_outcoming_calls_info']['in_waiting_time'] = 0
 
             }
-            messageData[numberToManager[item.person]]['calls']['basic_info']['total_calls_count']++
+            messageData[item.person]['calls']['basic_info']['total_calls_count']++
             messageData['all_managers']['calls']['basic_info']['total_calls_count']++
             if (item.call_type === 'Входящий') {
                 const callTime = moment(item.end, "HH:mm:ss").diff(moment(moment(item.answer, "HH:mm:ss")), "seconds")
                 const answerTime = moment(item.answer, "HH:mm:ss").diff(moment(moment(item.start, "HH:mm:ss")), "seconds")
 
-                messageData[numberToManager[item.person]]['calls']['incoming_calls_info']['calls_count']++
-                messageData[numberToManager[item.person]]['calls']['incoming_calls_info']['in_calls_time'] += callTime
-                messageData[numberToManager[item.person]]['calls']['incoming_calls_info']['time_to_answer'] += answerTime
+                messageData[item.person]['calls']['incoming_calls_info']['calls_count']++
+                messageData[item.person]['calls']['incoming_calls_info']['in_calls_time'] += callTime
+                messageData[item.person]['calls']['incoming_calls_info']['time_to_answer'] += answerTime
 
-                messageData[numberToManager[item.person]]['calls']['basic_info']['in_calls_time'] += callTime
+                messageData[item.person]['calls']['basic_info']['in_calls_time'] += callTime
 
                 messageData['all_managers']['calls']['incoming_calls_info']['calls_count']++
                 messageData['all_managers']['calls']['incoming_calls_info']['in_calls_time'] += callTime
@@ -273,12 +273,12 @@ class Menu {
                 const callTime = moment(item.end, "HH:mm:ss").diff(moment(moment(item.answer, "HH:mm:ss")), "seconds")
                 const waitingTime = moment(item.answer, "HH:mm:ss").diff(moment(moment(item.start, "HH:mm:ss")), "seconds")
 
-                messageData[numberToManager[item.person]]['calls']['outcoming_calls_info']['calls_count']++
-                messageData[numberToManager[item.person]]['calls']['outcoming_calls_info']['in_calls_time'] += callTime
-                messageData[numberToManager[item.person]]['calls']['outcoming_calls_info']['in_waiting_time'] += waitingTime
+                messageData[item.person]['calls']['outcoming_calls_info']['calls_count']++
+                messageData[item.person]['calls']['outcoming_calls_info']['in_calls_time'] += callTime
+                messageData[item.person]['calls']['outcoming_calls_info']['in_waiting_time'] += waitingTime
 
-                messageData[numberToManager[item.person]]['calls']['basic_info']['in_calls_time'] += callTime
-                messageData[numberToManager[item.person]]['calls']['basic_info']['in_waiting_time'] += waitingTime
+                messageData[item.person]['calls']['basic_info']['in_calls_time'] += callTime
+                messageData[item.person]['calls']['basic_info']['in_waiting_time'] += waitingTime
 
                 messageData['all_managers']['calls']['outcoming_calls_info']['calls_count']++
                 messageData['all_managers']['calls']['outcoming_calls_info']['in_calls_time'] += callTime
@@ -287,14 +287,14 @@ class Menu {
                 messageData['all_managers']['calls']['basic_info']['in_calls_time'] += callTime
                 messageData['all_managers']['calls']['basic_info']['in_waiting_time'] += waitingTime
             } else if (item.call_type === 'Пропущенный') {
-                messageData[numberToManager[item.person]]['calls']['failed_incoming_calls_info']['calls_count']++
+                messageData[item.person]['calls']['failed_incoming_calls_info']['calls_count']++
 
                 messageData['all_managers']['calls']['failed_incoming_calls_info']['calls_count']++
             } else if (item.call_type === 'Недозвон') {
                 const waitingTime = moment(item.end, "HH:mm:ss").diff(moment(moment(item.start, "HH:mm:ss")), "seconds")
 
-                messageData[numberToManager[item.person]]['calls']['failed_outcoming_calls_info']['calls_count']++
-                messageData[numberToManager[item.person]]['calls']['failed_outcoming_calls_info']['in_waiting_time'] += waitingTime
+                messageData[item.person]['calls']['failed_outcoming_calls_info']['calls_count']++
+                messageData[item.person]['calls']['failed_outcoming_calls_info']['in_waiting_time'] += waitingTime
 
                 messageData['all_managers']['calls']['failed_outcoming_calls_info']['calls_count']++
                 messageData['all_managers']['calls']['failed_outcoming_calls_info']['in_waiting_time'] += waitingTime
