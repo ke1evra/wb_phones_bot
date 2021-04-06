@@ -293,7 +293,7 @@ class Menu {
 
                 messageData['all_managers']['calls']['failed_incoming_calls_info']['calls_count']++
             } else if (item.call_type === 'Недозвон') {
-                const waitingTime = moment(item.end*1000).diff(moment(moment(item.start*1000)), "seconds")
+                const waitingTime = moment(item.finish*1000).diff(moment(moment(item.start*1000)), "seconds")
                 console.log(item.person, item.call_type, waitingTime)
 
                 messageData[item.person]['calls']['failed_outcoming_calls_info']['calls_count']++
