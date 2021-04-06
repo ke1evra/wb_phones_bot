@@ -32,7 +32,7 @@ module.exports = {
     "78005006309": "ТутКресла",
     "74952601029": "Тест служебка",
     "74992880963": "Шмонов",
-    "74951200796": "Тут Кресла",
+    "74951200796": "Анастасия",
     "sip:moveru@vpbx400090386.mangosip.ru": "Move.ru",
     "sip:arbekova@vpbx400090386.mangosip.ru": "Александра Арбекова",
     "sip:abramov@vpbx400090386.mangosip.ru": "Александр Абрамов",
@@ -68,5 +68,5 @@ module.exports = {
     "sip:fomenko@vpbx400090386.mangosip.ru": "Фоменко Ирина",
     "sip:barabanov@vpbx400090386.mangosip.ru": "Барабанов Павел",
     'sip:volkova@vpbx400090386.mangosip.ru': 'Волкова Юля',
-    "sip:prispeshkin.leonid@vpbx400090386.mangosip.ru": "Леонид Приспешкин"
+    "sip:prispeshkin.leonid@vpbx400090386.mangosip.ru": "Приспешкин Леонид"
 };
