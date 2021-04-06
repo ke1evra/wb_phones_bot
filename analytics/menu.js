@@ -227,82 +227,84 @@ class Menu {
         data.data.map((item, index) => {
             if (numberToManager[item.person])
                 item.person=numberToManager[item.person]
-            if (!messageData[item.person]) {
-                messageData[item.person] = {}
-                messageData[item.person]['calls'] = {}
+            if (!(item.person).match(/\d{11}/g)){
+                if (!messageData[item.person]) {
+                    messageData[item.person] = {}
+                    messageData[item.person]['calls'] = {}
 
-                messageData[item.person]['calls']['basic_info'] = {}
-                messageData[item.person]['calls']['basic_info']['total_calls_count'] = 0
-                messageData[item.person]['calls']['basic_info']['in_calls_time'] = 0
-                messageData[item.person]['calls']['basic_info']['in_waiting_time'] = 0
+                    messageData[item.person]['calls']['basic_info'] = {}
+                    messageData[item.person]['calls']['basic_info']['total_calls_count'] = 0
+                    messageData[item.person]['calls']['basic_info']['in_calls_time'] = 0
+                    messageData[item.person]['calls']['basic_info']['in_waiting_time'] = 0
 
-                messageData[item.person]['calls']['incoming_calls_info'] = {}
-                messageData[item.person]['calls']['incoming_calls_info']['calls_count'] = 0
-                messageData[item.person]['calls']['incoming_calls_info']['in_calls_time'] = 0
-                messageData[item.person]['calls']['incoming_calls_info']['time_to_answer'] = 0
+                    messageData[item.person]['calls']['incoming_calls_info'] = {}
+                    messageData[item.person]['calls']['incoming_calls_info']['calls_count'] = 0
+                    messageData[item.person]['calls']['incoming_calls_info']['in_calls_time'] = 0
+                    messageData[item.person]['calls']['incoming_calls_info']['time_to_answer'] = 0
 
-                messageData[item.person]['calls']['failed_incoming_calls_info'] = {}
-                messageData[item.person]['calls']['failed_incoming_calls_info']['calls_count'] = 0
+                    messageData[item.person]['calls']['failed_incoming_calls_info'] = {}
+                    messageData[item.person]['calls']['failed_incoming_calls_info']['calls_count'] = 0
 
-                messageData[item.person]['calls']['outcoming_calls_info'] = {}
-                messageData[item.person]['calls']['outcoming_calls_info']['calls_count'] = 0
-                messageData[item.person]['calls']['outcoming_calls_info']['in_calls_time'] = 0
-                messageData[item.person]['calls']['outcoming_calls_info']['in_waiting_time'] = 0
+                    messageData[item.person]['calls']['outcoming_calls_info'] = {}
+                    messageData[item.person]['calls']['outcoming_calls_info']['calls_count'] = 0
+                    messageData[item.person]['calls']['outcoming_calls_info']['in_calls_time'] = 0
+                    messageData[item.person]['calls']['outcoming_calls_info']['in_waiting_time'] = 0
 
-                messageData[item.person]['calls']['failed_outcoming_calls_info'] = {}
-                messageData[item.person]['calls']['failed_outcoming_calls_info']['calls_count'] = 0
-                messageData[item.person]['calls']['failed_outcoming_calls_info']['in_waiting_time'] = 0
+                    messageData[item.person]['calls']['failed_outcoming_calls_info'] = {}
+                    messageData[item.person]['calls']['failed_outcoming_calls_info']['calls_count'] = 0
+                    messageData[item.person]['calls']['failed_outcoming_calls_info']['in_waiting_time'] = 0
 
+                }
+                messageData[item.person]['calls']['basic_info']['total_calls_count']++
+                messageData['all_managers']['calls']['basic_info']['total_calls_count']++
+                if (item.call_type === 'Входящий') {
+                    const callTime = moment(item.finish*1000).diff(moment(moment(item.answer*1000)), "seconds")
+                    const answerTime = moment(item.answer*1000).diff(moment(moment(item.start*1000)), "seconds")
+                    messageData[item.person]['calls']['incoming_calls_info']['calls_count']++
+                    messageData[item.person]['calls']['incoming_calls_info']['in_calls_time'] += callTime
+                    messageData[item.person]['calls']['incoming_calls_info']['time_to_answer'] += answerTime
+
+                    messageData[item.person]['calls']['basic_info']['in_calls_time'] += callTime
+
+                    messageData['all_managers']['calls']['incoming_calls_info']['calls_count']++
+                    messageData['all_managers']['calls']['incoming_calls_info']['in_calls_time'] += callTime
+                    messageData['all_managers']['calls']['incoming_calls_info']['time_to_answer'] += answerTime
+
+                    messageData['all_managers']['calls']['basic_info']['in_calls_time'] += callTime
+                } else if (item.call_type === 'Исходящий') {
+                    const callTime = moment(item.finish*1000).diff(moment(moment(item.answer*1000)), "seconds")
+                    const waitingTime = moment(item.answer*1000).diff(moment(moment(item.start*1000)), "seconds")
+
+                    messageData[item.person]['calls']['outcoming_calls_info']['calls_count']++
+                    messageData[item.person]['calls']['outcoming_calls_info']['in_calls_time'] += callTime
+                    messageData[item.person]['calls']['outcoming_calls_info']['in_waiting_time'] += waitingTime
+
+                    messageData[item.person]['calls']['basic_info']['in_calls_time'] += callTime
+                    messageData[item.person]['calls']['basic_info']['in_waiting_time'] += waitingTime
+
+                    messageData['all_managers']['calls']['outcoming_calls_info']['calls_count']++
+                    messageData['all_managers']['calls']['outcoming_calls_info']['in_calls_time'] += callTime
+                    messageData['all_managers']['calls']['outcoming_calls_info']['in_waiting_time'] += waitingTime
+
+                    messageData['all_managers']['calls']['basic_info']['in_calls_time'] += callTime
+                    messageData['all_managers']['calls']['basic_info']['in_waiting_time'] += waitingTime
+                } else if (item.call_type === 'Пропущенный') {
+                    messageData[item.person]['calls']['failed_incoming_calls_info']['calls_count']++
+
+                    messageData['all_managers']['calls']['failed_incoming_calls_info']['calls_count']++
+                } else if (item.call_type === 'Недозвон') {
+                    const waitingTime = moment(item.finish*1000).diff(moment(moment(item.start*1000)), "seconds")
+
+                    messageData[item.person]['calls']['failed_outcoming_calls_info']['calls_count']++
+                    messageData[item.person]['calls']['failed_outcoming_calls_info']['in_waiting_time'] += waitingTime
+
+                    messageData['all_managers']['calls']['failed_outcoming_calls_info']['calls_count']++
+                    messageData['all_managers']['calls']['failed_outcoming_calls_info']['in_waiting_time'] += waitingTime
+                    messageData['all_managers']['calls']['basic_info']['in_waiting_time'] += waitingTime
+                }
+
+                //menu.push(new Button(item.client_name, 'some cb'))
             }
-            messageData[item.person]['calls']['basic_info']['total_calls_count']++
-            messageData['all_managers']['calls']['basic_info']['total_calls_count']++
-            if (item.call_type === 'Входящий') {
-                const callTime = moment(item.finish*1000).diff(moment(moment(item.answer*1000)), "seconds")
-                const answerTime = moment(item.answer*1000).diff(moment(moment(item.start*1000)), "seconds")
-                messageData[item.person]['calls']['incoming_calls_info']['calls_count']++
-                messageData[item.person]['calls']['incoming_calls_info']['in_calls_time'] += callTime
-                messageData[item.person]['calls']['incoming_calls_info']['time_to_answer'] += answerTime
-
-                messageData[item.person]['calls']['basic_info']['in_calls_time'] += callTime
-
-                messageData['all_managers']['calls']['incoming_calls_info']['calls_count']++
-                messageData['all_managers']['calls']['incoming_calls_info']['in_calls_time'] += callTime
-                messageData['all_managers']['calls']['incoming_calls_info']['time_to_answer'] += answerTime
-
-                messageData['all_managers']['calls']['basic_info']['in_calls_time'] += callTime
-            } else if (item.call_type === 'Исходящий') {
-                const callTime = moment(item.finish*1000).diff(moment(moment(item.answer*1000)), "seconds")
-                const waitingTime = moment(item.answer*1000).diff(moment(moment(item.start*1000)), "seconds")
-
-                messageData[item.person]['calls']['outcoming_calls_info']['calls_count']++
-                messageData[item.person]['calls']['outcoming_calls_info']['in_calls_time'] += callTime
-                messageData[item.person]['calls']['outcoming_calls_info']['in_waiting_time'] += waitingTime
-
-                messageData[item.person]['calls']['basic_info']['in_calls_time'] += callTime
-                messageData[item.person]['calls']['basic_info']['in_waiting_time'] += waitingTime
-
-                messageData['all_managers']['calls']['outcoming_calls_info']['calls_count']++
-                messageData['all_managers']['calls']['outcoming_calls_info']['in_calls_time'] += callTime
-                messageData['all_managers']['calls']['outcoming_calls_info']['in_waiting_time'] += waitingTime
-
-                messageData['all_managers']['calls']['basic_info']['in_calls_time'] += callTime
-                messageData['all_managers']['calls']['basic_info']['in_waiting_time'] += waitingTime
-            } else if (item.call_type === 'Пропущенный') {
-                messageData[item.person]['calls']['failed_incoming_calls_info']['calls_count']++
-
-                messageData['all_managers']['calls']['failed_incoming_calls_info']['calls_count']++
-            } else if (item.call_type === 'Недозвон') {
-                const waitingTime = moment(item.finish*1000).diff(moment(moment(item.start*1000)), "seconds")
-
-                messageData[item.person]['calls']['failed_outcoming_calls_info']['calls_count']++
-                messageData[item.person]['calls']['failed_outcoming_calls_info']['in_waiting_time'] += waitingTime
-
-                messageData['all_managers']['calls']['failed_outcoming_calls_info']['calls_count']++
-                messageData['all_managers']['calls']['failed_outcoming_calls_info']['in_waiting_time'] += waitingTime
-                messageData['all_managers']['calls']['basic_info']['in_waiting_time'] += waitingTime
-            }
-
-            menu.push(new Button(item.client_name, 'some cb'))
         });
 
         messageData['all_managers']['calls']['basic_info']['avg_call_duration'] = (messageData['all_managers']['calls']['basic_info']['in_calls_time'] / messageData['all_managers']['calls']['basic_info']['total_calls_count']).toFixed(2)
