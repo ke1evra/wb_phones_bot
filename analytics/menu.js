@@ -254,6 +254,7 @@ class Menu {
             }
             messageData[item.person]['calls']['basic_info']['total_calls_count']++
             messageData['all_managers']['calls']['basic_info']['total_calls_count']++
+            console.log(item)
             if (item.call_type === 'Входящий') {
                 const callTime = moment(item.finish).diff(moment(moment(item.answer)), "seconds")
                 const answerTime = moment(item.answer).diff(moment(moment(item.start)), "seconds")
