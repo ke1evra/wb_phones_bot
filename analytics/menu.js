@@ -255,7 +255,7 @@ class Menu {
             messageData[item.person]['calls']['basic_info']['total_calls_count']++
             messageData['all_managers']['calls']['basic_info']['total_calls_count']++
             if (item.call_type === 'Входящий') {
-                const callTime = moment(item.end, "HH:mm:ss").diff(moment(moment(item.answer, "HH:mm:ss")), "seconds")
+                const callTime = moment(item.finish, "HH:mm:ss").diff(moment(moment(item.answer, "HH:mm:ss")), "seconds")
                 const answerTime = moment(item.answer, "HH:mm:ss").diff(moment(moment(item.start, "HH:mm:ss")), "seconds")
 
                 messageData[item.person]['calls']['incoming_calls_info']['calls_count']++
@@ -270,7 +270,7 @@ class Menu {
 
                 messageData['all_managers']['calls']['basic_info']['in_calls_time'] += callTime
             } else if (item.call_type === 'Исходящий') {
-                const callTime = moment(item.end, "HH:mm:ss").diff(moment(moment(item.answer, "HH:mm:ss")), "seconds")
+                const callTime = moment(item.finish, "HH:mm:ss").diff(moment(moment(item.answer, "HH:mm:ss")), "seconds")
                 const waitingTime = moment(item.answer, "HH:mm:ss").diff(moment(moment(item.start, "HH:mm:ss")), "seconds")
 
                 messageData[item.person]['calls']['outcoming_calls_info']['calls_count']++
