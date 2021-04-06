@@ -225,6 +225,8 @@ class Menu {
 
 
         data.data.map((item, index) => {
+            if (numberToManager[item.person])
+                item.person=numberToManager[item.person]
             if (!messageData[item.person]) {
                 messageData[item.person] = {}
                 messageData[item.person]['calls'] = {}
