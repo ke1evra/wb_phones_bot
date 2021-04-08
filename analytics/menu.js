@@ -420,11 +420,13 @@ class Menu {
             }
         }
 
+        console.log(message)
+
         message = message.match(/[\s\S]{1,3994}/g).map(e => {
             return `\`\`\`${e}\`\`\``
         }).join('')
 
-        console.log(messageData['all_managers'])
+        console.log(message)
         let options = {
             reply_markup: JSON.stringify({
                 inline_keyboard: [
@@ -466,7 +468,7 @@ class Menu {
             `Заказ ${data.data[0].order_number}\n` +
             `-------------------------\n\n` +
 
-            `Cтатус: ${orderStatusIcons[data.data[0].status]} ${data.data[0].status}\n` +
+            `Cтатус: ${orderStatusIcons[data.data[0].status]} ${data.data[0].status} ${data.data[0].otkaz_cause?` (${data.data[0].otkaz_cause})`:''}\n` +
             `Поступил: ${moment(data.data[0].date_of_registration).format("YYYY-MM-DD HH:mm:ss")}, обработан через ${data.data[0].processing_time}\n` +
             `Менеджер: ${data.data[0].manager}\n\n` +
 
