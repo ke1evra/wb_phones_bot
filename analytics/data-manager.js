@@ -168,6 +168,7 @@ class DataManager {
         from = moment().subtract(days, "days").format("YYYY-MM-DD"),
         to = moment().add(1, "days").format("YYYY-MM-DD")
     ) {
+        console.log(from, to)
         return await axios.get(
             `http://185.211.247.12:3000/calls/range?date_from=${from}&date_to=${to}`
         );
