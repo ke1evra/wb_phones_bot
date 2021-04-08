@@ -206,6 +206,7 @@ class Menu {
         to.add(1, "day");
         //Получение данных
         const data = await API.getCalls(fields.days, from, to.format("YYYY-MM-DD"));
+        const managersOrdersData = await API.getManagersOrders(fields.days, from, to.format("YYYY-MM-DD"));
         //Возвращаем день назад и преобразуем в строку
         to = to.add(-1, "day").format("YYYY-MM-DD");
         //console.log(data)
@@ -343,8 +344,6 @@ class Menu {
                 }
             }
         }
-
-        const managersOrdersData = await API.getManagersOrders(fields.days, fields.from, fields.to);
 
         for (let order of managersOrdersData['data']) {
             if (!messageData[order['name']]) {
