@@ -188,9 +188,26 @@ class Menu {
         const orderStatusIcons = require('../constants/OrderStatusIcons')
         const numberToManager = require('../constants/vks_numbers')
 
-        const data = await API.getCalls(fields.days);
-        if(!fields.days)
-            fields.days=1
+        let request_type = '';
+        if (['days', 'day', 'range', 'hours'].includes(fields.request_type))
+            request_type = fields.request_type;
+        else
+            request_type = 'days'
+        //Начало обработки передаваемых параметра
+        if (typeof fields.days == "undefined" || fields.days == null)
+            fields.days = 0;
+        if (request_type === 'day') {
+            fields.to = fields.from;
+            request_type = 'days';
+        }
+        let from = typeof fields.from == "undefined" || fields.from == null ? moment().subtract(fields.days, "days").format("YYYY-MM-DD") : fields.from;
+        let to = typeof fields.to == "undefined" || fields.to == null ? moment() : moment(fields.to);
+        //т.к. берёт не включительно добавляем +1 день
+        to.add(1, "day");
+        //Получение данных
+        const data = await API.getCalls(fields.days, from, to.format("YYYY-MM-DD"));
+        //Возвращаем день назад и преобразуем в строку
+        to = to.add(-1, "day").format("YYYY-MM-DD");
         //console.log(data)
 
         const menu = [];
