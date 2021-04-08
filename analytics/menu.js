@@ -188,10 +188,7 @@ class Menu {
         const orderStatusIcons = require('../constants/OrderStatusIcons')
         const numberToManager = require('../constants/vks_numbers')
 
-        let from = typeof fields.from == "undefined" || fields.from == null ? moment().subtract(fields.days, "days").format("YYYY-MM-DD") : fields.from;
-        let to = typeof fields.to == "undefined" || fields.to == null ? moment() : moment(fields.to);
-        to.add(1, "day");
-        const data = await API.getCalls(fields.days, from, to.format("YYYY-MM-DD"));
+        const data = await API.getCalls(fields.days);
         if(!fields.days)
             fields.days=1
         //console.log(data)
