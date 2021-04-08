@@ -433,13 +433,10 @@ class Menu {
             }
         }
 
-        console.log(message)
-
         message = message.match(/[\s\S]{1,3992}/g).map(e => {
             return `\`\`\`\n${e}\n\`\`\``
         }).join('')
 
-        console.log(message)
         let options = {
             reply_markup: JSON.stringify({
                 inline_keyboard: [
