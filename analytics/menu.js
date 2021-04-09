@@ -240,9 +240,10 @@ class Menu {
         messageData['all_managers']['calls']['failed_outcoming_calls_info']['calls_count'] = 0
         messageData['all_managers']['calls']['failed_outcoming_calls_info']['in_waiting_time'] = 0
 
+        let notManagers = []
+
 
         data.data.map((item, index) => {
-            let NotManagers = []
             if (numberToManager[item.person])
                 item.person = numberToManager[item.person]
             if (managersList.includes(item.person)) {
@@ -322,11 +323,11 @@ class Menu {
                 }
 
                 //menu.push(new Button(item.client_name, 'some cb'))
-            } else if (!NotManagers.includes(item.person)){
-                NotManagers.push(item.person)
+            } else if (!notManagers.includes(item.person)){
+                notManagers.push(item.person)
             }
         });
-        console.log(NotManagers)
+        console.log(notManagers)
         messageData['all_managers']['calls']['basic_info']['avg_call_duration'] = (messageData['all_managers']['calls']['basic_info']['in_calls_time'] / messageData['all_managers']['calls']['basic_info']['total_calls_count']).toFixed(2)
         messageData['all_managers']['calls']['incoming_calls_info']['avg_time_to_answer'] = (messageData['all_managers']['calls']['incoming_calls_info']['time_to_answer'] / messageData['all_managers']['calls']['incoming_calls_info']['calls_count']).toFixed(2)
         messageData['all_managers']['calls']['failed_incoming_calls_info']['calls_count_percentage'] = (messageData['all_managers']['calls']['failed_incoming_calls_info']['calls_count'] * 100 / messageData['all_managers']['calls']['basic_info']['total_calls_count']).toFixed(2)
