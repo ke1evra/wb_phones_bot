@@ -187,6 +187,7 @@ class Menu {
         console.log(fields)
         const orderStatusIcons = require('../constants/OrderStatusIcons')
         const numberToManager = require('../constants/vks_numbers')
+        const managersList = require('../constants/ManagersList')
 
         let request_type = '';
         if (['days', 'day', 'range', 'hours'].includes(fields.request_type))
@@ -242,8 +243,8 @@ class Menu {
 
         data.data.map((item, index) => {
             if (numberToManager[item.person])
-                item.person=numberToManager[item.person]
-            if (!(item.person).match(/\d{11}/g)){
+                item.person = numberToManager[item.person]
+            if (managersList.includes(item.person)) {
                 if (!messageData[item.person]) {
                     messageData[item.person] = {}
                     messageData[item.person]['calls'] = {}
@@ -274,8 +275,8 @@ class Menu {
                 messageData[item.person]['calls']['basic_info']['total_calls_count']++
                 messageData['all_managers']['calls']['basic_info']['total_calls_count']++
                 if (item.call_type === 'Входящий') {
-                    const callTime = moment(item.finish*1000).diff(moment(moment(item.answer*1000)), "seconds")
-                    const answerTime = moment(item.answer*1000).diff(moment(moment(item.start*1000)), "seconds")
+                    const callTime = moment(item.finish * 1000).diff(moment(moment(item.answer * 1000)), "seconds")
+                    const answerTime = moment(item.answer * 1000).diff(moment(moment(item.start * 1000)), "seconds")
                     messageData[item.person]['calls']['incoming_calls_info']['calls_count']++
                     messageData[item.person]['calls']['incoming_calls_info']['in_calls_time'] += callTime
                     messageData[item.person]['calls']['incoming_calls_info']['time_to_answer'] += answerTime
@@ -288,8 +289,8 @@ class Menu {
 
                     messageData['all_managers']['calls']['basic_info']['in_calls_time'] += callTime
                 } else if (item.call_type === 'Исходящий') {
-                    const callTime = moment(item.finish*1000).diff(moment(moment(item.answer*1000)), "seconds")
-                    const waitingTime = moment(item.answer*1000).diff(moment(moment(item.start*1000)), "seconds")
+                    const callTime = moment(item.finish * 1000).diff(moment(moment(item.answer * 1000)), "seconds")
+                    const waitingTime = moment(item.answer * 1000).diff(moment(moment(item.start * 1000)), "seconds")
 
                     messageData[item.person]['calls']['outcoming_calls_info']['calls_count']++
                     messageData[item.person]['calls']['outcoming_calls_info']['in_calls_time'] += callTime
@@ -309,7 +310,7 @@ class Menu {
 
                     messageData['all_managers']['calls']['failed_incoming_calls_info']['calls_count']++
                 } else if (item.call_type === 'Недозвон') {
-                    const waitingTime = moment(item.finish*1000).diff(moment(moment(item.start*1000)), "seconds")
+                    const waitingTime = moment(item.finish * 1000).diff(moment(moment(item.start * 1000)), "seconds")
 
                     messageData[item.person]['calls']['failed_outcoming_calls_info']['calls_count']++
                     messageData[item.person]['calls']['failed_outcoming_calls_info']['in_waiting_time'] += waitingTime
@@ -425,7 +426,7 @@ class Menu {
                     message += `${messageData[manager]['calls']['incoming_calls_info']['avg_time_to_answer'] ? `Ср. время ответа — ${messageData[manager]['calls']['incoming_calls_info']['avg_time_to_answer']} с\n` : ''}`
                     message += `${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count'] ? `Процент пропущенных — ${messageData[manager]['calls']['failed_incoming_calls_info']['calls_count_percentage']}%\n` : ''}`
                     message += `${messageData[manager]['calls']['failed_outcoming_calls_info']['avg_waiting_time'] ? `Ср. время ожидания при недозвоне — ${messageData[manager]['calls']['failed_outcoming_calls_info']['avg_waiting_time']} с\n` : ''}`
-                    message+= `${messageData[manager]['calls']['basic_info']['business'] ? `Занятость — ${messageData[manager]['calls']['basic_info']['business']}%\n` : ''}`
+                    message += `${messageData[manager]['calls']['basic_info']['business'] ? `Занятость — ${messageData[manager]['calls']['basic_info']['business']}%\n` : ''}`
 
                     message += `\n`
                 }
@@ -477,7 +478,7 @@ class Menu {
             `Заказ ${data.data[0].order_number}\n` +
             `-------------------------\n\n` +
 
-            `Cтатус: ${orderStatusIcons[data.data[0].status]} ${data.data[0].status} ${data.data[0].otkaz_cause?` (${data.data[0].otkaz_cause})`:''}\n` +
+            `Cтатус: ${orderStatusIcons[data.data[0].status]} ${data.data[0].status} ${data.data[0].otkaz_cause ? ` (${data.data[0].otkaz_cause})` : ''}\n` +
             `Поступил: ${moment(data.data[0].date_of_registration).format("YYYY-MM-DD HH:mm:ss")}, обработан через ${data.data[0].processing_time}\n` +
             `Менеджер: ${data.data[0].manager}\n\n` +
 
