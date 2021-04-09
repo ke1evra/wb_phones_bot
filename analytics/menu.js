@@ -246,7 +246,7 @@ class Menu {
         data.data.map((item, index) => {
             if (numberToManager[item.person])
                 item.person = numberToManager[item.person]
-            if (managersList.includes(item.person)) {
+            if (/*managersList.includes(item.person)*/true) {
                 if (!messageData[item.person]) {
                     messageData[item.person] = {}
                     messageData[item.person]['calls'] = {}
@@ -323,11 +323,11 @@ class Menu {
                 }
 
                 //menu.push(new Button(item.client_name, 'some cb'))
-            } else if (!notManagers.includes(item.person)){
+            } else if (!notManagers.includes(item.person)) {
                 notManagers.push(item.person)
             }
         });
-        console.log(notManagers)
+        console.log('Скрытые:', notManagers)
         messageData['all_managers']['calls']['basic_info']['avg_call_duration'] = (messageData['all_managers']['calls']['basic_info']['in_calls_time'] / messageData['all_managers']['calls']['basic_info']['total_calls_count']).toFixed(2)
         messageData['all_managers']['calls']['incoming_calls_info']['avg_time_to_answer'] = (messageData['all_managers']['calls']['incoming_calls_info']['time_to_answer'] / messageData['all_managers']['calls']['incoming_calls_info']['calls_count']).toFixed(2)
         messageData['all_managers']['calls']['failed_incoming_calls_info']['calls_count_percentage'] = (messageData['all_managers']['calls']['failed_incoming_calls_info']['calls_count'] * 100 / messageData['all_managers']['calls']['basic_info']['total_calls_count']).toFixed(2)
