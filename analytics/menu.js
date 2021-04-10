@@ -350,7 +350,7 @@ class Menu {
         }
 
         for (let order of managersOrdersData['data']) {
-            if (managersList.includes(item.person)) {
+            if (managersList.includes(order['name'])) {
                 if (!messageData[order['name']]) {
                     messageData[order['name']] = {}
                 }
@@ -364,8 +364,8 @@ class Menu {
                 }
                 messageData[order['name']]['orders'][order['title']]['count']++
                 messageData[order['name']]['orders'][order['title']]['sum'] += order['order_sum']
-            } else if (!notManagers.includes(item.person)) {
-                notManagers.push(item.person)
+            } else if (!notManagers.includes(order['name'])) {
+                notManagers.push(order['name'])
             }
         }
         console.log('Скрытые:', notManagers)
