@@ -327,7 +327,6 @@ class Menu {
                 notManagers.push(item.person)
             }
         });
-        console.log('Скрытые:', notManagers)
         messageData['all_managers']['calls']['basic_info']['avg_call_duration'] = (messageData['all_managers']['calls']['basic_info']['in_calls_time'] / messageData['all_managers']['calls']['basic_info']['total_calls_count']).toFixed(2)
         messageData['all_managers']['calls']['incoming_calls_info']['avg_time_to_answer'] = (messageData['all_managers']['calls']['incoming_calls_info']['time_to_answer'] / messageData['all_managers']['calls']['incoming_calls_info']['calls_count']).toFixed(2)
         messageData['all_managers']['calls']['failed_incoming_calls_info']['calls_count_percentage'] = (messageData['all_managers']['calls']['failed_incoming_calls_info']['calls_count'] * 100 / messageData['all_managers']['calls']['basic_info']['total_calls_count']).toFixed(2)
@@ -351,24 +350,30 @@ class Menu {
         }
 
         for (let order of managersOrdersData['data']) {
-            if (!messageData[order['name']]) {
-                messageData[order['name']] = {}
+            if (managersList.includes(item.person)) {
+                if (!messageData[order['name']]) {
+                    messageData[order['name']] = {}
+                }
+                if (!messageData[order['name']]['orders']) {
+                    messageData[order['name']]['orders'] = {}
+                }
+                if (!messageData[order['name']]['orders'][order['title']]) {
+                    messageData[order['name']]['orders'][order['title']] = {}
+                    messageData[order['name']]['orders'][order['title']]['count'] = 0
+                    messageData[order['name']]['orders'][order['title']]['sum'] = 0
+                }
+                messageData[order['name']]['orders'][order['title']]['count']++
+                messageData[order['name']]['orders'][order['title']]['sum'] += order['order_sum']
+            } else if (!notManagers.includes(item.person)) {
+                notManagers.push(item.person)
             }
-            if (!messageData[order['name']]['orders']) {
-                messageData[order['name']]['orders'] = {}
-            }
-            if (!messageData[order['name']]['orders'][order['title']]) {
-                messageData[order['name']]['orders'][order['title']] = {}
-                messageData[order['name']]['orders'][order['title']]['count'] = 0
-                messageData[order['name']]['orders'][order['title']]['sum'] = 0
-            }
-            messageData[order['name']]['orders'][order['title']]['count']++
-            messageData[order['name']]['orders'][order['title']]['sum'] += order['order_sum']
         }
-
+        console.log('Скрытые:', notManagers)
+        console.log(from,to)
         const width = 34
         let message = `— Отчет по менеджерам —${'—'.repeat(width - 23)}\n\n`;
-        message += `Звонков совершено: ${messageData.all_managers.calls.basic_info.total_calls_count}\n` +
+        message +=
+            `Звонков совершено: ${messageData.all_managers.calls.basic_info.total_calls_count}\n` +
             `Ср. продолжительность звонка: ${messageData.all_managers.calls.basic_info.avg_call_duration}\n` +
             `Ср. время ответа: ${messageData.all_managers.calls.incoming_calls_info.avg_time_to_answer}\n` +
             `Процент пропущенных вызовов: ${messageData.all_managers.calls.failed_incoming_calls_info.calls_count_percentage}%\n` +
@@ -1574,11 +1579,13 @@ class Menu {
     }
 }
 
-const menu = new Menu();
+const
+    menu = new Menu();
 
-const messages = {
-    hello:
-        `
+const
+    messages = {
+        hello:
+            `
     Привет 👋, я VI (Сокращенно от Vkostume Informer)
     Я умею показывать статистику:
     /order - по заказу с заданным номером
@@ -1592,16 +1599,17 @@ const messages = {
     
     /help - помощь по командам
     `,
-    order: menu.renderOrderByNumber,
-    orders: menu.renderOrders,
-    missed: menu.renderMissedCalls,
-    calls: menu.renderCalls,
-    expenses: menu.renderExpenses,
-    managers: menu.renderManagers,
-    chrono: menu.renderChrono,
-    compare: menu.renderCompare,
-    help: menu.renderHelp
-};
+        order: menu.renderOrderByNumber,
+        orders: menu.renderOrders,
+        missed: menu.renderMissedCalls,
+        calls: menu.renderCalls,
+        expenses: menu.renderExpenses,
+        managers: menu.renderManagers,
+        chrono: menu.renderChrono,
+        compare: menu.renderCompare,
+        help: menu.renderHelp
+    };
 
 
-module.exports = messages;
+module
+    .exports = messages;
