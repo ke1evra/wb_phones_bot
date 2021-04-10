@@ -372,8 +372,7 @@ class Menu {
                 messageData[order['name']]['orders'][order['title']]['sum'] += order['order_sum']
 
                 messageData[order['name']]['orders']['count']++
-                messageData[order['name']]['orders']['sum'] = order['order_sum']
-
+                messageData[order['name']]['orders']['sum'] += order['order_sum']
 
                 messageData['all_managers']['orders']['count']++
                 messageData['all_managers']['orders']['sum'] += order['order_sum']
@@ -383,7 +382,6 @@ class Menu {
             }
         }
         console.log('Скрытые:', notManagers)
-        console.log(from, to)
         const width = 34
         let message = `— Отчет по менеджерам —${'—'.repeat(width - 23)}\n\n` +
             `— ${to === from ? `За ${from} —${'—'.repeat(width - 17)}\n\n` : `C ${from} по ${to} —${'—'.repeat(width - 30)}\n\n`}` +
@@ -392,8 +390,10 @@ class Menu {
             `Ср. время ответа: ${messageData.all_managers.calls.incoming_calls_info.avg_time_to_answer}\n` +
             `Процент пропущенных вызовов: ${messageData.all_managers.calls.failed_incoming_calls_info.calls_count_percentage}%\n` +
             `Ср. время ожидания при недозвоне: ${messageData.all_managers.calls.failed_outcoming_calls_info.avg_waiting_time}\n\n` +
+
             `Кол-во обработанных заказов: ${messageData.all_managers.orders.count}\n` +
             `Сумма обработанных заказов: ${(messageData.all_managers.orders.sum).toLocaleString().replace(/,/g, ' ')} ₽\n\n`
+
         for (let manager in messageData) {
             if (!(manager === "all_managers" || manager === "null")) {
                 message += `—— ${manager} ${manager.length + 4 >= width ? '' : '—'.repeat(width - manager.length - 4)}` + "\n\n"
@@ -438,12 +438,12 @@ class Menu {
                         `${(messageData[manager]['orders']['sum']).toLocaleString().replace(/,/g, ' ')} ₽ сумма\n\n`
                     let cntLengths = []
                     for (let status in messageData[manager]['orders']) {
-                        if (status !== 'count' || status !== 'sum')
+                        if (status != 'sum')
                             cntLengths.push(String(messageData[manager]['orders'][status]['count']).length)
                     }
                     let ordersShift = Math.max.apply(null, cntLengths) + 1
                     for (let status in messageData[manager]['orders']) {
-                        if (status !== 'count' || status !== 'sum')
+                        if (status != 'sum')
                             message += `${messageData[manager]['orders'][status]['count'] + ' '.repeat(ordersShift - String(String(messageData[manager]['orders'][status]['count']).length))}${orderStatusIcons[status]} ${status} (${Number(messageData[manager]['orders'][status]['sum']).toLocaleString().replace(/,/g, ' ')} ₽)\n`
                     }
                     message += `\n`
