@@ -360,6 +360,8 @@ class Menu {
                 }
                 if (!messageData[order['name']]['orders']) {
                     messageData[order['name']]['orders'] = {}
+                    messageData[order['name']]['orders']['count'] = 0
+                    messageData[order['name']]['orders']['sum'] = 0
                 }
                 if (!messageData[order['name']]['orders'][order['title']]) {
                     messageData[order['name']]['orders'][order['title']] = {}
@@ -368,6 +370,10 @@ class Menu {
                 }
                 messageData[order['name']]['orders'][order['title']]['count']++
                 messageData[order['name']]['orders'][order['title']]['sum'] += order['order_sum']
+
+                messageData[order['name']]['orders']['count']++
+                messageData[order['name']]['orders']['sum'] = order['order_sum']
+
 
                 messageData['all_managers']['orders']['count']++
                 messageData['all_managers']['orders']['sum']+=order['order_sum']
@@ -427,7 +433,9 @@ class Menu {
                     message += `\n`
                 }
                 if (messageData[manager]['orders']) {
-                    message += `——— 📦 Заказы ———\n\n`
+                    message += `——— 📦 Заказы ———\n\n`+
+                        `${messageData[manager]['orders']['count']} заказов\n`+
+                        `${(messageData[manager]['orders']['sum']).toLocaleString().replace(/,/g, ' ')}  ₽ сумма\n\n`
                     let cntLengths = []
                     for (let status in messageData[manager]['orders']) {
                         cntLengths.push(String(messageData[manager]['orders'][status]['count']).length)
