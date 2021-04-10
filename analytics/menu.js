@@ -369,10 +369,10 @@ class Menu {
             }
         }
         console.log('Скрытые:', notManagers)
-        console.log(from,to)
+        console.log(from, to)
         const width = 34
-        let message = `— Отчет по менеджерам —${'—'.repeat(width - 23)}\n\n`;
-        message += `— ${to===from?`За ${from} —${'—'.repeat(width - 17)}\n\n`:`C ${from} по ${to} —${'—'.repeat(width - 30)}\n\n`}`+
+        let message = `— Отчет по менеджерам —${'—'.repeat(width - 23)}\n\n` +
+            `— ${to === from ? `За ${from} —${'—'.repeat(width - 17)}\n\n` : `C ${from} по ${to} —${'—'.repeat(width - 30)}\n\n`}` +
             `Звонков совершено: ${messageData.all_managers.calls.basic_info.total_calls_count}\n` +
             `Ср. продолжительность звонка: ${messageData.all_managers.calls.basic_info.avg_call_duration}\n` +
             `Ср. время ответа: ${messageData.all_managers.calls.incoming_calls_info.avg_time_to_answer}\n` +
@@ -425,7 +425,7 @@ class Menu {
                     }
                     let ordersShift = Math.max.apply(null, cntLengths) + 1
                     for (let status in messageData[manager]['orders']) {
-                        message += `${messageData[manager]['orders'][status]['count'] + ' '.repeat(ordersShift - String(String(messageData[manager]['orders'][status]['count']).length))}${orderStatusIcons[status]} ${status} (${messageData[manager]['orders'][status]['sum']} ₽)\n`
+                        message += `${messageData[manager]['orders'][status]['count'] + ' '.repeat(ordersShift - String(String(messageData[manager]['orders'][status]['count']).length))}${orderStatusIcons[status]} ${status} (${(messageData[manager]['orders'][status]['sum']).toLocaleString()} ₽)\n`
                     }
                     message += `\n`
                 }
