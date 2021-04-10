@@ -438,12 +438,12 @@ class Menu {
                         `${(messageData[manager]['orders']['sum']).toLocaleString().replace(/,/g, ' ')} ₽ сумма\n\n`
                     let cntLengths = []
                     for (let status in messageData[manager]['orders']) {
-                        if (status != 'sum')
+                        if ((status != 'sum') && (status != 'count'))
                             cntLengths.push(String(messageData[manager]['orders'][status]['count']).length)
                     }
                     let ordersShift = Math.max.apply(null, cntLengths) + 1
                     for (let status in messageData[manager]['orders']) {
-                        if (status != 'sum')
+                        if ((status != 'sum') && (status != 'count'))
                             message += `${messageData[manager]['orders'][status]['count'] + ' '.repeat(ordersShift - String(String(messageData[manager]['orders'][status]['count']).length))}${orderStatusIcons[status]} ${status} (${Number(messageData[manager]['orders'][status]['sum']).toLocaleString().replace(/,/g, ' ')} ₽)\n`
                     }
                     message += `\n`
