@@ -210,6 +210,18 @@ class Menu {
         const managersOrdersData = await API.getManagersOrders(fields.days, from, to.format("YYYY-MM-DD"));
         //Возвращаем день назад и преобразуем в строку
         to = to.add(-1, "day").format("YYYY-MM-DD");
+
+        let periodSeconds=0
+
+        if (request_type==='days'){
+            periodSeconds=(fields.days-1)*7.5*60*60
+            if (moment()>moment('17:00','HH:mm')){
+                periodSeconds+=7.5*60*60
+            } else{
+                periodSeconds+=moment().diff(moment('17:00','HH:mm'),'seconds')
+            }
+        }
+        console.log(periodSeconds)
         //console.log(data)
 
         const menu = [];
@@ -245,7 +257,6 @@ class Menu {
         messageData['all_managers']['orders']['sum'] = 0
 
         let notManagers = []
-
 
         data.data.map((item, index) => {
             if (numberToManager[item.person])
@@ -340,7 +351,7 @@ class Menu {
             if (manager !== "all_managers") {
                 messageData[manager]['calls']['basic_info']['calls_count_percentage'] = (messageData[manager]['calls']['basic_info']['total_calls_count'] * 100 / messageData['all_managers']['calls']['basic_info']['total_calls_count']).toFixed(2)
                 messageData[manager]['calls']['basic_info'][''] = (messageData[manager]['calls']['basic_info']['in_calls_time'] * 100 / messageData['all_managers']['calls']['basic_info']['in_calls_time']).toFixed(2)
-                messageData[manager]['calls']['basic_info']['business'] = (messageData[manager]['calls']['basic_info']['in_calls_time'] * 100 / (7.5 * fields.days * 60 * 60)).toFixed(2)
+                messageData[manager]['calls']['basic_info']['business'] = (messageData[manager]['calls']['basic_info']['in_calls_time'] * 100 / periodSeconds).toFixed(2)
 
                 if (messageData[manager]['calls']['incoming_calls_info']['calls_count']) {
                     messageData[manager]['calls']['incoming_calls_info']['avg_time_to_answer'] = (messageData[manager]['calls']['incoming_calls_info']['time_to_answer'] / messageData[manager]['calls']['incoming_calls_info']['calls_count']).toFixed(2)
