@@ -387,8 +387,7 @@ class Menu {
             `Процент пропущенных вызовов: ${messageData.all_managers.calls.failed_incoming_calls_info.calls_count_percentage}%\n` +
             `Ср. время ожидания при недозвоне: ${messageData.all_managers.calls.failed_outcoming_calls_info.avg_waiting_time}\n\n`+
             `Кол-во обработанных заказов: ${messageData.all_managers.orders.count}\n`+
-            `Сумма обработанных заказов: ${messageData.all_managers.orders.sum}\n\n`
-
+            `Сумма обработанных заказов: ${(messageData.all_managers.orders.sum).toLocaleString().replace(/,/g, ' ')} ₽\n\n`
         for (let manager in messageData) {
             if (!(manager === "all_managers" || manager === "null")) {
                 message += `—— ${manager} ${manager.length + 4 >= width ? '' : '—'.repeat(width - manager.length - 4)}` + "\n\n"
