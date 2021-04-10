@@ -425,7 +425,7 @@ class Menu {
                     }
                     let ordersShift = Math.max.apply(null, cntLengths) + 1
                     for (let status in messageData[manager]['orders']) {
-                        message += `${messageData[manager]['orders'][status]['count'] + ' '.repeat(ordersShift - String(String(messageData[manager]['orders'][status]['count']).length))}${orderStatusIcons[status]} ${status} (${Number(messageData[manager]['orders'][status]['sum']).toLocaleString('ru-RU')} ₽)\n`
+                        message += `${messageData[manager]['orders'][status]['count'] + ' '.repeat(ordersShift - String(String(messageData[manager]['orders'][status]['count']).length))}${orderStatusIcons[status]} ${status} (${Number(messageData[manager]['orders'][status]['sum']).toLocaleString().replace(/,/g,' ')} ₽)\n`
                     }
                     message += `\n`
                 }
