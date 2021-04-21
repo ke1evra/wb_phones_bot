@@ -213,7 +213,7 @@ class Menu {
         if (!fields.days)
             fields.days=1
         if (request_type==='days'){
-            periodSeconds=(fields.days-1)*7.5*60*60
+            periodSeconds=(fields.days)*7.5*60*60
             if (moment()>moment('17:00','HH:mm')){
                 periodSeconds+=7.5*60*60
             } else{
