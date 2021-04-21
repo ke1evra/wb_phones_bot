@@ -202,7 +202,9 @@ class Menu {
             request_type = 'days';
         }
         let from = typeof fields.from == "undefined" || fields.from == null ? moment().subtract(fields.days, "days").format("YYYY-MM-DD") : fields.from;
-        let to = typeof fields.to == "undefined" || fields.to == null ? moment().add(1, "day") : moment(fields.to);
+        let to = typeof fields.to == "undefined" || fields.to == null ? moment() : moment(fields.to);
+        //т.к. берёт не включительно добавляем +1 день
+        to.add(1, "day");
         //Получение данных
         const data = await API.getCalls(fields.days, from, to.format("YYYY-MM-DD"));
         const managersOrdersData = await API.getManagersOrders(fields.days, from, to.format("YYYY-MM-DD"));
