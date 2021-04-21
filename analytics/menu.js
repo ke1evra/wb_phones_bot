@@ -189,7 +189,7 @@ class Menu {
         const numberToManager = require('../constants/vks_numbers')
         const managersList = require('../constants/ManagersList')
 
-        let request_type = '';
+        let request_type;
         if (['days', 'day', 'range', 'hours'].includes(fields.request_type))
             request_type = fields.request_type;
         else
@@ -202,9 +202,7 @@ class Menu {
             request_type = 'days';
         }
         let from = typeof fields.from == "undefined" || fields.from == null ? moment().subtract(fields.days, "days").format("YYYY-MM-DD") : fields.from;
-        let to = typeof fields.to == "undefined" || fields.to == null ? moment() : moment(fields.to);
-        //т.к. берёт не включительно добавляем +1 день
-        to.add(1, "day");
+        let to = typeof fields.to == "undefined" || fields.to == null ? moment().add(1, "day") : moment(fields.to);
         //Получение данных
         const data = await API.getCalls(fields.days, from, to.format("YYYY-MM-DD"));
         const managersOrdersData = await API.getManagersOrders(fields.days, from, to.format("YYYY-MM-DD"));
@@ -212,13 +210,14 @@ class Menu {
         to = to.add(-1, "day").format("YYYY-MM-DD");
 
         let periodSeconds=0
-
+        if (!fields.days)
+            fields.days=1
         if (request_type==='days'){
             periodSeconds=(fields.days-1)*7.5*60*60
             if (moment()>moment('17:00','HH:mm')){
                 periodSeconds+=7.5*60*60
             } else{
-                periodSeconds+=moment().diff(moment('17:00','HH:mm'),'seconds')
+                periodSeconds+=moment('17:00','HH:mm').diff(moment(),'seconds')
             }
         } else if (request_type==='day'&& fields.from===moment().format('YYYY-MM-DD')){
             if (moment()>moment('17:00','HH:mm')){
