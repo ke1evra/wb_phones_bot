@@ -210,8 +210,6 @@ class Menu {
         to = to.add(-1, "day").format("YYYY-MM-DD");
 
         let periodSeconds=0
-        if (!fields.days)
-            fields.days=1
         if (request_type==='days'){
             periodSeconds=(fields.days)*7.5*60*60
             if (moment()>moment('17:00','HH:mm')){
