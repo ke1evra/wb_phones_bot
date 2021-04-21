@@ -217,20 +217,20 @@ class Menu {
             if (moment()>moment('17:00','HH:mm')){
                 periodSeconds+=7.5*60*60
             } else{
-                periodSeconds+=moment('17:00','HH:mm').diff(moment(),'seconds')
+                periodSeconds+=moment().diff(moment('09:00','HH:mm'),'seconds')
             }
         } else if (request_type==='day'&& fields.from===moment().format('YYYY-MM-DD')){
             if (moment()>moment('17:00','HH:mm')){
                 periodSeconds+=7.5*60*60
             } else{
-                periodSeconds+=moment().diff(moment('17:00','HH:mm'),'seconds')
+                periodSeconds+=moment().diff(moment('09:00','HH:mm'),'seconds')
             }
         } else if (request_type==='range' && moment().format('YYYY-MM-DD')<=fields.to && fields.from<=moment().format('YYYY-MM-DD')){
             periodSeconds+=moment(fields.to,'YYYY-MM-DD').diff(moment(fields.from,'YYYY-MM-DD'),'days')-1
             if (moment()>moment('17:00','HH:mm')){
                 periodSeconds+=7.5*60*60
             } else{
-                periodSeconds+=moment().diff(moment('17:00','HH:mm'),'seconds')
+                periodSeconds+=moment().diff(moment('09:00','HH:mm'),'seconds')
             }
         }
         console.log(periodSeconds)
