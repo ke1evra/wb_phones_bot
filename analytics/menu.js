@@ -410,10 +410,10 @@ class Menu {
         let message = `— Отчет по менеджерам —${'—'.repeat(width - 23)}\n\n` +
             `— ${to === from ? `За ${from} —${'—'.repeat(width - 17)}\n\n` : `C ${from} по ${to} —${'—'.repeat(width - 30)}\n\n`}` +
             `Звонков совершено: ${messageData.all_managers.calls.basic_info.total_calls_count}\n` +
-            `Ср. продолжительность звонка: ${messageData.all_managers.calls.basic_info.avg_call_duration ? messageData.all_managers.calls.basic_info.avg_call_duration : 'Нет данных'}\n` +
-            `Ср. время ответа: ${messageData.all_managers.calls.incoming_calls_info.avg_time_to_answer ? messageData.all_managers.calls.incoming_calls_info.avg_time_to_answer : 'Нет данных'}\n` +
-            `Процент пропущенных вызовов: ${messageData.all_managers.calls.failed_incoming_calls_info.calls_count_percentage ? messageData.all_managers.calls.failed_incoming_calls_info.calls_count_percentage : 'Нет данных'}%\n` +
-            `Ср. время ожидания при недозвоне: ${messageData.all_managers.calls.failed_outcoming_calls_info.avg_waiting_time ? messageData.all_managers.calls.failed_outcoming_calls_info.avg_waiting_time : 'Нет данных'}\n\n` +
+            `Ср. продолжительность звонка: ${messageData.all_managers.calls.basic_info.avg_call_duration ? messageData.all_managers.calls.basic_info.avg_call_duration + ' c' : 'Нет данных'}\n` +
+            `Ср. время ответа: ${messageData.all_managers.calls.incoming_calls_info.avg_time_to_answer ? messageData.all_managers.calls.incoming_calls_info.avg_time_to_answer + ' c' : 'Нет данных'}\n` +
+            `Процент пропущенных вызовов: ${messageData.all_managers.calls.failed_incoming_calls_info.calls_count_percentage ? messageData.all_managers.calls.failed_incoming_calls_info.calls_count_percentage + '%' : 'Нет данных'}\n` +
+            `Ср. время ожидания при недозвоне: ${messageData.all_managers.calls.failed_outcoming_calls_info.avg_waiting_time ? messageData.all_managers.calls.failed_outcoming_calls_info.avg_waiting_time + ' c' : 'Нет данных'}\n\n` +
 
             `Кол-во обработанных заказов: ${messageData.all_managers.orders.count}\n` +
             `Сумма обработанных заказов: ${(messageData.all_managers.orders.sum).toLocaleString().replace(/,/g, ' ')} ₽\n\n`
