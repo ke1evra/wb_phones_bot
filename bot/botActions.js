@@ -260,7 +260,7 @@ setInterval(async () => {
         await methods.sendMessageByType('missed', {chat: {id: chats.reports_week}}, fields);
         await methods.sendMessageByType('orders', {chat: {id: chats.reports_week}}, fields);
         await methods.sendMessageByType('calls', {chat: {id: chats.reports_week}}, fields);
-        //await methods.sendMessageByType('managers',{chat:{id:chats.reports_week}},fields);
+        await methods.sendMessageByType('managers',{chat:{id:chats.reports_week}},fields);
         await methods.sendMessageByType('chrono', {chat: {id: chats.reports_week}}, fields);
         await methods.sendMessageByType('compare', {chat: {id: chats.reports_week}}, fields);
     }
@@ -274,7 +274,7 @@ setInterval(async () => {
         await methods.sendMessageByType('missed', {chat: {id: chats.reports_day}}, fields);
         await methods.sendMessageByType('orders', {chat: {id: chats.reports_day}}, fields);
         await methods.sendMessageByType('calls', {chat: {id: chats.reports_day}}, fields);
-        //await methods.sendMessageByType('managers',{chat:{id:chats.reports_day}},fields);
+        await methods.sendMessageByType('managers',{chat:{id:chats.reports_day}},fields);
         await methods.sendMessageByType('chrono', {chat: {id: chats.reports_day}}, fields);
     }
     //По часам
