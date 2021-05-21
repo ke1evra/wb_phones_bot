@@ -1340,7 +1340,8 @@ class Menu {
                 statistics.year_stat[year].order_sum += day["order_sum"];
             });
             //Поиск макс значения
-            statistics.year_stat.forEach(year=>{statistics.max_cnt = Math.max(statistics.max_cnt,statistics.year_stat[year].order_count)});
+            for(let year in statistics.year_stat)
+                statistics.max_cnt = Math.max(statistics.max_cnt,statistics.year_stat[year].order_count);
             //составление сообщения
             if (years_number === -1)
                 message += `В преиод с ${from} по ${to}\n`;
@@ -1431,7 +1432,8 @@ class Menu {
                 statistics.months[month].order_sum += item["order_sum"];
             });
             //Поиск макс значения
-            statistics.months.forEach(month=>{statistics.max_cnt = Math.max(statistics.max_cnt,statistics.months[month].order_count)});
+            for(let month in statistics.months)
+                statistics.max_cnt = Math.max(statistics.max_cnt,statistics.months[month].order_count);
             //Формирование сообщения
             message += `В преиод с ${from} по ${to}\n`;
             //Вывод шапки
