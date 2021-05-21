@@ -665,6 +665,47 @@ class Menu {
         }
     }
 
+    ///Функция для отрисовки квадратиков как в renderPercentage,  но относительно максимального значения
+    getMultipleSquaresByNumber(title = "", number = 1, max_number = number ? number : 1, total_number = max_number, colour = 0) {
+        //Массив цветов белый отсутствует т.к. используется для пустых.
+        const colours = [
+            ['🟩', '🟢'],//зелёный
+            ['🟦', '🔵'],//синий
+            ['🟥', '🔴'],//красный
+            ['🟧', '🟠'],//оранжевый
+            ['🟨', '🟡'],//жёлтый
+            ['🟪', '🟣'],//фиолетовый
+            ['⬛️', '⚫️'],//чёрный
+            ['🟫', '🟤']//коричневый
+        ];
+        colour = colour > 7? 0 : colour;
+        let msg = `${title} (${(number / total_number * 100).toFixed(2)}%)\n`;
+        if (max_number > 20) {
+            let value = Math.round(number / max_number * 1000);
+            let counter = 0;
+            while (value >= 50) {
+                msg += colours[colour][0];
+                counter++;
+                value -= 50;
+            }
+            if (value) {
+                msg += value >= 25 ? colours[colour][1] : '⚪️';
+                counter++;
+            }
+            for (counter; counter < 20; counter++)
+                msg += '⬜️';
+        }
+        else {
+            const multiplier = Math.floor(20 / max_number);
+            for (let i = 0; i < number; i++)
+                for (let j = 0; j < multiplier; j++)
+                    msg += colours[colour][0];
+            for (let i = 0; i < 20 - number * multiplier; i++)
+                msg += '⬜️';
+        }
+        return msg;
+    }
+
     ///для сортировки массивов в renderOrders формата arr=[[elem1,count],[elem2,count]]
     sortOrdersArrays(arr) {
         for (let i = 0; i < arr.length; i++) {
@@ -1148,34 +1189,6 @@ class Menu {
                 statistics.max_orders_count = Math.max(item[1], statistics.max_orders_count)
             });
 
-            //Функция для отрисовки квадратиков
-            function getMultipleSquaresByNumber(title, number = 1, max_number = number ? number : 1, total_number = max_number) {
-                let msg = `${title} (${(number / total_number * 100).toFixed(2)}%)\n`;
-                if (max_number > 20) {
-                    let value = Math.round(number / max_number * 1000);
-                    let counter = 0;
-                    while (value >= 50) {
-                        msg += '🟩';
-                        counter++;
-                        value -= 50;
-                    }
-                    if (value) {
-                        msg += value >= 25 ? '🟢' : '⚪️';
-                        counter++;
-                    }
-                    for (counter; counter < 20; counter++)
-                        msg += '⬜️';
-                } else {
-                    const multiplier = Math.floor(20 / max_number);
-                    for (let i = 0; i < number; i++)
-                        for (let j = 0; j < multiplier; j++)
-                            msg += '🟩';
-                    for (let i = 0; i < 20 - number * multiplier; i++)
-                        msg += '⬜️';
-                }
-                return msg;
-            }
-
             //Формирование сообщения
             if (!statistics.calls_count && !statistics.orders_count) {
                 if (request_type === 'days')
@@ -1196,13 +1209,13 @@ class Menu {
                 message += '------------------------\nЗвонки\n';
                 for (let i = 0; i < statistics.calls.length; i++)
                     if (statistics.calls[i][1])
-                        message += `\n${statistics.calls[i][0]} — ${getMultipleSquaresByNumber(statistics.calls[i][1].toString(), statistics.calls[i][1], statistics.max_calls_count, statistics.calls_count)}`;
+                        message += `\n${statistics.calls[i][0]} — ${menu.getMultipleSquaresByNumber(statistics.calls[i][1].toString(), statistics.calls[i][1], statistics.max_calls_count, statistics.calls_count)}`;
             }
             if (statistics['orders_count']) {
                 message += '\n------------------------\nЗаказы\n';
                 for (let i = 0; i < statistics.orders.length; i++)
                     if (statistics.orders[i][1])
-                        message += `\n${statistics.orders[i][0]} — ${getMultipleSquaresByNumber(statistics.orders[i][1].toString(), statistics.orders[i][1], statistics.max_orders_count, statistics.orders_count)}`;
+                        message += `\n${statistics.orders[i][0]} — ${menu.getMultipleSquaresByNumber(statistics.orders[i][1].toString(), statistics.orders[i][1], statistics.max_orders_count, statistics.orders_count)}`;
             }
             return message;
         } catch (e) {
@@ -1213,7 +1226,16 @@ class Menu {
 
     async renderCompare(fields) {
         //Обработка типов запросов
-
+        let colours = [
+            ['🟩', '🟢'],//зелёный
+            ['🟦', '🔵'],//синий
+            ['🟥', '🔴'],//красный
+            ['🟧', '🟠'],//оранжевый
+            ['🟨', '🟡'],//жёлтый
+            ['🟪', '🟣'],//фиолетовый
+            ['⬛️', '⚫️'],//чёрный
+            ['🟫', '🟤']//коричневый
+        ];
         let request_type; //По каким промежуткам считается статистика
         let years_number = 0;
         let from;
@@ -1249,17 +1271,6 @@ class Menu {
                 to = typeof fields.to == 'undefined' || fields.to == null ? moment().format("YYYY-MM-DD") : fields.to;
                 break;
         }
-        //Массив цветов белый отсутствует т.к. используется для пустых.
-        let colours = [
-            ['🟩', '🟢'],//зелёный
-            ['🟦', '🔵'],//синий
-            ['🟥', '🔴'],//красный
-            ['🟧', '🟠'],//оранжевый
-            ['🟨', '🟡'],//жёлтый
-            ['🟪', '🟣'],//фиолетовый
-            ['⬛️', '⚫️'],//чёрный
-            ['🟫', '🟤']//коричневый
-        ];
         let message = '------------------------\nСравнение\n';
         //console.log(`request_type:${request_type} from:${from} to:${to}`);
         if (request_type === 'years') {
@@ -1282,6 +1293,7 @@ class Menu {
             statistics['year_stat'] = {};
             statistics['total_sum'] = 0;
             statistics['order_count'] = 0;
+            statistics['max_cnt'] = 0;
             //по дням
             data_days[0].forEach(day => {
                 let year = moment(day.date).format('YYYY');
@@ -1327,6 +1339,8 @@ class Menu {
                 statistics.total_sum += day["order_sum"];
                 statistics.year_stat[year].order_sum += day["order_sum"];
             });
+            //Поиск макс значения
+            statistics.year_stat.forEach(year=>{statistics.max_cnt = Math.max(statistics.max_cnt,statistics.year_stat[year].order_count)});
             //составление сообщения
             if (years_number === -1)
                 message += `В преиод с ${from} по ${to}\n`;
@@ -1343,11 +1357,12 @@ class Menu {
             }
             colour = 0;
             for (let year in statistics.year_stat) {
-                message += `\n${year} — ${menu.numberWithCommas(statistics.year_stat[year].order_count)} заказов на сумму: ${menu.renderPercentage(menu.numberWithCommas(statistics.year_stat[year].order_sum) + ' ₽', statistics.year_stat[year].order_count / statistics.order_count, colour)}`;
+                message += `\n${year} — ${menu.numberWithCommas(statistics.year_stat[year].order_count)} заказов на сумму: ${menu.getMultipleSquaresByNumber(menu.numberWithCommas(statistics.year_stat[year].order_sum) + ' ₽', statistics.year_stat[year].order_count, statistics.max_cnt, statistics.order_count, colour)}`;
                 if (years_number <= 7)
                     colour++;
             }
-        } else if (request_type === 'months') {
+        }
+        else if (request_type === 'months') {
             //Получение данных
             //Делим процесс на 2 этапа для скорости 1)по месяцам 2)по дням
             data_days = [];
@@ -1369,6 +1384,7 @@ class Menu {
             statistics['months'] = {};
             statistics['total_sum'] = 0;
             statistics['order_count'] = 0;
+            statistics['max_cnt'] = 0;
             //По дням до периода по месяцам
             data_days[0].forEach(item => {
                 let month = moment(item.date).format('MMM YYYY');
@@ -1414,6 +1430,8 @@ class Menu {
                 statistics.total_sum += item["order_sum"];
                 statistics.months[month].order_sum += item["order_sum"];
             });
+            //Поиск макс значения
+            statistics.months.forEach(month=>{statistics.max_cnt = Math.max(statistics.max_cnt,statistics.months[month].order_count)});
             //Формирование сообщения
             message += `В преиод с ${from} по ${to}\n`;
             //Вывод шапки
@@ -1426,11 +1444,12 @@ class Menu {
             }
             colour = 0;
             for (let month in statistics.months) {
-                message += `\n${month} — ${menu.numberWithCommas(statistics.months[month].order_count)} заказов на сумму: ${menu.renderPercentage(menu.numberWithCommas(statistics.months[month].order_sum) + ' ₽', statistics.months[month].order_count / statistics.order_count, colour)}`;
+                message += `\n${month} — ${menu.numberWithCommas(statistics.months[month].order_count)} заказов на сумму: ${menu.getMultipleSquaresByNumber(menu.numberWithCommas(statistics.months[month].order_sum) + ' ₽', statistics.months[month].order_count, statistics.max_cnt, statistics.order_count, colour)}`;
                 if (statistics.months_count <= 7)
                     colour++;
             }
-        } else {
+        }
+        else {
             const data = await API.getOrdersSumByDay(null, from, to.format("YYYY-MM-DD"));
             to = to.add(-1, 'days').format("YYYY-MM-DD");
             //Обработка
@@ -1439,6 +1458,7 @@ class Menu {
             statistics['days'] = {};
             statistics['total_sum'] = 0;
             statistics['order_count'] = 0;
+            statistics['max_cnt'] = 0;
             data.data.forEach(item => {
                 let day = moment(item.date).format("MM-DD");
                 if (!statistics.days.hasOwnProperty(day)) {
@@ -1452,6 +1472,7 @@ class Menu {
                 statistics.days[day].order_count += item["order_count"];
                 statistics.total_sum += item["order_sum"];
                 statistics.days[day].order_sum += item["order_sum"];
+                statistics.max_cnt = Math.max(item["order_count"], statistics.max_cnt);
             });
             //Формирование сообщения
             message += `В период с ${from} по ${to}\n`;
@@ -1465,7 +1486,7 @@ class Menu {
             }
             colour = 0;
             for (let day in statistics.days) {
-                message += `\n${day} — ${menu.numberWithCommas(statistics.days[day].order_count)} заказов на сумму: ${menu.renderPercentage(menu.numberWithCommas(statistics.days[day].order_sum) + ' ₽', statistics.days[day].order_count / statistics.order_count, colour)}`;
+                message += `\n${day} — ${menu.numberWithCommas(statistics.days[day].order_count)} заказов на сумму: ${menu.getMultipleSquaresByNumber(menu.numberWithCommas(statistics.days[day].order_sum) + ' ₽', statistics.days[day].order_count, statistics.max_cnt, statistics.order_count, colour)}`;
                 if (statistics.days_count <= 7)
                     colour++;
             }
