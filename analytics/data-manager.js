@@ -1,6 +1,7 @@
 const axios = require("axios");
 const UrlBuilder = require("./url-builder.js");
 const moment = require("moment");
+const API_IP = require('../constants/API_IP');
 
 class DataManager {
     constructor() {
@@ -71,7 +72,7 @@ class DataManager {
         to = moment().add(1, "day").format("YYYY-MM-DD")
     ) {
         return await axios.get(
-            `http://185.211.247.12:3000/calls/missed?date_from=${from}&date_to=${to}`
+            `${API_IP}/calls/missed?date_from=${from}&date_to=${to}`
         );
     }
 
@@ -81,7 +82,7 @@ class DataManager {
         to = moment().endOf("day").format("YYYY-MM-DD")
     ) {
         return await axios.get(
-            `http://185.211.247.12:3000/expenses/cost?date_from=${from}&date_to=${to}&shop=vkostume`
+            `${API_IP}/expenses/cost?date_from=${from}&date_to=${to}&shop=vkostume`
         );
     }
 
@@ -91,7 +92,7 @@ class DataManager {
         to = moment().startOf('day').add(1, "day").unix()
     ) {
         return await axios.get(
-            `http://185.211.247.12:3000/mango/day?date_from=${from}&date_to=${to}`
+            `${API_IP}/mango/day?date_from=${from}&date_to=${to}`
         );
     }
 
@@ -101,7 +102,7 @@ class DataManager {
         to = moment().add(1, "days").format("YYYY-MM-DD")
     ) {
         return await axios.get(
-            `http://185.211.247.12:3000/orders/managers?date_from=${from}&date_to=${to}`
+            `${API_IP}/orders/managers?date_from=${from}&date_to=${to}`
         );
     }
 
@@ -111,7 +112,7 @@ class DataManager {
         to = moment().add(1, "day").format("YYYY-MM-DD")
     ) {
         return await axios.get(
-            `http://185.211.247.12:3000/orders/cnt?date_from=${from}&date_to=${to}`
+            `${API_IP}/orders/cnt?date_from=${from}&date_to=${to}`
         );
     }
 
@@ -122,7 +123,7 @@ class DataManager {
         shop_id = 1
     ) {
         return await axios.get(
-            `http://185.211.247.12:3000/orders/month/sum?date_from=${from}&date_to=${to}&shop=${shop_id}`
+            `${API_IP}/orders/month/sum?date_from=${from}&date_to=${to}&shop=${shop_id}`
         );
     }
 
@@ -133,7 +134,7 @@ class DataManager {
         shop_id = 1
     ) {
         return await axios.get(
-            `http://185.211.247.12:3000/orders/day/sum?date_from=${from}&date_to=${to}&shop=${shop_id}`
+            `${API_IP}/orders/day/sum?date_from=${from}&date_to=${to}&shop=${shop_id}`
         );
     }
 
@@ -143,7 +144,7 @@ class DataManager {
         to = moment().add(1, "days").format("YYYY-MM-DD")
     ) {
         return await axios.get(
-            `http://185.211.247.12:3000/orders/?date_from=${from}&date_to=${to}`
+            `${API_IP}/orders/?date_from=${from}&date_to=${to}`
         );
     }
 
@@ -151,7 +152,7 @@ class DataManager {
         order_number = 1
     ) {
         return await axios.get(
-            `http://185.211.247.12:3000/orders/number?order_number=${order_number}`
+            `${API_IP}/orders/number?order_number=${order_number}`
         );
     }
 
@@ -159,7 +160,7 @@ class DataManager {
         number = 1, date_from, date_to
     ) {
         return await axios.get(
-            `http://185.211.247.12:3000/calls/clientInRange?number=${number}&date_from=${date_from}&date_to=${date_to}`
+            `${API_IP}/calls/clientInRange?number=${number}&date_from=${date_from}&date_to=${date_to}`
         );
     }
 
@@ -169,7 +170,7 @@ class DataManager {
         to = moment().add(1, "days").format("YYYY-MM-DD")
     ) {
         return await axios.get(
-            `http://185.211.247.12:3000/calls/range?date_from=${from}&date_to=${to}`
+            `${API_IP}/calls/range?date_from=${from}&date_to=${to}`
         );
     }
 }
