@@ -513,8 +513,7 @@ class Menu {
             }),
             // disable_web_page_preview: true,
         };
-        console.log(data)
-        if (!data.data.length)
+        if (!data.data.length && !managersOrdersData.data.length)
             message = 'Нет данных';
         return message;
     }
